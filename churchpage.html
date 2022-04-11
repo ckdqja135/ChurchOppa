@@ -5,28 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
+    <!-- <link rel="icon" href="../../../../favicon.ico"> -->
 
     <title>교회 오빠</title>
+    <!-- Bootstrap js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="./assets/css/jumbotron.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="index.html">교회오빠</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
+        <!-- <li class="nav-item active">
             <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
@@ -42,7 +50,7 @@
             <a class="dropdown-item" href="#">Another action</a>
             <a class="dropdown-item" href="#">Something else here</a>
             </div>
-        </li>
+        </li> -->
         </ul>
         <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
@@ -51,28 +59,119 @@
     </div>
     </nav>
 
-    <main role="main">
-
+    <!-- <main role="main"> -->
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container">
-        <!-- <h1 class="display-3">Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-        </div> -->
+    <div class="container">
+        <!-- 전체 테두리 -->
+        <div class="row p-2">
+            <div class="col mt-2">
+                <div>
+                    <h3 id="ChuchTittle">새지음 교회</h3>
+                    <br />
+                </div>
+                <!-- 좌측 컨텐츠 -->
+                <h4>교회 정보</h4>
+                <div class="mt-4">
+                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : 서울시 강동구</button>
+                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교파 : 순복음</button>
+                    <div class="col mb-2">
+                    </div>
+                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">규모 : 중</button>
+                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">담임목사 : 박지민</button>
+                    <br />
+                    <br />
+                    <br />
+                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교회 홈페이지</button>
+                </div>
+            </div>
+                <!-- 우측 컨텐츠 -->
+                <div class="p-4 col-6 col-sm-6">
+                </br />
+                </br />
+                    <h3>후기</h3>
+                    <div class="form-row float-right" style="padding: 10px;">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">글쓰기</button>
+                    </div>
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <td><h6>예배가 너무 은혜스러워요</h6></td>
+                                    <td><h6>exam</h6></td>
+                                    <td><h6>2022-04-11</h6></td>
+                                    <td><h6>10</h6></td>
+                                </tr>
+                                <tr>
+                                    <td><h6>교회가 너무 이뻐요</h6></td>
+                                    <td><h6>exam</h6></td>
+                                    <td><h6>2022-04-11</h6></td>
+                                    <td><h6>10</h6></td>
+                                </tr>
+                                <tr>
+                                    <td><h6>목사님 사랑해요♡</h6></td>
+                                    <td><h6>사랑꾼</h6></td>
+                                    <td><h6>2022-04-11</h6></td>
+                                    <td><h6>10</h6></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#">← Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">4</a></li>
+                            <li class="page-item"><a class="page-link" href="#">5</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next →</a></li>
+                        </ul>
+                        
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">교회 후기</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">title</label>
+                                        <input type="text" class="form-control" id="recipient-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <h6>
+                                            다른 사람의 인격권을 침해하거나 명예를 훼손하게 하는 글, 불쾌감을 주는 욕설 또는 비방하는 글, 유언비어나 허위사실을 유포하는 글, 도배성 글의 경우 글이 삭제되거나 이용제재를 받을 수 있습니다.
+                                        </h6>
+                                        <label for="message-text" class="col-form-label">Content</label>
+                                        <textarea class="form-control" id="message-text"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="member_login pl-2">
+                                <form>
+                                    <div class="member_login_input">
+                                        <input type="text" name="username" placeholder="아이디" >
+                                        <input type="password" name="password" placeholder="비밀번호">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                <button type="button" class="btn btn-primary">글쓰기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="container">
-        </div>
-
-        <hr>
-
-        </div> <!-- /container -->
-
-    </main>
 
     <footer class="container">
-        <p>&copy; Company 2017-2018</p>
+        <div class="container row" style="float: none; margin:100 auto;">
+            <div class="col-md-3" style="float: none; margin:0 auto;">
+            <p>&copy; Company 2017-2018</p>
+        </div>
+        </div>
     </footer>
 
     <!-- Bootstrap core JavaScript
