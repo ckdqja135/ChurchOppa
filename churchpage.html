@@ -91,7 +91,7 @@
                 </br />
                     <h3>후기</h3>
                     <div class="form-row float-right" style="padding: 10px;">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">글쓰기</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal" onclick="initButton();">글쓰기</button>
                     </div>
                         <table class="table table-hover">
                             <tbody>
@@ -125,7 +125,7 @@
                             <li class="page-item"><a class="page-link" href="#">Next →</a></li>
                         </ul>
                         
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                 <div class="modal-header">
@@ -134,11 +134,11 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body" id="modal">
                                 <form>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">title</label>
-                                        <input type="text" class="form-control" id="recipient-name" maxlength='40'>
+                                        <input type="text" class="form-control" id="recipient-title" maxlength='40'>
                                     </div>
                                     <div class="form-group">
                                         <h6 style="font-size: 12px;">
@@ -152,14 +152,14 @@
                             <div class="member_login pl-2">
                                 <form>
                                     <div class="member_login_input">
-                                        <input type="text" name="username" placeholder="아이디" >
-                                        <input type="password" name="password" placeholder="비밀번호">
+                                        <input type="text" name="username" id="id" placeholder="아이디" >
+                                        <input type="password" name="password" id="pw" placeholder="비밀번호">
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                                <button type="button" class="btn btn-primary">글쓰기</button>
+                                <button type="button" class="btn btn-primary" onclick="getData();">글쓰기</button>
                             </div>
                         </div>
                     </div>
@@ -182,5 +182,6 @@
     <script>window.jQuery || document.write('<script src="../assets/js/jquery-slim.min.js"><\/script>')</script>
     <script src="./assets/js/popper.min.js"></script>
     <script src="./assets/js/bootstrap.min.js"></script>
+    <script src="./assets/js/chuchpage.js"></script>
 </body>
 </html>
