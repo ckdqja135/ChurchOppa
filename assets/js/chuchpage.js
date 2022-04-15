@@ -27,7 +27,7 @@
     $(document).ready(function () {
         // 테이블 클릭시 모달 창 열리도록 추가.
         $('.table').on('click', () => {
-            $('#reviewModal').modal('show');
+            $('#readModal').modal('show');
         })
 
         // 좋아요 버튼 클릭 이벤트
@@ -44,7 +44,6 @@
                 $(`#heart${number}`).addClass("liked");
             }
         });
-
     });
 
     // window.liked = liked;
