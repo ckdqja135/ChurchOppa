@@ -1,9 +1,12 @@
 (function (window) {
-    // 테이블 클릭시 모달 창 열리도록 추가.
-    $('.table').on('click', () => {
-        $('#reviewModal').modal('show');
-    })
 
+    // var startingNumber = 0;
+
+    // function AddValue()
+    // {
+    // startingNumber++;
+    // $(this).text(startingNumber);
+    // }
     // 모달 입력 값 가져오기
     function getData() {
         let title = $("#recipient-title").val().trim(); 
@@ -21,6 +24,30 @@
         $("#pw").val("");
     }
 
+    $(document).ready(function () {
+        // 테이블 클릭시 모달 창 열리도록 추가.
+        $('.table').on('click', () => {
+            $('#reviewModal').modal('show');
+        })
+
+        // 좋아요 버튼 클릭 이벤트
+        $("[id^=like]").on('click', function(e){
+            var id = $(this).attr("id"); 
+            var number = id.replace("like", "");
+            e.stopPropagation();
+
+            if($(`#heart${number}`).hasClass("liked")){
+                $(`#heart${number}`).html('<i class="fa fa-heart-o" aria-hidden="true"></i>');
+                $(`#heart${number}`).removeClass("liked");
+            }else{
+                $(`#heart${number}`).html('<i class="fa fa-heart" aria-hidden="true"></i>');
+                $(`#heart${number}`).addClass("liked");
+            }
+        });
+
+    });
+
+    // window.liked = liked;
     window.getData = getData;
     window.initButton = initButton;
 })(window);

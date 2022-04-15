@@ -26,6 +26,8 @@
 
     <!-- Kakao Map -->
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=80d6fac198542c9021cd4229a30df6b2"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -104,18 +106,33 @@
                                     <td><h6>exam</h6></td>
                                     <td><h6>2022-04-11</h6></td>
                                     <td><h6>10</h6></td>
+                                    <td>
+                                        <button class="likebtn" id="like1">
+                                            <span id = heart1><i class="fa fa-heart-o" aria-hidden="true" ></i> </span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><h6>교회가 너무 이뻐요</h6></td>
                                     <td><h6>exam</h6></td>
                                     <td><h6>2022-04-11</h6></td>
                                     <td><h6>10</h6></td>
+                                    <td>
+                                        <button class="likebtn" id="like2">
+                                            <span id = heart2><i class="fa fa-heart-o" aria-hidden="true" ></i> </span>1
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><h6>목사님 사랑해요♡</h6></td>
                                     <td><h6>사랑꾼</h6></td>
-                                    <td><h6>2022-04-11</h6></td>
-                                    <td><h6>10</h6></td>
+                                    <td><h6>2022-04-11 </h6></td>
+                                    <td><h6>10 </h6></td>
+                                    <td>
+                                        <button class="likebtn" id="like3">
+                                            <span id = heart3><i class="fa fa-heart-o" aria-hidden="true" ></i> </span>
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -261,8 +278,9 @@
 
     // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
     function closeOverlay() {
-        overlay.setMap(null);     
+        overlay.setMap(null);
     }
 </script>
+
 </body>
 </html>
