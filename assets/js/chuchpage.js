@@ -12,7 +12,7 @@
         let title = $("#recipient-title").val().trim(); 
         let content = $("#message-text").val();
         $('#reviewModal').modal("hide");
-        $(".modal-backdrop").remove(); 
+        $(".modal-backdrop").remove();
         console.log("title", title, "content", content);
     }
 
@@ -25,12 +25,13 @@
     }
 
     $(document).ready(function () {
-        // 테이블 클릭시 모달 창 열리도록 추가.
+        // 테이블 클릭시 페이지 이동.
         $('.table').on('click', () => {
-            $('#readModal').modal('show');
+            let link = './Borad.html';
+            location.href = link;
         })
 
-        // 좋아요 버튼 클릭 이벤트
+        // 좋아요 버튼 클릭 이벤트.
         $("[id^=like]").on('click', function(e){
             var id = $(this).attr("id"); 
             var number = id.replace("like", "");
