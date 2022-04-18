@@ -1,0 +1,23 @@
+{
+  "name": "churchoppa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./asset/js/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckdqja135/ChurchOppa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ckdqja135/ChurchOppa/issues"
+  },
+  "homepage": "https://github.com/ckdqja135/ChurchOppa#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "path": "^0.12.7"
+  }
+}
