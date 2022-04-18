@@ -27,7 +27,7 @@
     $(document).ready(function () {
         // 테이블 클릭시 페이지 이동.
         $('.table').on('click', () => {
-            let link = 'Borad.html';
+            let link = '/Board';
             location.href = link;
         })
 
