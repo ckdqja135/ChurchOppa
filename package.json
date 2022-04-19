@@ -2,7 +2,7 @@
   "name": "churchoppa",
   "version": "1.0.0",
   "description": "",
-  "main": "./asset/js/app.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/ckdqja135/ChurchOppa#readme",
   "dependencies": {
+    "cookie": "^0.5.0",
+    "cors": "^2.8.5",
     "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "helmet": "^5.0.2",
     "path": "^0.12.7"
   }
 }
