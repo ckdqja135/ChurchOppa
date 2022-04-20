@@ -3,7 +3,6 @@ const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
 
-
 // 라우팅 설정.
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/assets/html/index.html');
@@ -21,17 +20,23 @@ app.get('/Board', function(req, res){
 app.use('/', express.static(__dirname + '/assets'));
 
 // 404 처리 부분
-app.use((req, res) => {
+app.use(function(req, res) {
     res.status(404).sendFile(__dirname + '/assets/html/404ErrorPage.html');
 });
 
 // 에러 처리 부분
-app.use((err, req, res) => {
+app.use(function(err, req, res) {
     // 에러 메시지 표시
     console.error(err.stack);
     // 500 상태 표시 후 에러 메시지 전송
     res.status(500).sendFile(__dirname + '/assets/html/500ErrorPage.html');
 });
+
+// //....
+// app.use(helmet.hsts({
+//     maxAge: ms("1 year"),
+//     includeSubdomains: true
+// }));
 
 // security 처리
 // helmet -> Header 설정 바꿔주는 Module.
