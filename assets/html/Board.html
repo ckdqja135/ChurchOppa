@@ -72,9 +72,9 @@
                 </div>
             </form>
         </div>
-        <div class="row ml-auto mr-auto">
+        <div class="row ml-auto mr-auto" width ="100%" id="reply_area">
             <ul class="list-group list-group-flush">
-                <table width="100%" id="reply_area">
+                <table>
                     <tr reply_type="all"><!-- 뒤에 댓글 붙이기 쉽게 선언 -->
                         <td colspan="4"></td>
                     </tr>
@@ -97,9 +97,9 @@
                 <li class="list-group-item">
                     <div class="form-inline pb-3" >
                         <label for="replyId"><i class="fa fa-user-circle-o fa"></i></label>
-                        <input type="text" class="form-control ml-1" placeholder="Enter your ID"  id="reply_writer" name="reply_writer" size="12">
+                        <input type="text" class="form-control ml-1" placeholder="Enter your ID"  id="reply_writer" name="reply_writer" maxlength="10">
                         <label for="replyPassword"><i class="fa fa-unlock-alt fa mr-2 pl-2"></i></label>
-                        <input type="password" id="reply_password" class="form-control ml-1" placeholder="Enter password" size="12">
+                        <input type="password" id="reply_password" class="form-control ml-1" placeholder="Enter password" maxlength="10">
                     </div>
                     <div class="form-inline mb-2">
                         <textarea class="form-control" id="reply_content" rows="3" style="width: 700px;"></textarea>
