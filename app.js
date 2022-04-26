@@ -3,6 +3,7 @@ const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
 const mysql = require('mysql');
+const ejs = require("ejs");
 
 // mysql 접속 설정
 const conn =  mysql.createConnection({ 
@@ -19,19 +20,32 @@ conn.connect(function(err){
     } else {  
         console.log("Error connecting database ... \n\n", err);
     }  
-});  
+});
+app.set('views', __dirname + '/assets/html');
+app.set('view engine', 'ejs');
 
 // 라우팅 설정.
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/assets/html/index.html');
+    res.render('index.ejs');
 })
 
 app.get('/church', function(req, res){
-    res.sendFile(__dirname + '/assets/html/churchpage.html');
-})
+
+    let sql = 'select * from churchinfo';
+    conn.query(sql, function(err, row, fields){//row는 '행'이라는 뜻이다.
+        if(err){
+            console.log(err);
+        } else {
+            res.render('churchpage.ejs', {church : row});
+            console.log(row)
+        }
+    });
+});
+
+
 
 app.get('/Board', function(req, res){
-    res.sendFile(__dirname + '/assets/html/Board.html');
+    res.render('Board.ejs');
 })
 
 // css파일을 가져오도록 설정.
