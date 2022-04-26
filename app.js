@@ -2,6 +2,24 @@ const express = require('express');
 const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
+const mysql = require('mysql');
+
+// mysql 접속 설정
+const conn =  mysql.createConnection({ 
+    host     : 'localhost',
+    port     : '3306',
+    user     : 'root',
+    password : '123456',
+    database : 'ChurchOppa'
+});
+// mysql 접속 여부
+conn.connect(function(err){  
+    if(!err) {  
+        console.log("Database is connected ... \n\n");
+    } else {  
+        console.log("Error connecting database ... \n\n", err);
+    }  
+});  
 
 // 라우팅 설정.
 app.get('/', function(req, res){
@@ -59,6 +77,12 @@ app.use(helmet.xssFilter());
 app.disable('x-powered-by');
 // CORS 처리.
 app.use(cors());
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
+//     res.header("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE,OPTIONS");
+//     next();
+// });
 
 // app.use(express.static('images'));
 app.listen(3000, () => console.log('3000번 포트 대기'));
