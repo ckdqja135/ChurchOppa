@@ -24,6 +24,9 @@ conn.connect(function(err){
 app.set('views', __dirname + '/assets/html');
 app.set('view engine', 'ejs');
 
+
+// var query = sanitize(url.parse(request.url, true).query.query);
+
 // 라우팅 설정.
 app.get('/', function(req, res){
     res.render('index.ejs');
@@ -32,7 +35,7 @@ app.get('/', function(req, res){
 app.get('/church', function(req, res){
 
     let sql = 'select * from churchinfo';
-    conn.query(sql, function(err, row, fields){//row는 '행'이라는 뜻이다.
+    conn.query(sql, function(err, row, fields){//row => 결과값
         if(err){
             console.log(err);
         } else {
