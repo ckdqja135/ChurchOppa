@@ -1,5 +1,5 @@
 # ChurchOppa
- Compleate
+## Compleate
  - [x] Index Page 디자인 
  - [x] ChurchPage 디자인 
     - [x] 카카오 지도 연동(위도 경도, 기타 등등 DB작업 완료.)
@@ -10,7 +10,7 @@
    - [x] 댓글 삭제, 수정 기능 추가.
  - [x] 서버, DB 연동 완료. 
  
-TODO :
+## TOD
  - Index Page Ranking 기능 도입.
  - 같은 이름 같은 지역일 때, 같은 이름 다른 지역일 때 어떻게 처리 할 것인지
  - 검색한 페이지 내에 검색창 동작되도록 추가.
