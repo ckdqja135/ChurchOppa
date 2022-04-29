@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const mysql = require('mysql');
 const ejs = require("ejs");
+const { stringify } = require('querystring');
+
 
 // mysql 접속 설정
 const conn =  mysql.createConnection({ 
@@ -32,18 +34,34 @@ app.get('/', function(req, res){
     res.render('index.ejs');
 })
 
-app.get('/church', function(req, res){
+app.get('/search=?', function(req, res) {
+    console.log("hihi")
+    let sql = 'select * from churchinfo where ChurchName = ?';
+    params = req.query.name;
 
-    let sql = 'select * from churchinfo';
-    conn.query(sql, function(err, row, fields){//row => 결과값
+    conn.query(sql , params, function(err, row, fields){//row => 결과값
         if(err){
             console.log(err);
         } else {
+            // res.json({ok: true, churchname: row})
             res.render('churchpage.ejs', {church : row});
-            console.log(row)
+            console.log("hey!!!!", row.length)
         }
     });
-});
+})
+
+// app.get('/church', function(req, res){
+
+//     let sql = 'select * from churchinfo';
+//     conn.query(sql, function(err, row, fields){//row => 결과값
+//         if(err){
+//             console.log(err);
+//         } else {
+//             res.render('churchpage.ejs', {church : row});
+//             console.log(row)
+//         }
+//     });
+// });
 
 
 
