@@ -35,17 +35,20 @@ app.get('/', function(req, res){
 })
 
 app.get('/search=?', function(req, res) {
-    console.log("hihi")
     let sql = 'select * from churchinfo where ChurchName = ?';
-    params = req.query.name;
+    let params = req.query.name;
 
     conn.query(sql , params, function(err, row, fields){//row => 결과값
         if(err){
             console.log(err);
-        } else {
+        }
+
+        if(row.length > 0) {
             // res.json({ok: true, churchname: row})
             res.render('churchpage.ejs', {church : row});
-            console.log("hey!!!!", row.length)
+            console.log("hey!!!!", req)
+        } else {
+
         }
     });
 })
