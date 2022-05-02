@@ -46,9 +46,9 @@ app.get('/search=?', function(req, res) {
         if(row.length > 0) {
             // res.json({ok: true, churchname: row})
             res.render('churchpage.ejs', {church : row});
-            console.log("hey!!!!", req)
+            console.log("hey!!!!", row)
         } else {
-
+            res.sendFile(__dirname + '/assets/html/resultNotfound.html');
         }
     });
 })
