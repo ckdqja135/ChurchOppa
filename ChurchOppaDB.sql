@@ -10,15 +10,17 @@
 --   `ChurchLateY` INT NULL,
 --   `ChurchHome` VARCHAR(200) NULL,
 --   `ChurchSerIMG` VARCHAR(200) NULL,
+-- 	 `ChurchJibun` VARCHAR(200) NULL,
+--   `ChurchAddr` VARCHAR(200) NULL,
 --   PRIMARY KEY (`ChurchNo`))
 -- ENGINE = InnoDB
 
-select * from churchinfo
+-- select * from churchinfo
 -- 칼럼 값 수정 시 사용.
 -- ALTER TABLE ChurchInfo MODIFY ChurchLateX DOUBLE
 -- ALTER TABLE ChurchInfo MODIFY ChurchLateY DOUBLE
 
 --  칼럼 추가
--- ALTER TABLE ChurchInfo ADD ChurchJibun VARCHAR(200) NULL
+-- ALTER TABLE ChurchInfo ADD ChurchAddr VARCHAR(200) NULL
 -- 칼럼명 변경
--- ALTER TABLE ChurchInfo CHANGE ChurchLPost ChurchAddr VARCHAR(200) NULL
+-- ALTER TABLE ChurchInfo CHANGE ChurchLPost ChurchAddr VARCHAR(200) NULL--
