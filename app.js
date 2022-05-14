@@ -10,7 +10,7 @@ const { stringify } = require('querystring');
 // mysql 접속 설정
 const conn =  mysql.createConnection({ 
     host     : 'localhost',
-    port     : '3306',
+    port     : '3307',
     user     : 'root',
     password : '123456',
     database : 'ChurchOppa'
