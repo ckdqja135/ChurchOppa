@@ -10,7 +10,7 @@ const { stringify } = require('querystring');
 // mysql 접속 설정
 const conn =  mysql.createConnection({ 
     host     : 'localhost',
-    port     : '3307',
+    port     : '3306',
     user     : 'root',
     password : '123456',
     database : 'ChurchOppa'
@@ -123,4 +123,4 @@ app.use(cors());
 // });
 
 // app.use(express.static('images'));
-app.listen(3000, () => console.log('3000번 포트 대기'));
+app.listen(3002, () => console.log('3000번 포트 대기'));
