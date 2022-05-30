@@ -2,12 +2,27 @@ const express = require('express');
 const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
-
+const mysql = require('mysql');
 const ejs = require("ejs");
 const { stringify } = require('querystring');
 
 
-
+// mysql 접속 설정
+const conn =  mysql.createConnection({ 
+    host     : 'localhost',
+    port     : '3307',
+    user     : 'root',
+    password : '123456',
+    database : 'ChurchOppa'
+});
+// mysql 접속 여부
+conn.connect(function(err){  
+    if(!err) {  
+        console.log("Database is connected ... \n\n");
+    } else {  
+        console.log("Error connecting database ... \n\n", err);
+    }  
+});
 app.set('views', __dirname + '/assets/html');
 app.set('view engine', 'ejs');
 
@@ -108,4 +123,4 @@ app.use(cors());
 // });
 
 // app.use(express.static('images'));
-app.listen(3002, () => console.log('3002번 포트 대기'));
+app.listen(3000, () => console.log('3000번 포트 대기'));
