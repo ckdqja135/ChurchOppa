@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mysoftwiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        *{margin:0;}
+        html, body{width: 100%; height: 100%;}
+        #error_bigbox{width: 100%; height: 100%;}
+        #error_box{width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;}
+        .error_midBox {width: 1216px; height: auto; min-height: 513px; display: flex; justify-content: center; align-items: center; grid-gap: 147px;}
+        .error_imgBox {width: auto; height: auto; min-width: 586px; min-height: 510px; background-image: url('/pc/image/bg17.png'); background-repeat: no-repeat; background-size: 100%;}
+        .error_textBox {width: auto; height: auto;}
+        .error_Title {margin-bottom: 50px; font-size: 60px; font-weight: 700; color: #404040;}
+        .error_Title2 {display: block; font-size: 20px; font-weight: 500; font-family: 'Roboto', sans-serif; color: #ff6d27;}
+        .error_text {margin-top: -20px; white-space: pre-line; line-height: 30px; font-size: 18px; font-weight: 300; font-family: 'Roboto', sans-serif; color: #404040;}
+
+        @media (max-width: 1200px) {
+            .error_midBox {
+                flex-wrap: wrap;
+            }
+            /* .error_imgBox {
+                width: 100%;
+            }
+            .error_textBox {
+                width: 100%;
+            } */
+        }
+        @media (max-width: 1140px) {
+            .error_Title {
+                margin-bottom: 25px;
+            }
+        }
+        @media (max-width: 630px) {
+            .error_imgBox {
+                width: 90%;
+                height: 100%;
+                min-width: auto;
+            }
+            .error_midBox {
+                grid-gap: 0;
+            }
+        }
+        @media (max-width: 500px) {
+            .error_imgBox {
+                min-height: 450px;
+            }
+            .error_textBox {
+                width: 90%;
+            }
+            .error_Title {
+                font-size: 48px;
+            }
+            .error_text {
+                font-size: 16px;
+                line-height: 25px;
+                white-space: unset;
+                margin-top: 10px;
+            }
+        }
+        @media (max-width: 450px) {
+            .error_imgBox {
+                min-height: 350px;
+            }
+            .error_Title {
+                font-size: 38px;
+            }
+            .error_text {
+                font-size: 14px;
+                line-height: 25px;
+                white-space: unset;
+                margin-top: 10px;
+            }
+        }
+    </style>
+    <div id="error_bigbox">
+        <div id="error_box">
+
+            <div class="error_midBox">
+                <div class="error_imgBox"></div>
+                <div class="error_textBox">
+                    <p class="error_Title">NOT FOUND</p>
+                    <p class="error_Title2">Congratulation!</p> 
+                    <p class="error_text">
+                        You are chosen person few who has managed to 
+                        find our 404 page. Don’t woory. this is not a dead end. 
+                        Just use the navigation at the top to see more pages.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

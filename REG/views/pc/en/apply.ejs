@@ -1,0 +1,1013 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <% include ./layout/head %>
+    <script src="/pc/javascripts/dial_code.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            // dial_code
+            var tgt = $("#dial_code");
+            if (tgt) {  
+            // NATIONS 테이블 데이터 조회          
+                <% for (var i in country) { %>
+                    tgt.append("<option value='" + "<%= country[i].COUNTRY_CODE %>" + "' nations_code='<%= country[i].NATIONS_SEQ %>'>" + "<%= country[i].NAME %>" + " (" + "<%= country[i].COUNTRY_CODE %>" + ")" + "</option>");
+                <% } %>
+
+                get_user_country();
+            }
+            focus_form();
+        });
+
+        function set_pnumber () {
+            $("#pnumber_txt").val($("#dial_code").val());
+            check_call_number();
+        }
+
+        function set_user_country(country) {
+            for(var i in iso3166) {
+                if (iso3166[i][2] == country) {
+                $("#dial_code").val(iso3166[i][3]);
+                $("#pnumber_txt").val(iso3166[i][3]);
+                return;
+                }
+            }
+        }
+
+        function get_user_country() {
+            // ipstack key 교체
+            // var geoip_url = "//api.ipstack.com/check?access_key=f062b9a4076f68fb6e14ccc09ef63f98";
+            // $.getJSON(geoip_url, {}, function(data) {
+            //     if (data && data.country_code) {
+            //         set_user_country(data.country_code);
+            //         return;
+            //     }
+
+            //     // default
+            set_user_country("KR");
+        }
+
+        function focus_form() {
+            $('#proposer').blur(function() {
+                if ($('#proposer').val() == '') {
+                    $('.input_box2 #proposer').parent().addClass('warring');
+                    $("#notice_name").addClass('on');
+                    $('#notice_name .overbalance').hide();
+                    $('#notice_name .not_input').show();
+                } else {
+                    $('.input_box2 #proposer').parent().removeClass('warring');
+                    $("#notice_name").removeClass('on');
+                    $('#notice_name .not_input').hide();
+                }
+
+                if ($('#proposer').val().length >= 90) {
+                    $('.input_box2 #proposer').parent().addClass('warring');
+                    $("#notice_name").addClass('on');
+                    $('#notice_name .overbalance').show();
+                    $('#notice_name .not_input').hide();
+                }
+            });
+
+            $('#email').blur(function() {
+                if ($('#email').val() == '') {
+                    $('.input_box #email').parent().addClass('warring');
+                    $("#notice_email").addClass('on');
+                    $('#notice_email .overbalance').hide();
+                    $('#notice_email .not_input').show();
+                } else {
+                    $('.input_box #email').parent().removeClass('warring');
+                    $("#notice_email").removeClass('on');
+                    $('#notice_email .not_input').hide();
+                }
+
+                if ($('#email').val().length >= 80) {
+                    $('.input_box #email').parent().addClass('warring');
+                    $("#notice_email").addClass('on');
+                    $('#notice_email .overbalance').show();
+                    $('#notice_email .not_input').hide();
+                }
+            });
+
+            $('#call_number').blur(function() {
+                if ($('#call_number').val() == '') {
+                    $('.input_box #call_number').parent().addClass('warring');
+                    $("#notice_call_number").addClass('on');
+                    $('#notice_call_number .overbalance').hide();
+                    $('#notice_call_number .not_input').show();
+                } else {
+                    $('.input_box #call_number').parent().removeClass('warring');
+                    $("#notice_call_number").removeClass('on');
+                    $('#notice_call_number .not_input').hide();
+                }
+
+                if ($('#call_number').val().length >= 12) {
+                    $('.input_box #call_number').parent().addClass('warring');
+                    $("#notice_call_number").addClass('on');
+                    $('#notice_call_number .overbalance').show();
+                    $('#notice_call_number .not_input').hide();
+                }
+            });
+        }
+
+        function check_name() {
+            var cnt = $("#proposer").val().length;
+            $("#proposer").text(cnt);    
+            $("#proposer").bind("keyup",function(){
+                let re = /[~!@\#$%^&*\():><"?\]\-=+_,\.;'`{\[\}]/gi;
+                let temp=$("#proposer").val();
+                if(re.test(temp)){
+                    $("#proposer").val(temp.replace(re,"")); 
+                } 
+            });
+
+
+            $("#proposer").val();
+            if (/[(가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9)]+$/.test($("#proposer").val())) {
+                $("#notice_name").removeClass('on');
+                $('.input_box #proposer').parent().removeClass('warring');
+
+                if (cnt > 90) {
+                    $("#notice_name").addClass('on');
+                    $('#notice_name .overbalance').show();
+                    $('#notice_name .not_input').hide();
+                    $('.input_box #proposer').parent().addClass('warring');
+                } else {
+                    $("#notice_name").removeClass('on');
+                    $('#notice_name .overbalance').hide();
+                    $('.input_box #proposer').parent().removeClass('warring');
+                }
+
+                check_required();
+                return true;
+            } else {
+                // $("#notice_name").addClass('on');
+                // $('.input_box #proposer').parent().addClass('warring');
+                if ($('#proposer').val() == "") {
+                    $("#notice_name").removeClass('on');
+                    $('#notice_name .overbalance').hide();
+                    $('.input_box #proposer').parent().removeClass('warring');
+                }
+                $("#notice_name").removeClass('on');
+                $('.input_box #proposer').parent().removeClass('warring');
+                check_required();
+                return false;
+            }
+        }
+
+        function nameLength(el, max) {
+            if (el.value.length > max) {
+                el.value = el.value.substr(0, max);
+            }
+        }
+
+        //
+        function check_email() {
+            var cnt = $("#email").val().length;
+            $("#email").text(cnt);
+
+            $("#email").bind("keyup",function(){
+                let re = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+                let temp=$("#email").val();
+                if(re.test(temp)){
+                    $("#email").val(temp.replace(re,"")); 
+                } 
+            });
+
+            $("#email").val($("#email").val().trim());
+            if (/[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[@]{1}[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[.]{1}[A-Za-z]+$/.test($("#email").val())) {
+                $("#notice_email").removeClass('on');
+                $('.input_box #email').parent().removeClass('warring');
+
+                if (cnt > 80) {
+                    $("#notice_email").addClass('on');
+                    $('#notice_email .overbalance').show();
+                    $('#notice_email .not_input').hide();
+                    $('.input_box #email').parent().addClass('warring');
+
+                } else {
+                    $("#notice_email").removeClass('on');
+                    $('#notice_email .overbalance').hide();
+                    $('.input_box #email').parent().removeClass('warring');
+                }
+
+                check_required();
+                return true;
+            } else {
+                if ($('#email').val() == "") {
+                    $("#notice_email").removeClass('on');
+                    $('#notice_email .overbalance').hide();
+                    $('.input_box #email').parent().removeClass('warring');
+                }
+                // $("#notice_email").css("visibility", "visible");
+                check_required();
+                return false;
+            }
+        }
+
+        function mailLength(el, max) {
+            if (el.value.length > max) {
+                el.value = el.value.substr(0, max);
+            }
+        }
+
+        function check_call_number() {
+            var cnt = $("#call_number").val().length;
+            $("#call_number").text(cnt);
+
+            $("#call_number").bind("keyup",function(){
+                let re = /[~!@\#$%^&*\()\-=+_,.;']/gi;
+                let temp=$("#call_number").val();
+                if(re.test(temp)){
+                    $("#call_number").val(temp.replace(re,"")); 
+                } 
+            });
+
+            $("#call_number").val($("#call_number").val().trim());
+            $("#pnumber_txt").val($("#pnumber_txt").val().trim());
+
+            if (!/^[0-9]*$/.test($("#call_number").val()) || !/^\+{0,1}[0-9]+\-{0,1}[0-9]+$/.test($("#pnumber_txt").val())) {
+
+                if ($('#call_number').val() == "") {
+                    $("#notice_call_number").removeClass('on');
+                    $('#notice_call_number .overbalance').hide();
+                    $('.input_box #call_number').parent().removeClass('warring');
+                }
+                check_required();
+                return false;
+            } else {
+                $("#notice_call_number").removeClass('on');
+                $('.input_box #call_number').parent().removeClass('warring');
+
+                if (cnt > 12) {
+                    $("#notice_call_number").addClass('on');
+                    $('#notice_call_number .overbalance').show();
+                    $('#notice_call_number .not_input').hide();
+                    $('.input_box #call_number').parent().addClass('warring');
+                } else {
+                    $("#notice_call_number").removeClass('on');
+                    $('#notice_call_number .overbalance').hide();
+                    $('.input_box #call_number').parent().removeClass('warring');
+                }
+
+                check_required();
+                return true;
+            }
+        }
+        function numberLength(el, maxlength) {
+            if(el.value.length > maxlength)  {
+            el.value = el.value.substr(0, maxlength);
+            }
+        }
+        function checkNumber(evt) {
+            var code = evt.which?evt.which:event.keyCode;
+            if(code < 48 || code > 57 || code==38 || code==40){
+                return false;
+            }
+        }
+
+        var resumeFile = {};
+        var careerFile = {};
+        var portfolioFile = {};
+
+        function save_resume_file() {
+            var form = $('#FILE_FORM')[0];
+            var formData = new FormData(form);
+            formData.append("upload_file", $("#upload_resume_file")[0].files[0]);
+            let file_size = $("#upload_resume_file")[0].files[0].size;
+            
+            if ($("#upload_resume_file")[0].files[0].name == "" || file_size > 52428800) {
+                $("#notice_file").addClass('on');
+                $('#notice_file .overbalance').show();
+                $('#notice_file .not_input').hide();
+                // $('.input_box #upload_resume_file').parent().addClass('warring');
+                $('.input_box').find('.chk_file').parent().parent().addClass('warring');
+                // return false;
+            } else {
+                $("#notice_file").removeClass('on');
+                $('#notice_file .overbalance').hide();
+                $('.input_box').find('.chk_file').parent().parent().removeClass('warring');
+                // return true;
+                
+            }
+            
+            $.ajax({
+                url : '/upload/resume',
+                type : "POST",
+                data : formData,
+                processData: false,
+                contentType: false,
+
+                success : function(result) {
+                    resumeFile.destination = result.destination;
+                    resumeFile.originalname = result.originalname;
+                    resumeFile.path = result.path;
+                    resumeFile.mimetype = result.mimetype;
+                    resumeFile.size = result.size;
+                    resumeFile.filename = result.filename;
+                    resumeFile.filepath = $("#upload_resume_file").val();
+                    var ext = resumeFile.originalname.slice((resumeFile.originalname.lastIndexOf(".") - 1) + 2);
+                    resumeFile.ext = ext;
+                    resumeFile.type = "R"
+                },
+                error : function() {
+                    alert("File Upload fail");
+                    $("#upload_resume_file").val("");
+                    $(".resumefake").val("");
+                    $("#notice_file").removeClass('on');
+                    $('#notice_file .overbalance').hide();
+                    $('.input_box').find('.chk_file').parent().parent().removeClass('warring');
+                }
+            });
+        }
+
+        function save_career_file() {
+            var form = $('#FILE_FORM')[0];
+            var formData = new FormData(form);
+            formData.append("upload_file", $("#upload_career_file")[0].files[0]);
+
+            let file_size = $("#upload_career_file")[0].files[0].size;
+            if ($("#upload_career_file")[0].files[0].name != "" && file_size > 52428800) {
+                $("#over_volume").addClass('on');
+                $('#over_volume .overbalance').show();
+                // $('.input_box #upload_resume_file').parent().addClass('warring');
+                $('.input_box').find('#upload_career_file').parent().parent().addClass('warring');
+                // return false;
+            }  else {
+                $("#over_volume").removeClass('on');
+                $('#over_volume .overbalance').hide();
+                $('.input_box').find('#upload_career_file').parent().parent().removeClass('warring');
+                // return true;
+            }
+
+            $.ajax({
+                url : '/upload/career',
+                type : "POST",
+                data : formData,
+                processData: false,
+                contentType: false,
+
+                success : function(result) {
+                    careerFile.destination = result.destination;
+                    careerFile.originalname = result.originalname;
+                    careerFile.path = result.path;
+                    careerFile.mimetype = result.mimetype;
+                    careerFile.size = result.size;
+                    careerFile.filename = result.filename;
+                    careerFile.filepath = $("#upload_career_file").val();
+                    var ext = careerFile.originalname.slice((careerFile.originalname.lastIndexOf(".") - 1) + 2);
+                    careerFile.ext = ext;
+                    careerFile.type = "C"
+                },
+                error : function() {
+                    alert("File Upload fail");
+                    $("#upload_career_file").val("");
+                    $(".careerfake").val("");
+                    $("#over_volume").removeClass('on');
+                    $('#over_volume_C .overvolume').hide();
+                    $('.input_box').find('#upload_career_file').parent().parent().removeClass('warring');
+                }
+            });
+        }
+
+
+        function save_portfolio_file() {
+            var form = $('#FILE_FORM')[0];
+            var formData = new FormData(form);
+            formData.append("upload_file", $("#upload_portfolio_file")[0].files[0]);
+            
+            let file_size = $("#upload_portfolio_file")[0].files[0].size;
+
+            if (file_size > 52428800) {
+                $("#over_volume_P").addClass('on');
+                $('#over_volume_P .overvolume').show();
+                // $('.input_box #upload_resume_file').parent().addClass('warring');
+                $('.input_box').find('#upload_portfolio_file').parent().parent().addClass('warring');
+            } else {
+                $("#over_volume_P").removeClass('on');
+                $('#over_volume_P .overvolume').hide();
+                $('.input_box').find('#upload_portfolio_file').parent().parent().removeClass('warring');
+            }
+
+            $.ajax({
+                url : '/upload/portfolio',
+                type : "POST",
+                data : formData,
+                processData: false,
+                contentType: false,
+
+                success : function(result) {
+                    portfolioFile.destination = result.destination;
+                    portfolioFile.originalname = result.originalname;
+                    portfolioFile.path = result.path;
+                    portfolioFile.mimetype = result.mimetype;
+                    portfolioFile.size = result.size;
+                    portfolioFile.filename = result.filename;
+                    portfolioFile.filepath = $("#upload_portfolio_file").val();
+                    var ext = portfolioFile.originalname.slice((portfolioFile.originalname.lastIndexOf(".") - 1) + 2);
+                    portfolioFile.ext = ext;
+                    portfolioFile.type = "P"
+                },
+                error : function() {
+                    alert("File Upload fail");
+                    $("#upload_portfolio_file").val("");
+                    $(".portfoliofake").val("");
+                    $("#over_volume_P").removeClass('on');
+                    $('#over_volume_P .overvolume').hide();
+                    $('.input_box').find('#upload_portfolio_file').parent().parent().removeClass('warring');
+                }
+            });
+        }
+
+
+        function check_resumeFile() {
+            if (resumeFile.size < 52428800 ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function check_careerFile() {
+            if (careerFile.filename == undefined || careerFile.filename != undefined && careerFile.size < 52428800) {
+                return true;
+            } else {
+                return false;
+            } 
+        }
+
+        function check_portfolioFile() {
+            if (portfolioFile.filename == undefined || portfolioFile.filename != undefined && portfolioFile.size < 52428800) {
+                return true;
+            } else {
+                return false;
+            } 
+        }
+
+
+        function check_link1() {
+            var cnt = $("#link_1").val().length;
+            $("#link_1").text(cnt);    
+
+
+            $("#link_1").val($("#link_1").val().trim());
+            if (!/(http|https):\/\/((\w+)[.])+(asia|biz|cc|cn|com|de|eu|in|info|jobs|jp|kr|mobi|mx|name|net|nz|org|travel|tv|tw|uk|us)(\/(\w*))*$/.test($(".input_box #link_1").val())) {
+                $('#notice_link').removeClass('on');
+                $(".input_box #link_1").parent().removeClass('warring');
+
+                if (cnt >= 255) {
+                    $('#notice_link').addClass('on');
+                    $(".input_box #link_1").parent().addClass('warring');
+                } else {
+                    $('#notice_link').removeClass('on');
+                    $(".input_box #link_1").parent().removeClass('warring');
+                }
+                check_required();
+                return true;
+            } else {
+                if ($('#link_1').val() == "") {
+                    $('#notice_link').removeClass('on');
+                    $(".input_box #link_1").parent().removeClass('warring');
+                }
+
+                check_required();
+                return false;
+            }
+        }
+
+        function check_link2() {
+            var cnt = $("#link_2").val().length;
+            $("#link_2").text(cnt);    
+
+
+            $("#link_2").val($("#link_2").val().trim());
+            if (!/(http|https):\/\/((\w+)[.])+(asia|biz|cc|cn|com|de|eu|in|info|jobs|jp|kr|mobi|mx|name|net|nz|org|travel|tv|tw|uk|us)(\/(\w*))*$/.test($(".input_box #link_2").val())) {
+                $('.microcopy.link2').removeClass('on');
+                $(".input_box #link_2").parent().removeClass('warring');
+
+                if (cnt >= 255) {
+                    $('.microcopy.link_2').addClass('on');
+                    $(".input_box #link_2").parent().addClass('warring');
+                } else {
+                    $('.microcopy.link_2').removeClass('on');
+                    $(".input_box #link_2").parent().removeClass('warring');
+                }
+
+                check_required();
+                return true;
+            } else {
+
+                if ($('#link_2').val() == "") {
+                    $('#notice_link').removeClass('on');
+                    $(".input_box #link_2").parent().removeClass('warring');
+                }
+                
+                check_required();
+                return false;
+            }
+        }
+
+        function check_link3() {
+            var cnt = $("#link_3").val().length;
+            $("#link_3").text(cnt);    
+
+
+            $("#link_3").val($("#link_3").val().trim());
+            if (!/(http|https):\/\/((\w+)[.])+(asia|biz|cc|cn|com|de|eu|in|info|jobs|jp|kr|mobi|mx|name|net|nz|org|travel|tv|tw|uk|us)(\/(\w*))*$/.test($(".input_box #link_3").val())) {
+                $('.microcopy.link_3').removeClass('on');
+                $(".input_box #link_3").parent().removeClass('warring');
+
+                if (cnt >= 255) {
+                    $('.microcopy.link_3').addClass('on');
+                    $(".input_box #link_3").parent().addClass('warring');
+                } else {
+                    $('.microcopy.link_3').removeClass('on');
+                    $(".input_box #link_3").parent().removeClass('warring');
+                }
+
+                check_required();
+                return true;
+            } else {
+                if ($('#link_3').val() == "") {
+                    $('#notice_link').removeClass('on');
+                    $(".input_box #link_3").parent().removeClass('warring');
+                }
+
+                check_required();
+                return false;
+            }
+        }
+
+        function linkLength(el, maxlength) {
+            if(el.value.length > maxlength)  {
+            el.value 
+                = el.value.substr(0, maxlength);
+            }
+        }
+
+        function isEmptyArr(arr)  {
+            if(Array.isArray(arr) && arr.length === 0)  {
+                return true;
+            }
+            
+            return false;
+        }
+
+        function check_required () {
+            if (    
+                ($("#proposer").val().trim() != "")
+                && (/^[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[@]{1}[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[.]{1}[A-Za-z]+$/.test($("#email").val()))
+                && ($("#pnumber_txt").val().trim() != "")
+                && ($("#upload_resume_file").val().trim() != "") && 
+                ($("#pnumber_txt").val().trim().length <= 12) &&
+                ($("#proposer").val().trim().length <= 90) &&
+                ($("#email").val().trim().length <= 80) &&
+                ($("#link_1").val().trim().length <= 255) &&
+                ($("#link_2").val().trim().length <= 255) &&
+                ($("#link_3").val().trim().length <= 255) &&
+                // resumeFile.size < 50000000 && 
+                // && ($("#link_1").val().trim() != "")
+                // && ($("#link_2").val().trim() != "")
+                // && ($("#link_3").val().trim() != "")
+                $("#privacy_chk").is(":checked")
+                ) 
+            {
+            $("#send_btn").attr('disabled', false);
+
+            // console.log('2');
+            return true;
+            } else {
+            // $("#send_btn").attr('disabled', true);
+
+            // console.log('3', resumeFile)
+            return false;
+            }
+          
+            // portfolioFile = {};
+        }
+
+        function send_application () {
+            if ($("#proposer").val().trim() != "") {
+                var cnt = $("#proposer").val().length;
+                $("#proposer").text(cnt);
+
+                $('.input_box #proposer').parent().removeClass('warring'); 
+                $('#notice_name').removeClass('on');
+
+                if (cnt >= 90) {
+                    $("#notice_name").addClass('on');
+                    $('#notice_name .overbalance').show();
+                    $('#notice_name .not_input').hide();
+                    $('.input_box #proposer').parent().addClass('warring');
+                } else {
+                    $("#notice_name").removeClass('on');
+                    $('#notice_name .overbalance').hide();
+                    $('.input_box #proposer').parent().removeClass('warring');
+                }
+                
+            } else {
+                $('.input_box #proposer').parent().addClass('warring');
+                $('#notice_name').addClass('on');
+                $('#notice_name').find('.overbalance').hide();
+                $('#notice_name .not_input').show();
+            }
+
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($("#email").val())) {
+                var cnt = $("#email").val().length;
+                $("#email").text(cnt);
+
+
+                $('.input_box #email').parent().removeClass('warring');
+                $('#notice_email').removeClass('on');
+
+
+                if (cnt >= 80) {
+                    $("#notice_email").addClass('on');
+                    $('#notice_email .overbalance').show();
+                    $('#notice_email .not_input').hide();
+                    $('.input_box #email').parent().addClass('warring');
+
+                } else {
+                    $("#notice_email").removeClass('on');
+                    $('#notice_email .overbalance').hide();
+                    $('.input_box #email').parent().removeClass('warring');
+                }
+
+            } else {
+                $('.input_box #email').parent().addClass('warring');
+                $('#notice_email').addClass('on');
+                $('#notice_email').find('.overbalance').hide();
+                $('#notice_email .not_input').show();
+            }
+
+            if ($("#call_number").val().trim() != "") {
+                var cnt = $("#call_number").val().length;
+                $("#call_number").text(cnt);
+
+                $('.input_box #call_number').parent().removeClass('warring');
+                $('#notice_call_number').removeClass('on');
+                
+                if (cnt >= 13) {
+                    $("#notice_call_number").addClass('on');
+                    $('#notice_call_number .overbalance').show();
+                    $('#notice_call_number .not_input').hide();
+                    $('.input_box #call_number').parent().addClass('warring');
+
+                } else {
+                    $("#notice_call_number").removeClass('on');
+                    $('#notice_call_number .overbalance').hide();
+                    $('.input_box #call_number').parent().removeClass('warring');
+                }
+
+            } else {
+                $('.input_box #call_number').parent().addClass('warring');
+                $('#notice_call_number').addClass('on');
+                $('#notice_call_number').find('.overbalance').hide();
+                $('#notice_call_number .not_input').show();
+            }
+
+            // Submit 버튼 클릭 시 사라져서 추가.
+            // 용량 제한
+            if ($("#upload_resume_file").val().trim() != ""  && resumeFile.size > 52428800) {
+                $('.apply_info_box').each(function() {
+                    $(this).find('#notice_file').addClass('on');
+                    $(this).find('.chk_file').parent().parent().addClass('warring');
+                });
+
+                $("#notice_file").addClass('on');
+                $('#notice_file .overbalance').show();
+                $('#notice_file .not_input').hide();
+                $('.input_box').find('.chk_file').parent().parent().addClass('warring');
+            // 필수 파일 올리지 않음.
+            } else if($("#upload_resume_file").val().trim() == "") {
+                // $("#notice_file").removeClass('on');
+                // $('.input_box').find('.chk_file').parent().parent().removeClass('warring');
+                // $('.input_box #upload_file').parent().parent().addClass('warring');
+                // $('#notice_file').addClass('on');
+                $('#notice_file .overbalance').hide();
+                $('#notice_file .not_input').show();
+                $('.apply_info_box').each(function() {
+                    $(this).find('#notice_file').addClass('on');
+                    $(this).find('.chk_file').parent().parent().addClass('warring');
+                });
+            // 필수 파일 올림
+            } else {
+                $("#notice_file").removeClass('on');
+                $('#notice_file .overbalance').hide();
+                $('#notice_file .not_input').hide();
+                $('.input_box').find('.chk_file').parent().parent().removeClass('warring');
+            }
+
+            // Submit 버튼 클릭 시 사라져서 추가.
+            if (careerFile.size > 52428800) {
+                $("#over_volume_P").addClass('on');
+                $('#over_volume_P .overvolume').show();
+                // $('.input_box #upload_resume_file').parent().addClass('warring');
+                $('.input_box').find('#upload_portfolio_file').parent().parent().addClass('warring');
+            } else {
+                $("#over_volume_P").removeClass('on');
+                $('#over_volume_P .overvolume').hide();
+                $('.input_box').find('#upload_portfolio_file').parent().parent().removeClass('warring');
+            }
+
+            // Submit 버튼 클릭 시 사라져서 추가.
+            if (portfolioFile.size > 52428800) {
+                $("#over_volume_P").addClass('on');
+                $('#over_volume_P .overvolume').show();
+                // $('.input_box #upload_resume_file').parent().addClass('warring');
+                $('.input_box').find('#upload_portfolio_file').parent().parent().addClass('warring');
+                
+            } else {
+                $("#over_volume_P").removeClass('on');
+                $('#over_volume_P .overvolume').hide();
+                $('.input_box').find('#upload_portfolio_file').parent().parent().removeClass('warring');
+            }
+
+            if ($("#privacy_chk").is(":checked") == false) {
+                $("#privacy_chk").focus();
+            }
+
+            if (check_required() && check_resumeFile() && check_careerFile() && check_portfolioFile()) {
+                post_apply();
+            } else {
+                console.log("error\n", "reqired: ", check_required(), "resumeFile: ", check_resumeFile(), 
+                            "careerFile: ",  check_careerFile(), "portfolioFile: ",  check_portfolioFile());
+            }
+        }
+
+        var idx;
+
+        function post_apply() {
+            $.ajax({
+                url : '/ajax/application',
+                traditional: true,
+                type : "POST",
+                //dataType: "json",
+                data : {
+                    jobs_seq: document.referrer.split("/")[5],
+                    name:$("#proposer").val(), 
+                    email:$("#email").val(),
+                    phone:$("#pnumber_txt").val() + "-" + $("#call_number").val(),
+                    nations_seq:$("#dial_code option:selected").attr("nations_code"),                  
+                    link1:$("#link_1").val(), 
+                    link2:$("#link_2").val(), 
+                    link3:$("#link_3").val(),
+                    files:[JSON.stringify(resumeFile),JSON.stringify(careerFile),JSON.stringify(portfolioFile)],
+                    /*resumeFile: resumeFile, 
+                    careerFile: careerFile, 
+                    portfolioFile: portfolioFile,
+                    */
+                    reg_time: new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, ''),
+                },
+                success : function(result) {
+                    if(result){
+                        if ($('.popup_layout').addClass('on')) {
+                            $("#proposer").val("");
+                            $("#email").val("");
+                            $("#dial_code option:eq(0)").prop("selected", true); 
+                            $("#call_number").val("");
+                            // document.getElementById('upload_resume_file').reset();
+                            // $("#upload_resume_file").val("");
+                            // $("#upload_career_file").val("");
+                            // $("#upload_portfolio_file").val("");
+                            
+                            $("#link_1").val("");
+                            $("#link_2").val("");
+                            $("#link_3").val("");
+                            $("#privacy_chk").prop("checked", false);
+                            check_required();
+
+                            $('.confirm_btn').click(function() {
+                                $('.popup_layout').removeClass('on');
+                                location.href = '/en/openVacancies';
+                            });
+                        }
+                    }else{
+                        $('.popup_layout').addClass('on');
+                        $('.fail').addClass('on');
+                        $('.success').addClass('off');
+                        $('.confirm_btn').click(function() {
+                            $('.popup_layout').removeClass('on');
+                            $('.fail').removeClass('on');
+                            $('.success').removeClass('off');
+                        });
+                    }
+                },
+                error : function(request,status,error) {
+                    $('.popup_layout').addClass('on');
+                    $('.fail').addClass('on');
+                    $('.success').addClass('off');
+                    $('.confirm_btn').click(function() {
+                        $('.popup_layout').removeClass('on');
+                        $('.fail').removeClass('on');
+                        $('.success').removeClass('off');
+                    });
+                    console.log(request+"\n",status,"\n",error, "\n")
+                }
+            });
+        }
+
+    </script>
+</head>
+  <body>
+    <% include ./layout/header %>
+    <div class="sub_header">
+        <div class="center_box">
+            <p class="sub_page_title">Fill out a job application</p>
+            <p class="sub_page_text">Service Planning</p>
+        </div>
+    </div>
+
+    <div class="one_container">
+        <section class="sec_1">
+            <div class="center_box apply_box">
+                <div class="apply_list_box">
+                    <p class="apply_title">Personal information</p>
+                    <div class="apply_form">
+                        <div class="apply_info_box">
+                            <p class="contact_title">Name</p>
+                            <div class="input_box">
+                                <input type="text" class="contact_input" maxlength="91" id="proposer"  oninput="nameLength(this, 91)" onkeyup="check_name();">
+                            </div>
+                            <div class="microcopy" id="notice_name">
+                                <span class="not_input chk_microcopy">Please check your Name</span>
+                                <span class="overbalance chk_microcopy">You can enter up to 90 characters.</span>
+                            </div>
+                        </div>
+                        <div class="apply_info_box">
+                            <p class="contact_title">E-mail</p>
+                            <div class="input_box">
+                                <input type="email" class="contact_input" maxlength="81" id="email" oninput="mailLength(this, 81)" onkeyup="check_email()" title="">
+                            </div>
+                            <div class="microcopy" id="notice_email">
+                                <span class="not_input chk_microcopy">Please check your Email</span>
+                                <span class="overbalance chk_microcopy">You can enter 6 to 80 characters.</span>
+                            </div>
+                        </div>
+                        <div class="apply_info_box">
+                            <p class="contact_title">Phone number</p>
+                            <div class="phone_box">
+                                <div class="dial_box">
+                                    <select id="dial_code" class="selectBox normal_select apply_select" onchange="set_pnumber();">
+                                        <option value="code">select code</option>
+                                    </select>
+                                    <input type="text" name="pnumber_txt" id="pnumber_txt" class="dial_viewBox2" onkeyup="check_call_number();" maxlength="8" readonly>
+                                </div>
+
+                                <div class="input_box">
+                                    <input type="number" id="call_number" class="contact_input" id="phone" oninput="numberLength(this, 13)" onkeyup="check_call_number();" onkeypress='return checkNumber(event)' autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="microcopy" id="notice_call_number">
+                                <span class="not_input chk_microcopy">Please check your Phone number</span>
+                                <span class="overbalance chk_microcopy">You can enter up to 12 numbers.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="apply_list_box">
+                    <p class="apply_title">
+                        File Upload
+                        <span class="apply_sub_text">
+                            Files can be uploaded up to 50MB.
+                        </span>
+                        <span class="apply_sub_text">
+                            Each document is a free form and please attach it in one file.
+                        </span>
+                        <span class="apply_sub_text">
+                            Please attach your career description and portfolio (if applicable)
+                        </span>
+                    </p>
+                    
+                    <form id="FILE_FORM" method="post" enctype="multipart/form-data" action=""></form>
+                    <div class="apply_form">
+                        <div class="apply_info_box">
+                            <p class="contact_title">Resume</p>
+                            <div class="input_box">
+                                
+                                <label for="upload_file" class="file_label">
+                                    <input type="file" class="file_real chk_file" id="upload_resume_file"  onchange="save_resume_file()" title="">
+                                    <input type="text" class="file_fake resumefake" placeholder="Attach the resume" tabindex="-1" readonly>
+                                </label>
+                                
+                            </div>
+                            <div class="microcopy" id="notice_file">
+                                <span class="not_input chk_microcopy">Please upload the file.</span>
+                                <span class="overbalance chk_microcopy">Your Over 50MB.</span>
+                            </div>
+                        </div>
+                        <div class="apply_info_box">
+                            <p class="contact_title">Career description</p>
+                            <div class="input_box">
+                                <label for="upload_file" class="file_label">
+                                    <input type="file" class="file_real" id="upload_career_file" onchange="save_career_file()" title="">
+                                    <input type="text" class="file_fake careerfake" placeholder="Attach the career description" tabindex="-1" readonly>
+                                </label>
+                            </div>
+                            <div class="microcopy" id="over_volume">
+                                <span class="overbalance chk_microcopy">Your Over 50MB.</span>
+                            </div>
+                        </div>
+                        <div class="apply_info_box">
+                            <p class="contact_title">Portfolio</p>
+                            <div class="input_box">
+                                <label for="upload_file" class="file_label">
+                                    <input type="file" class="file_real" id="upload_portfolio_file"  onchange="save_portfolio_file()" title="">
+                                    <input type="text" class="file_fake portfoliofake" placeholder="Attach the portfolio" tabindex="-1" readonly>
+                                </label>
+                            </div>
+                            <div class="microcopy" id="over_volume_P">
+                                <span class="overvolume chk_microcopy">Your Over 50MB.</span>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+                <div class="apply_list_box">
+                    <p class="apply_title">
+                        Link
+                        <span class="apply_sub_text">
+                            Please leave a link to reveal tourself (Blog, Notion, Git Hub, Sauce Tree, Figma etc.)
+                        </span>
+                        <span class="apply_sub_text">
+                            You can enter up to three links in total, one by one.
+                        </span>
+                    </p>
+                    <div class="apply_form" id="link_form">
+                        <div class="apply_info_box">
+                            <p class="contact_title">Link 1</p>
+                            <div class="input_box">
+                                <input type="url" class="defalut_input link_1" id="link_1" maxlength="256" placeholder="https://" onkeyup="check_link1()" oninput="linkLength(this, 256)">
+                            </div>
+                            <div class="microcopy link_1" id="notice_link">
+                                <span class="not_input chk_microcopy">You can enter up to 255 characters.</span>
+                            </div>
+                        </div>
+                        <div class="apply_info_box">
+                            <p class="contact_title">Link 2</p>
+                            <div class="input_box">
+                                <input type="url" class="defalut_input link_2" id="link_2" maxlength="256" placeholder="https://" onkeyup="check_link2()" oninput="linkLength(this, 256)">
+                            </div>
+                            <div class="microcopy link_2" id="notice_link">
+                                <span class="not_input chk_microcopy">You can enter up to 255 characters.</span>
+                            </div>
+                        </div>
+                        <div class="apply_info_box">
+                            <p class="contact_title">Link 3</p>
+                            <div class="input_box">
+                                <input type="url" class="defalut_input link_3" id="link_3" maxlength="256" placeholder="https://" onkeyup="check_link3()" oninput="linkLength(this, 256)">
+                            </div>
+                            <div class="microcopy link_3" id="notice_link">
+                                <span class="not_input chk_microcopy">You can enter up to 255 characters.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="apply_footer">
+                    <div class="flex_box privacy_flex">
+                        <div class="privacy_box">
+                            <input type="checkbox" class="accept_chk" id="privacy_chk">
+                            <label for="privacy_chk">I accept Privacy policy.</label>
+                        </div>
+                        <div class="privacy_go">
+                            <a href="/en/policy" target="_blank" class="more_link">More</a>
+                        </div>
+                    </div>
+
+                    <div class="apply_ok_box">
+                        <button type="button" class="submit_btn" onclick="send_application();">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="popup_layout">
+        <div class="popup_mask">
+            <div class="popup_box">
+                <div class="popup_head">
+                    <p class="popup_title">
+                        <span class="success">Success!</span>
+                        <span class="fail">Fail</span>
+                    </p>
+                </div>
+                <div class="popup_body">
+                    <p class="popup_content">
+                        <span class="success">Your application for employment has been completed.</span>
+                        <span class="fail">Job application failed. Please try again later.</span>
+                    </p>
+                </div>
+                <div class="popup_footer">
+                    <div class="confirm_btn">
+                        Confirm
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% include ./layout/footer %>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <% include ./layout/head %>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        get_terms_list();
+      });
+
+      // stored date 호출
+      function get_terms_list() {
+        $.ajax({
+          url : '/ajax/terms',
+          type : "POST",
+          data : {
+            type: "PR",
+            lang: "KR"
+          },
+          success : function(result) {
+            $("#terms").empty();
+
+            for (var i = 0; i < result.length; i++) {
+              var t = "<option value='" + result[i].terms_seq + "'>" + (new Date(result[i].reg_dtime * 1000).format("Y-M-D h:m:s")) + "</option>";
+              $("#terms").append(t);
+            }
+            get_terms_contents(result[0].terms_seq);
+          },
+          error : function() {
+            $("#terms").empty();
+              alert('조회 중 오류가 발생했습니다.');
+          }
+        });
+      }
+
+      // 콘텐츠 불러오기
+      function get_terms_contents(val) {
+        $.ajax({
+          url : '/ajax/terms_contents',
+          type : "POST",
+          data : {
+            terms_seq : val,
+            type: "PR",
+            lang: "KR"
+          },
+          success : function(result) {
+            // 전달받은 val(terms_seq)의 인덱스 찾기            
+            var result_index = result.findIndex(function(obj) {
+                    return obj.terms_seq == val;
+                });
+
+            $("#pc_contents").html(result[result_index].contents);
+          },
+          error : function() {
+            $("#terms").empty();
+              alert('조회 중 오류가 발생했습니다.');
+          }
+        });
+      }
+      
+    </script>
+  </head>
+  <body>
+    <% include ./layout/header %>
+    <div class="sub_header">
+        <div class="center_box2 policy_header">
+            <div class="policy_title_box">
+                <p class="sub_page_title">Privacy Policy</p>
+                <p class="sub_page_text">information processing policy</p>
+            </div>
+            <div class="policy_selectbox">
+                <div class="selectBox normal_select">
+                  <form action="#">
+                    <select name="" id="terms" class="data_sel policy_select" onchange="get_terms_contents(this.value);" onload="get_terms_contents(this.value);">
+                    </select>
+                  </form>
+                    <!-- <p class="select_value"></p>
+
+                    <ul class="selectOptions select_list">
+                        <li class="select_item" value="type_0"><p>Updated March 30, 2022</p></li>
+                        <li class="select_item" value="type_1"><p>Updated January 12, 2022</p></li>
+                        <li class="select_item" value="type_2"><p>Updated October 15, 2022</p></li>
+                        <li class="select_item" value="type_3"><p>Updated August 07, 2022</p></li>
+                    </ul> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="one_container">
+        <section class="sec_1">
+            <div class="center_box2 policy_box">
+                <div class="policy_text_box" id="pc_contents">
+                  <%- contents %>
+                </div>
+                <a href="/en/policy" class="policy_change softwiz_color">영문으로 보기</a>
+            </div>
+        </section>
+    </div>
+
+    <% include ./layout/footer %>
+  </body>
+</html>
