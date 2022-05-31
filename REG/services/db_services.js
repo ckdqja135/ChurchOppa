@@ -5,25 +5,6 @@ class db_services {
         this.dbc = this.db_connector.init(); // db connection
     }
 
-    exec_query (query, a, b) {
-        this.dbc.getConnection(function (err, conn) {
-            if (err) {
-                console.log("db connection poll error -- start");
-                console.log(err);
-                console.log("db connection poll error -- end");
-                return null;
-            }
-
-            if (!b && typeof a === 'function') {
-                conn.query(query, a);
-                console.log("query", query)
-            } else {
-                conn.query(query, a, b);
-            }
-            conn.release();
-        });
-    }
-
     async post_apply(out, params) {
         let JOBS_APPLICATION_SQL = "INSERT INTO JOBS_APPLICATION (JOBS_SEQ, CONTENTS_LANG, EMAIL, PHONE, LINK1, LINK2, LINK3, CONFIRM_STATUS, REG_DTIME) VALUES (?, 'en', ?, ?, ?, ?, ?,'N',?);";
         let JOBS_APPLICATION_FILES_SQL = "INSERT INTO JOBS_APPLICATION_FILES (JOBS_APPLICATION_SEQ, TYPE, FILE_PATH, ORIGIN_NAME, FILE_NAME, FILE_SIZE, EXT, MIME_TYPE ) VALUES  (?, ?, ?, ?, ?, ?, ?, ?);";
@@ -104,21 +85,28 @@ class db_services {
     }
 
     // 교회 검색
-    search_church (out, name) {
-        let sql = "select * from churchinfo where churchname = "+name+"";
+    async search_church (out, name) {
+        let sql = "select * from churchinfo where churchname = '"+name+"'";
         console.log("sql", sql)
         
-        this.exec_query(sql, 
-            function (error, result, fields) {
-                console.log("hello", result)
-                if (error) {
-                    out(error, []);
-                    return;
-                }
-                out(error, result);
-                console.log("result", result)
-            }
-        );
+        let conn =  await this.dbc.getConnection();
+        let result = null;
+        let error = null;
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
+            let select_church = await conn.query(sql);
+            await conn.commit(); // 커밋
+            result = select_church[0];
+            out(error, result);
+        }catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
     }
 }
 
