@@ -39,12 +39,11 @@
 
     <script>
         $(document).ready(function() {
-			search_church();
-            var church = {};
-            var search = '<%=church.name%>';
-            var lateX = search.ChurchLateX; 
-            var lateY = search.ChurchLateY;
-            console.log("church", church)
+            // 검색된 교회 정보값 가져오기.
+            let church_result = search_church();
+            var lateX = church_result[0].ChurchLateX; 
+            var lateY = church_result[0].ChurchLateY;
+
             var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
             mapOption = { 
                 center: new kakao.maps.LatLng(lateX, lateY), // 지도의 중심좌표
@@ -70,24 +69,23 @@
                 position: new kakao.maps.LatLng(lateX, lateY)
             });
 
-
             // 커스텀 오버레이에 표시할 컨텐츠 입니다
             // 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
             // 별도의 이벤트 메소드를 제공하지 않습니다 
             var content = '<div class="wrap">' + 
                 '    <div class="info">' + 
                 '        <div class="title">' + 
-                '            <%=church.ChurchName%>' + 
+                            `${church_result[0].ChurchName}` + 
                 '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
                 '        </div>' + 
                 '        <div class="body">' + 
                 '            <div class="img">' +
-                '                <img src="<%=church.ChurchMapIMG%>" width="73" height="70">' +
+                `                <img src="${church_result[0].ChurchMapIMG}" width="73" height="70">` +
                 '           </div>' + 
                 '            <div class="desc">' + 
                 '                <div class="ellipsis"><%=church.ChurchAddr%></div>' + 
-                '                <div class="jibun ellipsis"><%=church.ChurchJibun%></div>' + 
-                '                <div><a href="<%=church.ChurchHome%>" target="_blank" class="link">홈페이지</a></div>' + 
+                `                <div class="jibun ellipsis">${church_result[0].ChurchJibun}</div>` + 
+                `                <div><a href="${church_result[0].ChurchHome}" target="_blank" class="link">홈페이지</a></div>` + 
                 '            </div>' + 
                 '        </div>' + 
                 '    </div>' +    
@@ -110,40 +108,53 @@
                 overlay.setMap(null);
             }
         });
+
         var search = '<%=church.name%>';
-        
-            // 검색하기.
-            function search_church() {
-                console.log("aaa", search)
-                $.ajax({
+
+        // 검색하기.
+        function search_church() {
+            var church_data = "";
+            $.ajax({
                 url : '/ajax/search',
                 type : "POST",
+                async: false, 
                 data : {
                     church_name : search
                 },
                 success : function(result) {
+                    let church_info = $(".church_info");
                     if (result) {
-                        for(let i = 0; i < result.length; i++) {
-                            console.log(result)
-                            church = result[i];
-                        }
+                        // data 전달
+                        church_data = result;
+
+                        let str = "";
+                        str = ` <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : ${result[0].ChurchLocate}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : ${result[0].ChurchReli}</button>
+                                <div class="col mb-2">
+                                </div>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">규모 : ${result[0].ChurchScales}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">담임목사 : ${result[0].ChurchPastor}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">전화번호 : ${result[0].ChurchTel}</button>
+                                <br />
+                                <br />
+                                <br />
+                                <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
+
+                        church_info.append(str)
                     } else {
-                        
+                    
                     }
                 },
                 error : function(request,status,error) {
                     console.log(request+"\n",status,"\n",error, "\n")
                 }
-                });
-            }
-
-        
-
+            });
+            return church_data;
+        }
     </script>
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="/">교회오빠</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -191,18 +202,8 @@
                 </div>
                 <!-- 좌측 컨텐츠 -->
                 <h4>교회 정보</h4>
-                <div class="mt-4">
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : </button>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : </button>
-                    <div class="col mb-2">
-                    </div>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">규모 : </button>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">담임목사 : </button>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">전화번호 : </button>
-                    <br />
-                    <br />
-                    <br />
-                    <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();">교회 홈페이지</button>
+                <div class="church_info mt-4">
+
                 </div>
                 <div class="mt-4">
                 </div>

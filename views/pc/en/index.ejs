@@ -1,0 +1,1449 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <% include ./layout/head %>
+    <script src="/pc/javascripts/dial_code.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+          // dial_code
+          var tgt = $("#dial_code");
+          if (tgt) {  
+            // NATIONS 테이블 데이터 조회          
+            <% for (var i in country) { %>
+              tgt.append("<option value='" + "<%= country[i].COUNTRY_CODE %>" + "' nations_code='<%= country[i].NATIONS_SEQ %>'>" + "<%= country[i].NAME %>" + " (" + "<%= country[i].COUNTRY_CODE %>" + ")" + "</option>");
+            <% } %>;
+
+            get_user_country();
+          }
+
+          placeholder_clik();
+          dial_click();
+          focus_form();
+      });
+
+      function set_pnumber () {
+        // $("#dial_code").val()
+        $("#pnumber_txt").val($("#dial_code").val());
+        // $("#dial_code").val();
+        check_call_number();
+      }
+
+      function set_user_country(country) {
+          for(var i in iso3166) {
+            if (iso3166[i][2] == country) {
+              $("#dial_code").val(iso3166[i][3]);
+              $("#pnumber_txt").val(iso3166[i][3]);
+              return;
+            }
+          }
+      }
+
+      function get_user_country() {
+        // ipstack key 교체
+        // var geoip_url =  "//api.ipstack.com/check?access_key=f062b9a4076f68fb6e14ccc09ef63f98";
+        // $.getJSON(geoip_url, {}, function(data) {
+        //   if (data && data.country_code) {
+        //     set_user_country(data.country_code);
+        //     return;
+        //   }
+
+        //   // default
+        set_user_country("KR");
+      }
+
+      function focus_form() {
+        $('#proposer').blur(function() {
+            if ($('#proposer').val() == '') {
+              $('.input_box2 #proposer').parent().addClass('warring');
+              $("#notice_name").addClass('on');
+              $('#notice_name .overbalance').hide();
+              $('#notice_name .not_input').show();
+            } else {
+              $('.input_box2 #proposer').parent().removeClass('warring');
+              $("#notice_name").removeClass('on');
+              $('#notice_name .not_input').hide();
+            }
+
+            if ($('#proposer').val().length >= 90) {
+              $('.input_box2 #proposer').parent().addClass('warring');
+              $("#notice_name").addClass('on');
+              $('#notice_name .overbalance').show();
+              $('#notice_name .not_input').hide();
+            }
+        });
+
+        $('#email').blur(function() {
+            if ($('#email').val() == '') {
+              $('.input_box2 #email').parent().addClass('warring');
+              $("#notice_email").addClass('on');
+              $('#notice_email .overbalance').hide();
+              $('#notice_email .not_input').show();
+            } else {
+              $('.input_box2 #email').parent().removeClass('warring');
+              $("#notice_email").removeClass('on');
+              $('#notice_email .not_input').hide();
+            }
+
+            if ($('#email').val().length >= 80) {
+              $('.input_box2 #email').parent().addClass('warring');
+              $("#notice_email").addClass('on');
+              $('#notice_email .overbalance').show();
+              $('#notice_email .not_input').hide();
+            }
+        });
+
+        $('#call_number').blur(function() {
+            if ($('#call_number').val() == '') {
+              $('.input_box2 #call_number').parent().addClass('warring');
+              $("#notice_call_number").addClass('on');
+              $('#notice_call_number .overbalance').hide();
+              $('#notice_call_number .not_input').show();
+            } else {
+              $('.input_box2 #call_number').parent().removeClass('warring');
+              $("#notice_call_number").removeClass('on');
+              $('#notice_call_number .not_input').hide();
+            }
+
+            if ($('#call_number').val().length >= 12) {
+              $('.input_box2 #call_number').parent().addClass('warring');
+              $("#notice_call_number").addClass('on');
+              $('#notice_call_number .overbalance').show();
+              $('#notice_call_number .not_input').hide();
+            }
+        });
+
+        $('#summernote').blur(function() {
+            if ($('#call_number').val() == '') {
+              $("#notice_content").addClass('on');
+              $('#notice_content .overbalance').hide();
+              $('#notice_content .not_input').show();
+              $('.contact_area').addClass('warring');
+            } else {
+              $("#notice_content").removeClass('on');
+              $('#notice_content .not_input').hide();
+              $('.contact_area').removeClass('warring');
+            }
+
+            if ($('#summernote').val().length >= 500) {
+              $('.input_box2 #summernote').parent().addClass('warring');
+              $("#notice_content").addClass('on');
+              $('#notice_content .overbalance').show();
+              $('#notice_content .not_input').hide();
+            }
+        });
+      }
+
+
+      function check_name() {
+        var cnt = $("#proposer").val().length;
+        $("#proposer").text(cnt);
+
+        $("#proposer").bind("keyup",function(){
+            let re = /[~!@\#$%^&*\():><"?\]\-\/=+_,\.;'`{\[\}]/gi;
+            let temp=$("#proposer").val();
+            if(re.test(temp)){
+              $("#proposer").val(temp.replace(re,"")); 
+            } 
+        });
+
+        $("#proposer").val();
+        if (/[(가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9)]/.test($("#proposer").val())) {
+          $("#notice_name").removeClass('on');
+          $('.input_box2 #proposer').parent().removeClass('warring');
+
+          if (cnt > 90) {
+            $("#notice_name").addClass('on');
+            $('#notice_name .overbalance').show();
+            $('#notice_name .not_input').hide();
+            $('.input_box2 #proposer').parent().addClass('warring');
+          } else {
+            $("#notice_name").removeClass('on');
+            $('#notice_name .overbalance').hide();
+            $('.input_box2 #proposer').parent().removeClass('warring');
+          }
+
+          check_required();
+          return true;
+        } else {
+          $("#notice_name").removeClass('on');
+          $('.input_box2 #proposer').parent().removeClass('warring');
+
+          if ($('#proposer').val() == "") {
+              $("#notice_name").removeClass('on');
+              $('#notice_name .overbalance').hide();
+              $('.input_box2 #proposer').parent().removeClass('warring');
+          }
+          // $("#notice_name").addClass('on');
+          // $('.input_box2 #proposer').parent().addClass('warring');
+          check_required();
+          return false;
+        }
+      }
+
+      function nameLength(el, max) {
+        if (el.value.length > max) {
+          el.value = el.value.substr(0, max);
+        }
+      }
+
+      //
+      function check_email() {
+        var cnt = $("#email").val().length;
+        $("#email").text(cnt);
+
+        $("#email").bind("keyup",function(){
+            let re = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+            let temp=$("#email").val();
+            if(re.test(temp)){
+              $("#email").val(temp.replace(re,"")); 
+            } 
+        });
+
+
+        $("#email").val($("#email").val().trim());
+        if (/^[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[@]{1}[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[.]{1}[A-Za-z]+$/.test($("#email").val())) {
+          $("#notice_email").removeClass('on');
+          $('.input_box2 #email').parent().removeClass('warring');
+
+          if (cnt > 80) {
+            $("#notice_email").addClass('on');
+            $('#notice_email .overbalance').show();
+            $('#notice_email .not_input').hide();
+            $('.input_box2 #email').parent().addClass('warring');
+
+          } else {
+            $("#notice_email").removeClass('on');
+            $('#notice_email .overbalance').hide();
+            $('.input_box2 #email').parent().removeClass('warring');
+          }
+          check_required();
+          return true;
+        } else {
+          if ($('#email').val() == "") {
+              $("#notice_email").removeClass('on');
+              $('#notice_email .overbalance').hide();
+              $('.input_box2 #email').parent().removeClass('warring');
+          }
+
+          if (cnt < 6) {
+            $("#notice_email").addClass('on');
+            $('#notice_email .overbalance').hide();
+            $('#notice_email .not_input').show();
+            $('.input_box2 #email').parent().addClass('warring');
+          } else {
+            $("#notice_email").removeClass('on');
+            $('#notice_email .not_input').hide();
+            $('.input_box2 #email').parent().removeClass('warring');
+          }
+          // $("#notice_email").css("visibility", "visible");
+          check_required();
+          return false;
+        }
+      }
+
+      function mailLength(el, max) {
+        if (el.value.length > max) {
+          el.value = el.value.substr(0, max);
+        }
+      }
+
+      // 
+      function check_call_number(event) {
+        var cnt = $("#call_number").val().length;
+        $("#call_number").text(cnt);
+
+        $("#call_number").bind("keyup",function(){
+            let re = /[~!@\#$%^&*\()\-=+_,.;']/gi;
+            let temp=$("#call_number").val();
+            if(re.test(temp)){
+                $("#call_number").val(temp.replace(re,"")); 
+            } 
+        });
+
+        $("#call_number").val($("#call_number").val().trim());
+        $("#pnumber_txt").val($("#pnumber_txt").val().trim());
+
+        if (!/^[0-9]*$/.test($("#call_number").val()) || !/^\+{0,1}[0-9]+\-{0,1}[0-9]+$/.test($("#pnumber_txt").val())) {
+          if ($('#call_number').val() == "") {
+              $("#notice_call_number").removeClass('on');
+              $('#notice_call_number .overbalance').hide();
+              $('.input_box2 #call_number').parent().removeClass('warring');
+          }
+          check_required();
+          return false;
+        } else {
+          $("#notice_call_number").removeClass('on');
+          $('.input_box2 #call_number').parent().removeClass('warring');
+
+          if (cnt > 12) {
+            $("#notice_call_number").addClass('on');
+            $('#notice_call_number .overbalance').show();
+            $('#notice_call_number .not_input').hide();
+            $('.input_box2 #call_number').parent().addClass('warring');
+
+          } else {
+            $("#notice_call_number").removeClass('on');
+            $('#notice_call_number .overbalance').hide();
+            $('.input_box2 #call_number').parent().removeClass('warring');
+          }
+
+          check_required();                                                                                                              
+          return true;
+        }
+      }
+      function handleOnInput(el, maxlength) {
+        if(el.value.length > maxlength)  {
+          el.value 
+            = el.value.substr(0, maxlength);
+        }
+      }
+      function checkNumber(evt) {
+        var code = evt.which?evt.which:event.keyCode;
+        if(code < 48 || code > 57 || code==38 || code==40){
+            return false;
+        }
+      }
+
+
+      function check_company_text() {
+        var cnt = $("#company").val().length;
+        $("#company").text(cnt);
+        
+        if (cnt > 100) {
+          $("#company_error").addClass('on');
+          $('#company_error .overbalance').show();
+          $('#company_error .not_input').hide();
+          $('.input_box2 #company').parent().addClass('warring');
+        } else {
+          $("#company_error").removeClass('on');
+          $('#company_error .overbalance').hide();
+          $('.input_box2 #company').parent().removeClass('warring');
+        }
+      }
+
+      //
+      function check_inquiry_text () {
+        var cnt = $("#summernote").val().length;
+        $("#summernote").text(cnt);
+
+        if (cnt > 0) {
+          // $("#notice_content").css('visibility', 'hidden');
+          $("#notice_content").removeClass('on');
+          // $('#notice_content .overbalance').show();
+          // $('#notice_content .not_input').hide();
+          $('.contact_area').removeClass('warring');
+
+          if (cnt > 500) {
+            $("#notice_content").addClass('on');
+            $('#notice_content .overbalance').show();
+            $('#notice_content .not_input').hide();
+            $('.contact_area').addClass('warring');
+          } else {
+            $("#notice_content").removeClass('on');
+            $('#notice_content .overbalance').hide();
+            // $('#notice_content .not_input').hide();
+            $('.contact_area').removeClass('warring');
+          }
+
+          check_required();
+          return true;
+        }
+
+        $("#summernote").val($("#summernote").val().trim());
+        if (/^[a-zA-Z\s]+$/.test($("#summernote").val())) {
+          $("#notice_content").removeClass('on');
+          $('.contact_area').removeClass('warring');
+
+          check_required();
+        }
+      }
+
+      function count_inquiry_text () {
+        $("#summernote").text($("#summernote").val().length);
+      }
+
+      function check_required () {
+        if (    
+              // ($("#notice_name").removeClass('on') && $("#proposer").val().trim() != "")
+              // && ($("#notice_email").removeClass('on') && $("#email").val().trim() != "")
+              // && ($("#notice_call_number").removeClass('on') && $("#pnumber_txt").val().trim() != "")
+              // && ($("#notice_content").removeClass('on') && $("#summernote").val().trim() != "")
+              ($("#proposer").val().trim() != "")
+              && (/^[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[@]{1}[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[.]{1}[A-Za-z]+$/.test($("#email").val()))
+              && ($("#pnumber_txt").val().trim() != "")
+              && ($("#summernote").val().trim() != "") &&
+              ($("#proposer").val().trim().length <= 90) &&
+              ($("#pnumber_txt").val().trim().length <= 12) &&
+              ($("#email").val().trim().length <= 80) &&
+              ($("#company").val().trim().length <= 100) &&
+              ($("#summernote").val().trim().length <= 500) &&
+
+              $("#privacy_chk").is(":checked")
+              // && console.log('1')
+            ) 
+        {
+          $("#send_btn").attr('disabled', false);
+          // $("#send_btn").css("background", "#4f6dfa");)
+          return true;
+        } else {
+          // $("#send_btn").attr('disabled', true);
+          // $("#send_btn").css("background", "#cccccc");
+          return false;
+        }
+      }
+
+      function send_inquiry () {
+        if (!check_required()) {
+          // alert('An error has occurred.\nSorry, please try again.');
+          
+
+          if ($("#proposer").val()) {
+            var cnt = $("#proposer").val().length;
+            $("#proposer").text(cnt);
+
+            $('.input_box2 #proposer').parent().removeClass('warring');
+            $('#notice_name').removeClass('on');
+
+            if (cnt > 90) {
+              $("#notice_name").addClass('on');
+              $('#notice_name .overbalance').show();
+              $('#notice_name .not_input').hide();
+              $('.input_box2 #proposer').parent().addClass('warring');
+            } else {
+              $("#notice_name").removeClass('on');
+              $('#notice_name .overbalance').hide();
+              $('.input_box2 #proposer').parent().removeClass('warring');
+            }
+          } else {
+            $('.input_box2 #proposer').parent().addClass('warring');
+            $('#notice_name').addClass('on');
+            $('#notice_name').find('.overbalance').hide();
+            $('#notice_name .not_input').show();
+          }
+
+          if (/^[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[@]{1}[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[.]{1}[A-Za-z]+$/.test($("#email").val()) && $("#email").val().trim() != "") {
+            var cnt = $("#email").val().length;
+            $("#email").text(cnt);
+
+            $('.input_box2 #email').parent().removeClass('warring');
+            $('#notice_email').removeClass('on');
+
+            if (cnt > 80) {
+              $("#notice_email").addClass('on');
+              $('#notice_email .overbalance').show();
+              $('#notice_email .not_input').hide();
+              $('.input_box2 #email').parent().addClass('warring');
+
+            } else {
+              $("#notice_email").removeClass('on');
+              $('#notice_email .overbalance').hide();
+              $('.input_box2 #email').parent().removeClass('warring');
+            }
+          } else {
+            $('.input_box2 #email').parent().addClass('warring');
+            $('#notice_email').addClass('on');
+            $('#notice_email .not_input').show();
+            $('#notice_email').find('.overbalance').hide();
+          }
+
+          if ($("#call_number").val().trim() != "") {
+            var cnt = $("#call_number").val().length;
+            $("#call_number").text(cnt);
+
+            $('.input_box2 #call_number').parent().removeClass('warring');
+            $('#notice_call_number').removeClass('on');
+            
+            if (cnt > 12) {
+              $("#notice_call_number").addClass('on');
+              $('#notice_call_number .overbalance').show();
+              $('#notice_call_number .not_input').hide();
+              $('.input_box2 #call_number').parent().addClass('warring');
+
+            } else {
+              $("#notice_call_number").removeClass('on');
+              $('#notice_call_number .overbalance').hide();
+              $('.input_box2 #call_number').parent().removeClass('warring');
+            }
+
+          } else {
+            $('.input_box2 #call_number').parent().addClass('warring');
+            $('#notice_call_number').addClass('on');
+            $('#notice_call_number').find('.overbalance').hide();
+            $('#notice_call_number .not_input').show();
+          }
+
+          if ($('.contact_area').val().trim() != "") {
+            var cnt = $("#summernote").val().length;
+            $("#summernote").text(cnt);
+
+            $('.contact_area').removeClass('warring');
+            $('#notice_content').removeClass('on');
+
+            if (cnt > 500) {
+              $("#notice_content").addClass('on');
+              $('#notice_content .overbalance').show();
+              $('#notice_content .not_input').hide();
+              $('.contact_area').addClass('warring');
+            } else {
+              $("#notice_content").removeClass('on');
+              $('#notice_content .overbalance').hide();
+              // $('#notice_content .not_input').hide();
+              $('.contact_area').removeClass('warring');
+            }
+          } else {
+            $('.contact_area').addClass('warring');
+            $('#notice_content').addClass('on');
+            $('#notice_content').find('.overbalance').hide();
+            $('#notice_content .not_input').show();
+          }
+
+          if ($("#privacy_chk").is(":checked") == false) {
+              $("#privacy_chk").focus();
+          }
+
+          
+          return;
+        }
+        limit_script_tag(document.getElementById('summernote'));
+
+        $.ajax({
+          url : '/ajax/inquiry',
+          type : "POST",
+          data : {name:$("#proposer").val(), 
+                  email:$("#email").val(),
+                  phone:$("#pnumber_txt").val() + "-" + $("#call_number").val(),
+                  nations_seq:$("#dial_code option:selected").attr("nations_code"),                  
+                  company:$("#company").val(),
+                  message:$("#summernote").val()
+                 },
+          success : function(result) {
+              if ($('.popup_layout').addClass('on')) {
+                  $("#proposer").val("");
+                  $("#email").val("");
+                  $("#dial_code option:eq(0)").prop("selected", true); 
+                  $("#pnumber_txt").val("Select");
+                  $("#call_number").val("");
+                  $("#company").val("");
+                  $("#summernote").val("");
+                  $("#privacy_chk").prop("checked", false);
+                  check_required();
+                  $('.contact_title2').show();
+
+                  $('.confirm_btn').click(function() {
+                    $('.popup_layout').removeClass('on');
+                  });
+              }
+          },
+          error : function() {
+            $('.popup_layout').addClass('on');
+            $('.fail').addClass('on');
+            $('.success').addClass('off');
+            $('.confirm_btn').click(function() {
+                $('.popup_layout').removeClass('on');
+                $('.fail').removeClass('on');
+                $('.success').removeClass('off');
+            });
+          }
+        });
+      }
+
+      function placeholder_clik() {
+        $('.input_box2 .contact_title2').click(function() {
+          $(this).hide();
+          $(this).parent().find('input').focus();
+        });
+
+        $('.area_inquiry').click(function() {
+            $('.contact_area').focus();
+        })
+      }
+
+      function dial_click() {
+        $('.dial_viewBox').click(function() {
+            // $(this).hide();
+            $('#dial_code').change();
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="Container">
+        <div class="intro_box title_hidden">
+            <div class="middle_box">
+                <p class="main_title intro_color intro_title">
+                    We are <br>
+                    : all derivatives in the world
+                </p>
+            </div>
+        </div>
+
+        <header>
+          <div class="center_box">
+            <nav>
+              <a href="/" class="logo_box">
+                <img src="/pc/image/logo.png">
+              </a>
+              <div class="m_menuBtn"></div>
+              <ul class="gnb_box">
+                <li class="gnb_item m_headBox">
+                  <!-- <div class="selectbox">
+                    <p class="select_value">
+                    <img src="/pc/image/GBP.png">
+                    </p>
+                    <ul class="select_list">
+                    <li class="select_item">
+                      <p>English</p>
+                    </li>
+                    <li class="select_item">
+                      <p>한국어</p>
+                    </li>
+                    <li class="select_item">
+                      <p>Indonesia</p>
+                    </li>
+                    <li class="select_item">
+                      <p>Tiếng Việt</p>
+                    </li>
+                    <li class="select_item">
+                      <p>Español</p>
+                    </li>
+                    <li class="select_item">
+                      <p>Português</p>
+                    </li>
+                    <li class="select_item">
+                      <p>中文</p>
+                    </li>
+                    <li class="select_item">
+                      <p>日本語</p>
+                    </li>
+                    </ul>
+                  </div> -->
+                  <div class="m_closeBox"></div>
+                </li>
+                <li class="gnb_item">
+                  <a href="#sec2" class="move_item full_item">
+                    <p>Vision</p>
+                  </a>
+                </li>
+                <li class="gnb_item">
+                  <a href="#sec3" class="move_item">
+                    <p>Service</p>
+                  </a>
+                </li>
+                <li class="gnb_item">
+                  <a href="#sec4" class="move_item">
+                    <p>History</p>
+                  </a>
+                </li>
+                <li class="gnb_item">
+                  <a href="#sec6" class="move_item move_contact">
+                    <p>Contact</p>
+                  </a>
+                </li>
+                <li class="gnb_item side_gnb">
+                  <div class="gnb_menu">
+                    <a href="/en/careers">
+                      <p>Careers</p>
+                    </a>
+                  </div>
+                  <!-- <div class="selectbox">
+                    <p class="select_value">
+                      <img src="/pc/image/GBP.png">
+                    </p>
+                    <ul class="select_list">
+                      <li class="select_item">
+                        <p>English</p>
+                      </li>
+                      <li class="select_item">
+                        <p>한국어</p>
+                      </li>
+                      <li class="select_item">
+                        <p>Indonesia</p>
+                      </li>
+                      <li class="select_item">
+                        <p>Tiếng Việt</p>
+                      </li>
+                      <li class="select_item">
+                        <p>Español</p>
+                      </li>
+                      <li class="select_item">
+                        <p>Português</p>
+                      </li>
+                      <li class="select_item">
+                        <p>中文</p>
+                      </li>
+                      <li class="select_item">
+                        <p>日本語</p>
+                      </li>
+                    </ul>
+                  </div> -->
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+
+        
+
+        <div class="main_container" id="full_screen">
+            <section id="sec1" class="sec_1 content_box"> 
+                <div class="middle_box">
+                    <p class="main_title">
+                        We are <span class="softwiz_color">SOFTWIZ</span> <br>
+                        : all derivatives in the world
+                    </p>
+                </div>
+            </section>
+            <section id="sec2" class="sec_2 content_box">
+                <div class="center_box sec2_event">
+                    <p class="sec_title">Vision</p>
+                    
+
+                    <div class="sec2_contentBox">
+                        <div class="content_infoBox">
+                            <p class="sec_infoTitle">
+                                We raise our value together with our customers.
+                            </p>
+                            <p class="sec_subtext">
+                                New ideas and innovative business models transform the future of finance! 
+                                
+                                We provide services with optimized solutions.
+                            </p> 
+                        </div>
+
+                        <div class="sec2_slideBox"> 
+                            <div class="content_listBox">
+                                <div class="content_item item_1">
+                                    <div class="vision_midBox">
+                                      <div class="vision_box content_bg1">
+                                        <div class="vision_count">
+                                          <img src="/pc/image/icon29.png">
+                                        </div>
+  
+                                        <div class="vision_content">
+                                          <div class="vision_imgbox">
+                                            <img src="/pc/image/icon_11.png">
+                                          </div>
+                                          <p>
+                                            We always put our customers first and dedicate ourselves to keeping them satisfied and valued.
+                                          </p>
+                                        </div>
+  
+                                        <div class="vision_plus">
+                                          <img src="/pc/image/icon32.png">
+                                        </div>
+                                      </div>
+                                      <p class="vision_title">Communication</p>
+                                    </div>
+                                </div>
+                                <div class="content_item item_2">
+                                    <div class="vision_midBox">
+                                      <div class="vision_box content_bg2">
+                                        <div class="vision_count">
+                                          <img src="/pc/image/icon30.png">
+                                        </div>
+    
+                                        <div class="vision_content">
+                                          <div class="vision_imgbox">
+                                            <img src="/pc/image/icon_9.png">
+                                          </div>
+                                          <p>
+                                            Our data driven culture enhances our service and attributes competitive
+                                            advantage over others.
+                                          </p>
+                                        </div>
+    
+                                        <div class="vision_plus">
+                                          <img src="/pc/image/icon32.png">
+                                        </div>
+                                      </div>
+                                      <p class="vision_title">Creativity</p>
+                                    </div>
+                                </div>
+                                <div class="content_item item_3">
+                                    <div class="vision_midBox">
+                                      <div class="vision_box content_bg3">
+                                        <div class="vision_count">
+                                          <img src="/pc/image/icon31.png">
+                                        </div>
+    
+                                        <div class="vision_content">
+                                          <div class="vision_imgbox">
+                                            <img src="/pc/image/icon_11.png">
+                                          </div>
+                                          <p>
+                                            We encourage collaboration across a diverse spectrum of creative opinions and expertise to create disruptive innovation
+                                          </p>
+                                        </div>
+    
+                                        <div class="vision_plus">
+                                          <img src="/pc/image/icon32.png">
+                                        </div>
+                                      </div>
+                                      <p class="vision_title">Conversion</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- <div class="content_item item_1">
+                                  <div class="vision_midBox">
+                                    <div class="vision_box content_bg1">
+                                      <div class="vision_count">
+                                        <img src="/pc/image/icon29.png">
+                                      </div>
+
+                                      <div class="vision_content">
+                                        <div class="vision_imgbox">
+                                          <img src="/pc/image/icon_11.png">
+                                        </div>
+                                        <p>
+                                          We encourage collaboration across a diverse spectrum of creative opinions and expertise to create disruptive innovation
+                                        </p>
+                                      </div>
+
+                                      <div class="vision_plus">
+                                        <img src="/pc/image/icon32.png">
+                                      </div>
+                                    </div>
+                                    <p class="vision_title">Communication</p>
+                                  </div>
+                                </div>
+                                <div class="content_item item_2">
+                                    <div class="vision_midBox">
+                                      <div class="vision_box content_bg2">
+                                        <div class="vision_count">
+                                          <img src="/pc/image/icon30.png">
+                                        </div>
+    
+                                        <div class="vision_content">
+                                          <div class="vision_imgbox">
+                                            <img src="/pc/image/icon_9.png">
+                                          </div>
+                                          <p>
+                                            Our data driven culture enhances our service and attributes competitive
+                                            advantage over others.
+                                          </p>
+                                        </div>
+    
+                                        <div class="vision_plus">
+                                          <img src="/pc/image/icon32.png">
+                                        </div>
+                                      </div>
+                                      <p class="vision_title">Creativity</p>
+                                    </div>
+                                </div>
+                                <div class="content_item item_3">
+                                    <div class="vision_midBox">
+                                      <div class="vision_box content_bg3">
+                                        <div class="vision_count">
+                                          <img src="/pc/image/icon31.png">
+                                        </div>
+    
+                                        <div class="vision_content">
+                                          <div class="vision_imgbox">
+                                            <img src="/pc/image/icon_11.png">
+                                          </div>
+                                          <p>
+                                            We encourage collaboration across a diverse spectrum of creative opinions and expertise to create disruptive innovation
+                                          </p>
+                                        </div>
+    
+                                        <div class="vision_plus">
+                                          <img src="/pc/image/icon32.png">
+                                        </div>
+                                      </div>
+                                      <p class="vision_title">Conversion</p>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="slide_btnBox">
+                          <div class="slide_prev"></div>
+                          <div class="slide_count">
+                            <p class="now_slide">01</p>
+                            <p class="all_slide">03</p>
+                          </div>
+                          <div class="slide_next"></div>
+                        </div>
+
+                        <div class="m_contentBox">
+                          <div class="m_contentImg">
+                            <img src="/pc/image/mobile/m_bg2.png">
+                          </div>
+                          <div class="m_contentTitle">
+                            <p class="vision_title">Communication</p>
+                          </div>
+                          <div class="m_contents_text">
+                            <p>
+                              We always put our selves to keeping them satisfied and valued.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="m_contentBox">
+                          <div class="m_contentImg">
+                            <img src="/pc/image/mobile/m_bg3.png">
+                          </div>
+                          <div class="m_contentTitle">
+                            <p class="vision_title">Creativity</p>
+                          </div>
+                          <div class="m_contents_text">
+                            <p>
+                              Our data driven culture enhances our service and attributes competitive advantage over others. 
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="m_contentBox">
+                          <div class="m_contentImg">
+                            <img src="/pc/image/mobile/m_bg4.png">
+                          </div>
+                          <div class="m_contentTitle">
+                            <p class="vision_title">Conversion</p>
+                          </div>
+                          <div class="m_contents_text">
+                            <p>
+                              We encourage collaboration across a diverse spectrum of creative opinions and expertise to create disruptive innovation
+                            </p>
+                          </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <section id="sec3" class="sec_3 content_box">
+                <div class="center_box sec3_event">
+                  <p class="sec_title">Service</p>
+
+                  <div class="sec3_contentBox">
+                    <div class="sec3_bgBox">
+                      <video muted autoplay loop>
+                        <source src="/pc/media/softwiz.webm">
+                        <source src="/pc/media/softwiz.mp4">
+                      </video>
+                    </div>
+                    <div class="sec3_textBox">
+                        <p class="sec3_title">
+                            Global trading platform “<span class="softwiz_color">EzTross</span>”
+                        </p>
+                        <div class="m_videoBox">
+                          <video muted autoplay loop>
+                            <source src="/pc/media/m_softwiz.webm">
+                            <source src="/pc/media/m_softwiz.mp4">
+                          </video>
+                        </div>
+                        <p class="sec3_title">
+                            presents a new experience for stocks and derivatives.
+                        </p>
+                        <div class="m_videoBox">
+                          <video muted autoplay loop>
+                            <source src="/pc/media/m_softwiz2.webm">
+                            <source src="/pc/media/m_softwiz2.mp4">
+                          </video>
+                        </div>
+                        <div class="view_box">
+                            <p class="view_text">
+                                Accessible Anytime, Anywhere
+                            </p>
+                            <p class="view_text">
+                                Fast, robust, and intuitive
+                            </p>
+                            <p class="view_text">
+                                The smartest financial solution ever
+                            </p>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </section>
+            <section id="sec4" class="sec_4 content_box">
+                <div class="center_box sec4_event">
+                  <p class="sec_title">History</p>
+                    <div class="history_box">
+                        <ul class="history_list">
+                            <li class="history_item history_right long_line history_up">
+                                <div class="history_mid_left history_info_box left_icon">
+                                    <div class="history_content">
+                                        <div class="history_icon">
+                                            <img src="/pc/image/icon_16.png">
+                                        </div>
+                                        <p class="history_num">2021.02</p>
+                                        <p class="history_info">  
+                                            <span>Global online set up</span> 
+                                            Data center. Equinix. Building a network in London (TNSI)
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="history_item history_left long_line history_up">
+                                <div class="history_mid_right right_icon">
+                                  <div class="history_content2">
+                                      <p class="history_num2">2021.01</p>
+                                      <p class="history_info2">  
+                                          <span>Global Features & Options</span> 
+                                          <span>Real-time market price maintenance</span> (GemizipSoft)
+                                      </p>
+                                  </div>
+                                </div>
+                            </li>
+
+                            <li class="history_item history_right long_line history_up">
+                                <div class="history_mid_left history_info_box left_icon">
+                                    <div class="history_content">
+                                        <p class="history_num">2020.10</p>
+                                        <p class="history_info">  
+                                            <span>Construction and additional projects on the website</span> (SangSangStory) 
+                                            <span>Building a website</span> (GemizipSoft)
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="history_item history_left long_line history_up">
+                                <div class="history_mid_right right_icon">
+                                  <div class="history_content2">
+                                      <p class="history_num2">2020.09</p>
+                                      <p class="history_info2">  
+                                          <span>Selling MIZ-MyMQ platform</span> 
+                                          (One Way System)
+                                      </p>
+                                  </div>
+                                </div>
+                            </li>
+
+                            <li class="history_item history_right long_line history_up">
+                                <div class="history_mid_left history_info_box left_icon">
+                                    <div class="history_content">
+                                      <div class="history_icon">
+                                          <img src="/pc/image/icon_18.png">
+                                      </div>
+                                      <p class="history_num">2019.08</p>
+                                      <p class="history_info">  
+                                          Establishment of <span>CFD system</span> for domestic securities firms 
+                                          and signing partnerships (OnewaySystem)
+                                      </p>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="history_item history_left long_line history_up">
+                                <div class="history_mid_right right_icon">
+                                  <div class="history_content2">
+                                    <div class="history_icon2">
+                                        <img src="/pc/image/icon_17.png">
+                                    </div>
+                                    <p class="history_num2">2019.07</p>
+                                    <p class="history_info2 history_B">  
+                                      Launching the global online trading 
+                                      service "EzTross" project
+                                    </p>
+                                  </div>
+                                </div>
+                            </li>
+
+                            <li class="history_item history_right long_line history_up">
+                                <div class="history_mid_left history_info_box left_icon">
+                                    <div class="history_content">
+                                        <div class="history_icon">
+                                            <img src="/pc/image/icon_19.png">
+                                        </div>
+                                        <p class="history_num">2019.05</p>
+                                        <p class="history_info">  
+                                            Signing a global market price reception contract 
+                                            (dxFeed)
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="history_item history_left long_line history_up">
+                                <div class="history_mid_right right_icon">
+                                  <div class="history_content2">
+                                      <p class="history_num2">2019.01</p>
+                                      <p class="history_info2">  
+                                          All employees of the company attended 
+                                          <span>“IFX EXPO(Hong Kong)”</span>
+                                      </p>
+                                  </div>
+                                </div>
+                            </li>
+
+                            <li class="history_item history_right long_line history_up">
+                                <div class="history_mid_left history_info_box left_icon">
+                                    <div class="history_content">
+                                        <p class="history_num">2018.09</p>
+                                        <p class="history_info">  
+                                            <span>Shinhan Bank robo-advisor Project</span> 
+                                            (Shinhan Bank, QRAFT)
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="history_item history_left long_line history_up">
+                                <div class="history_mid_right right_icon">
+                                  <div class="history_content2">
+                                      <p class="history_num2">2018.06</p>
+                                      <p class="history_info2">  
+                                          <span>QRAFT partnership</span> 
+                                          (artificial intelligence, robo-advisor)
+                                      </p>
+                                  </div>
+                                </div>
+                            </li>
+                            <li class="history_item history_right long_line history_up">
+                                <div class="history_mid_left history_info_box left_icon">
+                                    <div class="history_content">
+                                        <p class="history_num">2018.05</p>
+                                        <p class="history_info">  
+                                            <span>Taiwan signed KWAY partnership</span> 
+                                            (WIZ Series solution sales)
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="history_item history_left long_line history_up">
+                              <div class="history_mid_right right_icon">
+                                <div class="history_content2">
+                                    <div class="history_icon2">
+                                        <img src="/pc/image/icon_20.png">
+                                    </div>
+                                    <p class="history_num2">2017.09</p>
+                                    <p class="history_info2">  
+                                      Establishment of <span>“Softwiz”</span> company
+                                    </p>
+                                </div>
+                              </div>
+                          </li>
+                        </ul>
+                    </div>        
+                </div>
+            </section>
+            <section id="sec5" class="sec_5 content_box group_center">
+                <div class="center_box group_box">
+                    <div class="group_list">
+                        <ul class="business_list group_slide1" dir="rtl">
+                          <li class="business_item">
+                            <img src="/pc/image/bs6.png">
+                        </li>
+                        <li class="business_item">
+                            <img src="/pc/image/bs5.png">
+                        </li>
+                        <li class="business_item">
+                            <img src="/pc/image/bs4.png">
+                        </li>
+                        <li class="business_item">
+                            <img src="/pc/image/bs3.png">
+                        </li>
+                        <li class="business_item">
+                            <img src="/pc/image/bs2.png">
+                        </li>
+                        <li class="business_item">
+                            <img src="/pc/image/bs1.png">
+                        </li>
+                            <li class="business_item">
+                                <img src="/pc/image/bs6.png">
+                            </li>
+                            <li class="business_item">
+                                <img src="/pc/image/bs5.png">
+                            </li>
+                            <li class="business_item">
+                                <img src="/pc/image/bs4.png">
+                            </li>
+                            <li class="business_item">
+                                <img src="/pc/image/bs3.png">
+                            </li>
+                            <li class="business_item">
+                                <img src="/pc/image/bs2.png">
+                            </li>
+                            <li class="business_item">
+                                <img src="/pc/image/bs1.png">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="group_list">
+                        <ul class="business_list group_slide2">
+                            <li class="business_item swiper-slide">
+                                <img src="/pc/image/bs7.png">
+                            </li>
+                            <li class="business_item swiper-slide">
+                                <img src="/pc/image/bs8.png">
+                            </li>
+                            <li class="business_item swiper-slide">
+                                <img src="/pc/image/bs9.png">
+                            </li>
+                            <li class="business_item swiper-slide">
+                                <img src="/pc/image/bs10.png">
+                            </li>
+                            <li class="business_item swiper-slide">
+                                <img src="/pc/image/bs11.png">
+                            </li>
+                            <li class="business_item swiper-slide">
+                                <img src="/pc/image/bs12.png">
+                            </li>
+                            <li class="business_item swiper-slide">
+                              <img src="/pc/image/bs7.png">
+                          </li>
+                          <li class="business_item swiper-slide">
+                              <img src="/pc/image/bs8.png">
+                          </li>
+                          <li class="business_item swiper-slide">
+                              <img src="/pc/image/bs9.png">
+                          </li>
+                          <li class="business_item swiper-slide">
+                              <img src="/pc/image/bs10.png">
+                          </li>
+                          <li class="business_item swiper-slide">
+                              <img src="/pc/image/bs11.png">
+                          </li>
+                          <li class="business_item swiper-slide">
+                              <img src="/pc/image/bs12.png">
+                          </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div> -->
+                </div>
+            </section>
+            <section id="sec6" class="sec_6 content_box">
+                <div class="contact_halfBox">
+                  <div class="sec6_leftBox">
+                    <p class="sec6_title">Contact Us</p>
+                    <p class="se6_subtext">
+                      If you want to contact us,
+                      please fill out the form.
+                    </p>
+                  </div>
+                </div>
+                <div class="contact_halfBox">
+                  <div class="sec6_rightBox">
+                      <ul class="contact_list">
+                          <li class="contact_item">
+                              <div class="input_box2">
+                                  <p class="contact_title2">
+                                      Name
+                                  </p>
+                                  <input type="text" class="contact_input" id="proposer" maxlength="91" oninput="nameLength(this, 91)" onkeyup="check_name();" onkeydown="check_name();">
+                              </div>
+                              <p class="microcopy contact_microcopy error" id="notice_name">
+                                  <span class="not_input chk_microcopy">Please check your Name</span>
+                                  <span class="overbalance chk_microcopy">You can enter up to 90 characters.</span>
+                              </p>
+                          </li>
+                          <li class="contact_item">
+                              <div class="input_box2">
+                                  <p class="contact_title2">
+                                      E-mail
+                                  </p>
+                                  <input type="email" class="contact_input" id="email" maxlength="81" oninput="mailLength(this, 81)" onkeyup="check_email()" autocomplete="off" title="">
+                              </div>
+                              <p class="microcopy contact_microcopy error" id="notice_email">
+                                  <span class="not_input chk_microcopy">Please check your Email</span>
+                                  <span class="overbalance chk_microcopy">You can enter 6 to 80 characters.</span>
+                              </p>
+                          </li>
+                          <li class="contact_item">
+                              <div class="phone_box">
+                                  <div class="dial_box">
+                                    <select id="dial_code" class="selectBox normal_select contact_select" onchange="set_pnumber();">
+                                      <option disabled>Select</option>
+                                    </select>
+                                    <input type="text" name="pnumber_txt" id="pnumber_txt" class="dial_viewBox" onkeyup="check_call_number();" maxlength="8" autocomplete="off" readonly>
+                                  </div>
+      
+                                  <div class="input_box2">
+                                      <p class="contact_title2">
+                                          Phone number
+                                      </p>
+                                      <input type="number" id="call_number" class="contact_input" id="phone" name="num_keybox" oninput="handleOnInput(this, 13)" onkeyup="check_call_number();"  onkeypress='return checkNumber(event)' autocomplete="off">
+                                  </div>
+                              </div>
+                              <p class="microcopy contact_microcopy error" id="notice_call_number">
+                                  <span class="not_input chk_microcopy">Please check your Phone number</span>
+                                  <span class="overbalance chk_microcopy">You can enter up to 12 numbers.</span>
+                              </p>
+                          </li>
+                          <li class="contact_item">
+                              <div class="input_box2 company_box">
+                                  <p class="contact_title2 company_title">
+                                      Company
+                                  </p>
+                                  <input type="text" id="company" class="contact_input" maxlength="101" id="company" onkeyup="check_company_text();" autocomplete="off">
+                              </div>
+                              <p class="microcopy contact_microcopy" id="company_error">
+                                  <span class="overbalance chk_microcopy">You can enter up to 100 characters.</span>
+                              </p>
+                          </li>
+                          <li class="contact_item">
+                              <p class="contact_title2 area_inquiry">
+                                  Inquiry
+                              </p>
+                              <textarea name="contact_area" id="summernote" class="contact_area" cols="30" rows="10" maxlength="501" onkeyup="check_inquiry_text()" autocomplete="off"></textarea>
+                              <p class="microcopy contact_microcopy" id="notice_content">
+                                  <span class="not_input chk_microcopy">Please check your Inquiry</span>
+                                  <span class="overbalance chk_microcopy">You can enter up to 500 characters.</span>
+                              </p>
+                          </li>
+                          <li class="contact_item">
+                              <div class="flex_box privacy_flex">
+                                  <div class="privacy_box contact_privacy">
+                                      <input type="checkbox" class="accept_chk" id="privacy_chk" onchange="check_required()">
+                                      <label for="privacy_chk">I accept Privacy policy.</label>
+                                  </div>
+                                  <div class="privacy_go">
+                                      <a href="/en/policy" target="_blank" class="more_link">More</a>
+                                  </div>
+                              </div>
+                          </li>
+                          <li class="contact_item">
+                              <button type="button" class="submit_btn2" id="send_btn" onclick="send_inquiry()">Submit</button>
+                          </li>
+                      </ul>
+                  </div>
+                </div>
+
+
+                <!-- <div class="center_box sec6_flexBox"></div> -->
+
+            </section>
+            <footer>
+                <div class="center_box">
+                    <div class="half_box">
+                        <div class="footer_info">
+                            <a class="footer_logo">
+                                <img src="/pc/image/logo_2.png">
+                            </a>
+        
+                            <ul class="company_info">
+                                <li class="company_item">
+                                    <p class="company_info_text">
+                                        Company Registration No. <span>305-88-00733</span>
+                                    </p>
+                                    <p class="company_info_text">
+                                        Office <span>I’TOWER 13F, 14F 326, Teheran-ro, Gangnam-gu, Seoul, Republic of Korea</span>  
+                                    </p>
+                                    <p class="company_info_text">
+                                        Tel. +82 2-6952-6020 <span class="company_tel">Fax. +82 2-6952-6021</span>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+        
+                        <div class="footer_info">
+                            <p class="company_copyright">
+                                <a href="/en/policy" class="privacy_link" target="_blank">Privacy Policy</a>
+                                <span>Copyright ⓒSOFTWIZ Crop. All Rights Reserved.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+  
+        <div class="careers_box">
+            <a href="/en/careers">Careers</a>
+        </div>
+
+        <div class="popup_layout">
+          <div class="popup_mask">
+              <div class="popup_box">
+                  <div class="popup_head">
+                      <p class="popup_title">
+                          <span class="success">Success</span>
+                          <span class="fail">Fail</span>
+                      </p>
+                  </div>
+                  <div class="popup_body">
+                      <p class="popup_content">
+                          <span class="success">Your contact message has been received successfully.</span>
+                          <span class="fail">The contact message was not accepted successfully. Please try again later.</span>
+                      </p>
+                  </div>
+                  <div class="popup_footer">
+                      <div class="confirm_btn">
+                          Confirm
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+    <script>
+        $(function() {
+            introView();
+        });
+        // 첫 로드시 진입 화면 인트로 이벤트
+        var introView = function() {
+            let $introBox = $('.intro_box');
+            if ($introBox.css('display') == 'none') {
+                $('body').css({
+                    overflow: 'overlay',
+                })
+            } else {
+                $('body').css({
+                    overflow: 'hidden',
+                })
+                setTimeout(function () {
+                    $introBox.removeClass('title_hidden');
+                }, 1000);
+                setTimeout(function() {
+                    $introBox.css('display', 'none');
+                    $('body').css({
+                        overflow: 'overlay',
+                    })
+                }, 2000);
+            }
+        }
+
+        let history_triggerMargin = 300;
+        let history_item = document.querySelectorAll('.history_item');
+
+        let history_scroll = function() {
+            for (let list of history_item) {
+                if (!list.classList.contains('show')) {
+                    if (window.innerHeight > list.getBoundingClientRect().top + history_triggerMargin) {
+                        list.classList.add('show');
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('load', history_scroll);
+        window.addEventListener('scroll', history_scroll);
+
+        // 스크롤 위치 감지 및 특정 위치에서 careers 버튼 숨김처리
+        window.addEventListener('scroll', () => {
+            let careers_btn = document.querySelector('.careers_box');
+            let careers_resize = document.documentElement.clientWidth;
+
+            if (careers_resize <= 768) {
+              if (window.scrollY >= 7556) {
+                  careers_btn.style.display = 'none';
+              } else {
+                  careers_btn.style.display = 'block';
+              }
+            } else {
+              if (window.scrollY >= 4160) {
+                  careers_btn.style.display = 'none';
+              } else {
+                  careers_btn.style.display = 'block';
+              }
+            }
+
+            window.addEventListener('resize', () => {
+              if (window.innerWidth <= 768) {
+                if (window.scrollY >= 7556) {
+                    careers_btn.style.display = 'none';
+                } else {
+                    careers_btn.style.display = 'block';
+                }
+              } else {
+                if (window.scrollY >= 4160) {
+                    careers_btn.style.display = 'none';
+                } else {
+                    careers_btn.style.display = 'block';
+                }
+              }
+            })
+
+        });
+    </script>
+    
+  </body>
+</html>

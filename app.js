@@ -1,98 +1,65 @@
-const express = require('express');
-const app = express();
+var createError = require('http-errors');
 const helmet = require('helmet');
+var express = require('express');
 const cors = require('cors');
-const mysql = require('mysql');
-const ejs = require("ejs");
-const { stringify } = require('querystring');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
 
-// mysql 접속 설정
-const conn =  mysql.createConnection({ 
-    host     : 'localhost',
-    port     : '3306',
-    user     : 'root',
-    password : '123456',
-    database : 'ChurchOppa'
-});
-// mysql 접속 여부
-conn.connect(function(err){  
-    if(!err) {  
-        console.log("Database is connected ... \n\n");
-    } else {  
-        console.log("Error connecting database ... \n\n", err);
-    }  
-});
-app.set('views', __dirname + '/assets/html');
+// dbconneciton 
+// var db_connector = require('./conf/db_conn');
+// console.log(db_connector);
+// var dbc = db_connector.init(); // db connection
+// db_connector.test_open(dbc);
+
+
+
+var app = express();
+// view engine setup
+app.set('views', path.join(__dirname, 'assets'));
 app.set('view engine', 'ejs');
 
 
-// var query = sanitize(url.parse(request.url, true).query.query);
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-// 라우팅 설정.
-app.get('/', function(req, res){
-    res.render('index.ejs');
-})
+// app.get('/search=?', function(req, res) {
+//   let sql = 'select * from churchinfo where ChurchName = ?';
+//   let params = req.query.name;
 
-app.get('/search=?', function(req, res) {
-    let sql = 'select * from churchinfo where ChurchName = ?';
-    let params = req.query.name;
+//   dbc.query(sql , params, function(err, row, fields){//row => 결과값
+//       if(err){
+//           console.log(err);
+//       }
 
-    conn.query(sql , params, function(err, row, fields){//row => 결과값
-        if(err){
-            console.log(err);
-        }
-
-        if(row.length > 0) {
-            // res.json({ok: true, churchname: row})
-            res.render('churchpage.ejs', {church : row});
-            console.log("hey!!!!", row)
-        } else {
-            res.sendFile(__dirname + '/assets/html/resultNotfound.html');
-        }
-    });
-})
-
-// app.get('/church', function(req, res){
-
-//     let sql = 'select * from churchinfo';
-//     conn.query(sql, function(err, row, fields){//row => 결과값
-//         if(err){
-//             console.log(err);
-//         } else {
-//             res.render('churchpage.ejs', {church : row});
-//             console.log(row)
-//         }
-//     });
-// });
+//       if(row.length > 0) {
+//           // res.json({ok: true, churchname: row})
+//           res.render('churchpage.ejs', {church : row});
+//           console.log("hey!!!!", row)
+//       } else {
+//           res.sendFile(__dirname + '/assets/html/resultNotfound.html');
+//       }
+//   });
+// })
 
 
-
-app.get('/Board', function(req, res){
-    res.render('Board.ejs');
-})
-
-// css파일을 가져오도록 설정.
-app.use('/', express.static(__dirname + '/assets'));
-
-// 404 처리 부분
-app.use(function(req, res) {
-    res.status(404).sendFile(__dirname + '/assets/html/404ErrorPage.html');
-});
-
-// 에러 처리 부분
-app.use(function(err, req, res) {
-    // 에러 메시지 표시
-    console.error(err.stack);
-    // 500 상태 표시 후 에러 메시지 전송
-    res.status(500).sendFile(__dirname + '/assets/html/500ErrorPage.html');
-});
-
-// //....
-// app.use(helmet.hsts({
-//     maxAge: ms("1 year"),
-//     includeSubdomains: true
-// }));
+// use routes
+// pc, mobile 라우팅. routes 파일에서 device별 렌더링.
+app.use('/', require('./routes/index'));
+// app.use('/search=?', require('./routes/chuchpage'));
+// app.use('/upload', require('./routes/upload'));
+app.use('/ajax/:func', require('./routes/ajax_func'));
+// app.use('/:lang/users', require('./routes/users'));
+// app.use('/:lang/careers', require('./routes/careers'));
+// app.use('/:lang/openVacancies', require('./routes/openVacancies'));
+// app.use('/:lang/openVacanciesDetail', require('./routes/openVacanciesDetail'));
+// app.use('/:lang/policy', require('./routes/policy'));
+// app.use('/:lang/policy_kr', require('./routes/policy_kr'));
+// app.use('/:lang/ip', require('./routes/ip'));
+// app.use('/:lang/apply', require('./routes/apply'));
 
 // security 처리
 // helmet -> Header 설정 바꿔주는 Module.
@@ -123,4 +90,25 @@ app.use(cors());
 // });
 
 // app.use(express.static('images'));
-app.listen(3002, () => console.log('3000번 포트 대기'));
+app.get('/Board', function(req, res){
+  res.render('Board.ejs');
+})
+
+// css파일을 가져오도록 설정.
+app.use('/', express.static(__dirname + '/assets'));
+
+// 404 처리 부분
+app.use(function(req, res) {
+  res.status(404).sendFile(__dirname + '/assets/html/404ErrorPage.html');
+});
+
+// 에러 처리 부분
+app.use(function(err, req, res) {
+  // 에러 메시지 표시
+  console.error(err.stack);
+  // 500 상태 표시 후 에러 메시지 전송
+  res.status(500).sendFile(__dirname + '/assets/html/500ErrorPage.html');
+});
+
+
+module.exports = app;

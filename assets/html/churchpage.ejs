@@ -9,7 +9,7 @@
 
     <title>교회 오빠</title>
     <!-- Bootstrap js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
     <!-- Bootstrap core CSS -->
@@ -28,6 +28,130 @@
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=80d6fac198542c9021cd4229a30df6b2"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/chuchpage.js"></script>
+    
+    <!-- kakaoMap -->
+    <script>
+
+</script>
+
+    <script>
+        $(document).ready(function() {
+            // 검색된 교회 정보값 가져오기.
+            let church_result = search_church();
+            var lateX = church_result[0].ChurchLateX; 
+            var lateY = church_result[0].ChurchLateY;
+
+            var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = { 
+                center: new kakao.maps.LatLng(lateX, lateY), // 지도의 중심좌표
+                level: 2 // 지도의 확대 레벨
+            };
+
+            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+            // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+            var mapTypeControl = new kakao.maps.MapTypeControl();
+
+            // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+            // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+            map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+            // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+            var zoomControl = new kakao.maps.ZoomControl();
+            map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+            // 37.549219 127.128118
+            // 지도에 마커를 표시합니다 
+            var marker = new kakao.maps.Marker({
+                map: map, 
+                position: new kakao.maps.LatLng(lateX, lateY)
+            });
+
+            // 커스텀 오버레이에 표시할 컨텐츠 입니다
+            // 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
+            // 별도의 이벤트 메소드를 제공하지 않습니다 
+            var content = '<div class="wrap">' + 
+                '    <div class="info">' + 
+                '        <div class="title">' + 
+                            `${church_result[0].ChurchName}` + 
+                '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+                '        </div>' + 
+                '        <div class="body">' + 
+                '            <div class="img">' +
+                `                <img src="${church_result[0].ChurchMapIMG}" width="73" height="70">` +
+                '           </div>' + 
+                '            <div class="desc">' + 
+                '                <div class="ellipsis"><%=church.ChurchAddr%></div>' + 
+                `                <div class="jibun ellipsis">${church_result[0].ChurchJibun}</div>` + 
+                `                <div><a href="${church_result[0].ChurchHome}" target="_blank" class="link">홈페이지</a></div>` + 
+                '            </div>' + 
+                '        </div>' + 
+                '    </div>' +    
+                '</div>';
+            // 마커 위에 커스텀오버레이를 표시합니다
+            // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+            var overlay = new kakao.maps.CustomOverlay({
+                content: content,
+                map: map,
+                position: marker.getPosition()
+            });
+
+            // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+            kakao.maps.event.addListener(marker, 'click', function() {
+                overlay.setMap(map);
+            });
+
+            // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+            function closeOverlay() {
+                overlay.setMap(null);
+            }
+        });
+
+        var search = '<%=church.name%>';
+
+        // 검색하기.
+        function search_church() {
+            var church_data = "";
+            $.ajax({
+                url : '/ajax/search',
+                type : "POST",
+                async: false, 
+                data : {
+                    church_name : search
+                },
+                success : function(result) {
+                    let church_info = $(".church_info");
+                    if (result) {
+                        // data 전달
+                        church_data = result;
+
+                        let str = "";
+                        str = ` <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : ${result[0].ChurchLocate}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : ${result[0].ChurchReli}</button>
+                                <div class="col mb-2">
+                                </div>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">규모 : ${result[0].ChurchScales}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">담임목사 : ${result[0].ChurchPastor}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">전화번호 : ${result[0].ChurchTel}</button>
+                                <br />
+                                <br />
+                                <br />
+                                <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
+
+                        church_info.append(str)
+                    } else {
+                    
+                    }
+                },
+                error : function(request,status,error) {
+                    console.log(request+"\n",status,"\n",error, "\n")
+                }
+            });
+            return church_data;
+        }
+    </script>
 </head>
 
 <body>
@@ -68,31 +192,20 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="container">
         <!-- 전체 테두리 -->
-        <% for(var i = 0; i< church.length; i++){%>
+        
         <div class="row p-2">
             <div class="col mt-2">
                 <div>
-                    <h3 id="ChuchTittle"><%= church[i].ChurchName %></h3>
+                    <h3 id="ChuchTittle"></h3>
                     
                     <br />
                 </div>
                 <!-- 좌측 컨텐츠 -->
                 <h4>교회 정보</h4>
-                <div class="mt-4">
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : <%= church[i].ChurchLocate %></button>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : <%= church[i].ChurchReli %></button>
-                    <div class="col mb-2">
-                    </div>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">규모 : <%= church[i].ChurchScales %></button>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">담임목사 : <%= church[i].ChurchPastor %></button>
-                    <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">전화번호 : <%= church[i].ChurchTel %></button>
-                    <br />
-                    <br />
-                    <br />
-                    <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();"  onclick="window.open(`<%= church[i].ChurchHome %>`)">교회 홈페이지</button>
+                <div class="church_info mt-4">
+
                 </div>
                 <div class="mt-4">
-                    <img src="<%= church[i].ChurchSerIMG %>" height="350px" width="500px">
                 </div>
             </div>
                 <!-- 우측 컨텐츠 -->
@@ -217,83 +330,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../assets/js/jquery-slim.min.js"><\/script>')</script>
-    <script src="../js/popper.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/chuchpage.js"></script>
-    
-    <!-- kakaoMap -->
-    <script>
-    var lateX = '<%=church[i].ChurchLateX%>'; 
-    var lateY = '<%=church[i].ChurchLateY%>'; 
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-        mapOption = { 
-            center: new kakao.maps.LatLng(lateX, lateY), // 지도의 중심좌표
-            level: 2 // 지도의 확대 레벨
-        };
-
-    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-
-    // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
-    var mapTypeControl = new kakao.maps.MapTypeControl();
-
-    // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-    // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
-    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-
-    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-    var zoomControl = new kakao.maps.ZoomControl();
-    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-    // 37.549219 127.128118
-    // 지도에 마커를 표시합니다 
-    var marker = new kakao.maps.Marker({
-        map: map, 
-        position: new kakao.maps.LatLng(lateX, lateY)
-    });
-
-
-    // 커스텀 오버레이에 표시할 컨텐츠 입니다
-    // 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
-    // 별도의 이벤트 메소드를 제공하지 않습니다 
-    var content = '<div class="wrap">' + 
-                '    <div class="info">' + 
-                '        <div class="title">' + 
-                '            <%=church[i].ChurchName%>' + 
-                '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
-                '        </div>' + 
-                '        <div class="body">' + 
-                '            <div class="img">' +
-                '                <img src="<%=church[i].ChurchMapIMG%>" width="73" height="70">' +
-                '           </div>' + 
-                '            <div class="desc">' + 
-                '                <div class="ellipsis"><%=church[i].ChurchAddr%></div>' + 
-                '                <div class="jibun ellipsis"><%=church[i].ChurchJibun%></div>' + 
-                '                <div><a href="<%=church[i].ChurchHome%>" target="_blank" class="link">홈페이지</a></div>' + 
-                '            </div>' + 
-                '        </div>' + 
-                '    </div>' +    
-                '</div>';
-
-    // 마커 위에 커스텀오버레이를 표시합니다
-    // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-    var overlay = new kakao.maps.CustomOverlay({
-        content: content,
-        map: map,
-        position: marker.getPosition()
-    });
-
-    // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-    kakao.maps.event.addListener(marker, 'click', function() {
-        overlay.setMap(map);
-    });
-
-    // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-    function closeOverlay() {
-        overlay.setMap(null);
-    }
-</script>
+    <!-- <script>window.jQuery || document.write('<script src="../assets/js/jquery-slim.min.js"><\/script>')</script> -->
 
 </body>
-<% }; %>
 </html>
