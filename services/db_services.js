@@ -98,6 +98,33 @@ class db_services {
             await conn.commit(); // 커밋
             result = select_church[0];
             out(error, result);
+            console.log("result", result)
+        }catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
+    }
+
+    // 교회 자동 검색
+    async auto_search_church (out, keyword) {
+        let sql = "select * from churchinfo where churchname != '' AND churchname like '%"+keyword+"%'";
+        console.log("sql", sql)
+        
+        let conn =  await this.dbc.getConnection();
+        let result = null;
+        let error = null;
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
+            let select_church = await conn.query(sql);
+            await conn.commit(); // 커밋
+            result = select_church[0];
+            out(error, result);
+            console.log("result", result)
         }catch (err) {
             error = err;
             console.log(err)

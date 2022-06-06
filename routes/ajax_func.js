@@ -21,6 +21,10 @@ router.post('/', function(req, res, next) {
     console.log("hi", req.body.church_name)
     db_service.search_church(out_func, req.body.church_name);
   }
+  else if (func_name == 'auto') {
+    console.log("hi", req.body.keyword)
+    db_service.auto_search_church(out_func, req.body.keyword);
+  }
   else {
     res.json(null);
   } 

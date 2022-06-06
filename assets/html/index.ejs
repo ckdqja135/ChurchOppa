@@ -34,6 +34,68 @@
                                 </div>
                             </div>
                         </form>
+                        <div id="container">
+                        
+                            <table id="user-table">
+                                <tbody class="auto_result">
+                                </tbody>
+                            </table>
+                        </div>
+                        <script>
+                            $(document).ready(function() {
+                                $("#search").keydown(function() {
+                                    if($("#search").val != '')
+                                        auto_search();
+                                    
+                                })
+                            })
+
+                            function auto_search() {
+                                
+                                var _keyword = $("#search").val();
+                                if (isEmpty(_keyword))
+                                    $("#user-table > tbody > tr").hide();
+                                $.ajax({
+                                    url : '/ajax/auto',
+                                    type : "POST",
+                                    async: false, 
+                                    data : {
+                                        keyword : isEmpty(_keyword) ? "''" : _keyword
+                                    },
+                                    success : function(result) {
+                                        let church_info = $(".auto_result");
+                                        if (result) {
+                                            // data 전달
+                                            var temp = $("#user-table > tbody > tr > td:nth-child(5n+1):contains('" + _keyword + "')");
+                                            // church_data = result;
+                                            let str = "";
+                                            for (let i = 0; i < result.length; i++) {
+                                                str = `  
+                                                                <tr >
+                                                                    <td>${result[i].ChurchName} &nbsp; &nbsp; &nbsp; </td>
+                                                                    <td>${result[i].ChurchLocate} &nbsp; &nbsp; &nbsp;</td>
+                                                                    <td>${result[i].ChurchPastor} &nbsp; &nbsp; &nbsp;</td>
+                                                                </tr>
+                                                            `
+                                            }
+                                            church_info.append(str)
+                                            console.log(result)
+                                            $(temp).parent().show();
+                                        } else {
+                                        
+                                        }
+                                    },
+                                    error : function(request,status,error) {
+                                        console.log(request+"\n",status,"\n",error, "\n")
+                                    }
+                                });
+                                // return church_data;
+                            }
+
+                            function isEmpty(val){
+                                return (val === undefined || val == null || val.length <= 0) ? true : false; 
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
