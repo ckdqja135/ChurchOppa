@@ -43,15 +43,15 @@
                         </div>
                         <script>
                             $(document).ready(function() {
-                                $("#search").keydown(function() {
-                                    if($("#search").val != '')
-                                        auto_search();
-                                    
+                                $("#search").keyup(function() {
+                                        // auto_search();
                                 })
                             })
 
                             function auto_search() {
-                                
+                                if ($("#search").val() == '') {
+                                    $("#user-table").empty();
+                                }
                                 var _keyword = $("#search").val();
                                 if (isEmpty(_keyword))
                                     $("#user-table > tbody > tr").hide();
@@ -70,13 +70,13 @@
                                             // church_data = result;
                                             let str = "";
                                             for (let i = 0; i < result.length; i++) {
-                                                str = `  
-                                                                <tr >
-                                                                    <td>${result[i].ChurchName} &nbsp; &nbsp; &nbsp; </td>
-                                                                    <td>${result[i].ChurchLocate} &nbsp; &nbsp; &nbsp;</td>
-                                                                    <td>${result[i].ChurchPastor} &nbsp; &nbsp; &nbsp;</td>
-                                                                </tr>
-                                                            `
+                                                str += `  
+                                                        <tr >
+                                                            <td>${result[i].ChurchName} &nbsp; &nbsp; &nbsp; </td>
+                                                            <td>${result[i].ChurchLocate} &nbsp; &nbsp; &nbsp;</td>
+                                                            <td>${result[i].ChurchPastor} &nbsp; &nbsp; &nbsp;</td>
+                                                        </tr>
+                                                    `
                                             }
                                             church_info.append(str)
                                             console.log(result)

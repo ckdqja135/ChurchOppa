@@ -112,7 +112,7 @@ class db_services {
 
     // 교회 자동 검색
     async auto_search_church (out, keyword) {
-        let sql = "select * from churchinfo where churchname != '' AND churchname like '%"+keyword+"%'";
+        let sql = "select * from churchinfo where churchname != '' AND churchname like '%"+keyword+"%' LIMIT 0, 10";
         console.log("sql", sql)
         
         let conn =  await this.dbc.getConnection();

@@ -151,6 +151,41 @@
             });
             return church_data;
         }
+
+        // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
+        function day_month_format(n) {
+            return (n < 10 ? '0' : '') + n;
+        }
+
+        function create_board() {
+            //  오늘 날짜 포맷 만들기.
+            var date = new Date();
+            var month = day_month_format(date.getMonth()+1); //months (0-11)
+            var day = day_month_format(date.getDate()); //day (1-31)
+            var year = date.getFullYear();
+            var date_format =  year + "-" + month + "-" + day;
+
+            var board_data = {
+                board_title : $('#recipient-title').val(),
+                board_content : $('#message-text').val(),
+                board_reg : date_format,
+                board_like : 0,
+                board_Hits : 0
+            };
+            $.ajax({
+                url : '/ajax/create_board',
+                type : "POST",
+                async: false, 
+                data : board_data,
+                success : function(result) {
+                    console.log(result);
+                },
+                error : function(request,status,error) {
+                    console.log(request+"\n",status,"\n",error, "\n")
+                }
+            });
+            // return church_data;
+        }
     </script>
 </head>
 
@@ -301,7 +336,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                                <button type="button" class="btn btn-primary" onclick="getData();">글쓰기</button>
+                                <button type="button" class="btn btn-primary" onclick="create_board();">글쓰기</button>
                             </div>
                         </div>
                         </div>
