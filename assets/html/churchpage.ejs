@@ -31,7 +31,10 @@
     <script src="../js/popper.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/chuchpage.js"></script>
-    
+    <!-- <script src="../js/core.min.js"></script>
+    <script src="../js/sha256.min.js">import SHA256 from "./sha256.min";
+           console.log("aaaa", SHA256("test"))
+           </script> -->
     <!-- kakaoMap -->
     <script>
 
@@ -39,8 +42,9 @@
 
     <script>
         $(document).ready(function() {
-            // 검색된 교회 정보값 가져오기.
             let church_result = search_church();
+            window.church_data = church_result;
+            // 검색된 교회 정보값 가져오기.
             var lateX = church_result[0].ChurchLateX; 
             var lateY = church_result[0].ChurchLateY;
 
@@ -113,7 +117,7 @@
 
         // 검색하기.
         function search_church() {
-            var church_data = "";
+            this.church_data;
             $.ajax({
                 url : '/ajax/search',
                 type : "POST",
@@ -126,7 +130,6 @@
                     if (result) {
                         // data 전달
                         church_data = result;
-
                         let str = "";
                         str = ` <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : ${result[0].ChurchLocate}</button>
                                 <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : ${result[0].ChurchReli}</button>
@@ -141,6 +144,7 @@
                                 <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
 
                         church_info.append(str)
+                        this.inquiry_board();
                     } else {
                     
                     }
@@ -149,43 +153,10 @@
                     console.log(request+"\n",status,"\n",error, "\n")
                 }
             });
+            
             return church_data;
         }
 
-        // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
-        function day_month_format(n) {
-            return (n < 10 ? '0' : '') + n;
-        }
-
-        function create_board() {
-            //  오늘 날짜 포맷 만들기.
-            var date = new Date();
-            var month = day_month_format(date.getMonth()+1); //months (0-11)
-            var day = day_month_format(date.getDate()); //day (1-31)
-            var year = date.getFullYear();
-            var date_format =  year + "-" + month + "-" + day;
-
-            var board_data = {
-                board_title : $('#recipient-title').val(),
-                board_content : $('#message-text').val(),
-                board_reg : date_format,
-                board_like : 0,
-                board_Hits : 0
-            };
-            $.ajax({
-                url : '/ajax/create_board',
-                type : "POST",
-                async: false, 
-                data : board_data,
-                success : function(result) {
-                    console.log(result);
-                },
-                error : function(request,status,error) {
-                    console.log(request+"\n",status,"\n",error, "\n")
-                }
-            });
-            // return church_data;
-        }
     </script>
 </head>
 
@@ -252,8 +223,8 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal" onclick="initButton();">글쓰기</button>
                     </div>
                         <table class="table table-hover" style="cursor: pointer;">
-                            <tbody>
-                                <tr>
+                            <tbody class="board" onload="inquiry_board();">
+                                <!-- <tr>
                                     <td><h6>예배가 너무 은혜스러워요</h6></td>
                                     <td><h6>exam</h6></td>
                                     <td><h6>2022-04-11</h6></td>
@@ -285,7 +256,7 @@
                                             <span id = heart3><i class="fa fa-heart-o" aria-hidden="true" ></i> </span>
                                         </button>
                                     </td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                         <ul class="pagination">

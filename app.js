@@ -49,7 +49,7 @@ app.use(cookieParser());
 // use routes
 // pc, mobile 라우팅. routes 파일에서 device별 렌더링.
 app.use('/', require('./routes/index'));
-// app.use('/search=?', require('./routes/chuchpage'));
+app.use('/search', require('./routes/chuchpage'));
 // app.use('/upload', require('./routes/upload'));
 app.use('/ajax/:func', require('./routes/ajax_func'));
 // app.use('/:lang/users', require('./routes/users'));

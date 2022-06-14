@@ -5,83 +5,63 @@ class db_services {
         this.dbc = this.db_connector.init(); // db connection
     }
 
-    async post_apply(out, params) {
-        let JOBS_APPLICATION_SQL = "INSERT INTO JOBS_APPLICATION (JOBS_SEQ, CONTENTS_LANG, EMAIL, PHONE, LINK1, LINK2, LINK3, CONFIRM_STATUS, REG_DTIME) VALUES (?, 'en', ?, ?, ?, ?, ?,'N',?);";
-        let JOBS_APPLICATION_FILES_SQL = "INSERT INTO JOBS_APPLICATION_FILES (JOBS_APPLICATION_SEQ, TYPE, FILE_PATH, ORIGIN_NAME, FILE_NAME, FILE_SIZE, EXT, MIME_TYPE ) VALUES  (?, ?, ?, ?, ?, ?, ?, ?);";
-        let JOBS_APPLICATION_LANG = "INSERT INTO JOBS_APPLICATION_LANG(JOBS_APPLICATION_SEQ, NAME) VALUES (?, ?);";
-        let conn =  await this.dbc2.getConnection();
+    // 게시글 등록
+    async create_board(out, params) {
+        let board_SQL = "INSERT INTO board (Church_No, BoardTitle, BoardRegDate, BoardLike, BoardHits, BoardID, BoardPW) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        let board_detail_SQL = "INSERT INTO board_detail (boardID, boardContent, boardTitle, BoardLike, BoardHits) VALUES  (?, ?, ?, ?, ?);";
+        // let JOBS_APPLICATION_LANG = "INSERT INTO JOBS_APPLICATION_LANG(JOBS_APPLICATION_SEQ, NAME) VALUES (?, ?);";
+        let conn =  await this.dbc.getConnection();
         let result = null;
         let error = null;
-            try {
-                await conn.beginTransaction(); // 트랜잭션 적용 시작
 
-                let ins_application = await conn.query(JOBS_APPLICATION_SQL, [params.jobs_seq, params.email, params.phone, params.link1, params.link2, params.link3, params.reg_time]);
-                
-                let jobAppSeq = ins_application[0].insertId;
-                let resume = params.files[0];
-                resume = JSON.parse(resume);
-                const ins_application_file = await conn.query(JOBS_APPLICATION_FILES_SQL,[
-                    jobAppSeq,resume.type,resume.path,resume.originalname,resume.filename,resume.size,resume.ext,resume.mimetype
-                ]);
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
 
-                if (params.files[1] != '{}') {
-                    let career  = params.files[1];
-                    career = JSON.parse(career);
-                    const ins_application_file_carrer = await conn.query(JOBS_APPLICATION_FILES_SQL,[
-                        jobAppSeq,career.type,career.path,career.originalname,career.filename,career.size,career.ext,career.mimetype
-                    ]);
-                    
-                }
-
-                if (params.files[2] != '{}') {
-                    let portfolio  = params.files[2];
-                    portfolio = JSON.parse(portfolio);
-                    const ins_application_file_carrer = await conn.query(JOBS_APPLICATION_FILES_SQL,[
-                        jobAppSeq,portfolio.type,portfolio.path,portfolio.originalname,portfolio.filename,portfolio.size,portfolio.ext,portfolio.mimetype
-                    ]);
-                    
-                }
-                const ins_application_lang = await conn.query(JOBS_APPLICATION_LANG, [jobAppSeq, params.name]);
-                
-                await conn.commit(); // 커밋
-                result = ins_application_lang;
-                out(error, result);
-            } catch (err) {
-                error = err;
-                console.log(err)
-                out(error, result);
-                await conn.rollback() // 롤백
-                // return res.status(500).json(err)
-            } finally {
-                conn.release() // con 회수
-            }
+            let ins_application = await conn.query(board_SQL, [params.church_no, params.board_title, params.board_reg, 
+                                                    params.board_like, params.board_hits, params.board_id, params.board_pw]);
+            let board_seq = ins_application[0].insertId;
+            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.board_content, params.board_title, params.board_like, params.board_hits]);
+            // const ins_application_lang = await conn.query(JOBS_APPLICATION_LANG, [jobAppSeq, params.name]);
             
+            await conn.commit(); // 커밋
+            result = ins_application_detail;
+            out(error, result);
+        } catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
     }
 
-    // contact us 페이지의 sending 폼 전송용
-    send_inquiries (out, name, email, phone, company, contents, nations_seq) {
-        let sql = "INSERT INTO BUSINESS_INQUIRY (FIELD, NAME, EMAIL, PHONE, COMPANY_NAME, CONTENTS, NATION_SEQ) VALUES ('BS', ?, ?, ?, ?, ?, ?)";
-        var params = [name, email, phone, company, contents, nations_seq];
-
-        // var after = this.make_inquiry_history.bind(this);
-        this.exec_query(sql,params, 
-            function (error, result, fields) {
-                if (error) {
-                    console.log('에러');
-                    console.log(error);    
-                    out(error, {});
-                }
-                if(result.affectedRows > 0) {
-                    // 정상 처리
-                    //console.log('정상처리됨');
-                    // after(result.insertId, name);
-                } else {
-                    // 에러
-                    console.log('에러');
-                }
-                out(error, result);
-            }
-        );
+    
+    // 게시글 검색
+    async inquiry_board (out, no) {
+        let sql = "SELECT * FROM board where Church_No = "+no+"";
+        console.log("sql", sql)
+        
+        let conn =  await this.dbc.getConnection();
+        let result = null;
+        let error = null;
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
+            let select_church = await conn.query(sql);
+            await conn.commit(); // 커밋
+            result = select_church[0];
+            out(error, result);
+            console.log("result", result)
+        }catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
     }
 
     // 교회 검색
@@ -98,7 +78,6 @@ class db_services {
             await conn.commit(); // 커밋
             result = select_church[0];
             out(error, result);
-            console.log("result", result)
         }catch (err) {
             error = err;
             console.log(err)

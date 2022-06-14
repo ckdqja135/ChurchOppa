@@ -8,6 +8,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/search', function(req, res) {
+  console.log("req", req.body.name)
+    res.render('html/churchpage', { church : req.body});
+})
+
+router.get('/search', function(req, res) {
   console.log("req", req.body)
     res.render('html/churchpage', { church : req.body});
 })

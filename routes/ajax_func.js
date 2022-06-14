@@ -14,7 +14,7 @@ router.post('/', function(req, res, next) {
     }
 
     res.json(result);
-    console.log("result", result)
+    // console.log("result", result)
   };
   
   if (func_name == 'search') {
@@ -22,8 +22,14 @@ router.post('/', function(req, res, next) {
   }
   else if (func_name == 'auto') {
     db_service.auto_search_church(out_func, req.body.keyword);
+  }  else if (func_name == 'inquiry_board') {
+    console.log("zzzzz", req.body)
+    db_service.inquiry_board(out_func, req.body)
+    // db_service.search_church(out_func, "새지음교회");
   } else if (func_name == 'create_board') {
-    console.log(req.body)
+    console.log("zzzzz", req.body)
+    db_service.create_board(out_func, req.body)
+    // db_service.search_church(out_func, "새지음교회");
   }
   else {
     res.json(null);
