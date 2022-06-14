@@ -38,37 +38,36 @@
             return (n < 10 ? '0' : '') + n;
         }
 
-        function inquiry_board() {
-            let church_no = window.church_data[0].ChurchNo;
-            console.log("church_no", church_no)
-            $.ajax({
-                url : '/ajax/inquiry_board',
-                type : "POST",
-                async: false, 
-                data : church_no,
-                success : function(result) {
-                    for(let i = 0; i < result.length; i++) {
-                        let str = ` <tr>
-                            <td><h6>${result[i].BoardTitle}</h6></td>
-                            <td><h6>${result[i].BoardID}</h6></td>
-                            <td><h6>${result[i].BoardRegDate}</h6></td>
-                            <td><h6>${result[i].BoardHits}</h6></td>
-                            <td>
-                                <button class="likebtn" id="like1">
-                                    <span id = heart><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
-                                </button>
-                            </td>
-                        </tr>`;
-                        church_board.append(str);
-                    }
-                    // console.log("얘는 왜 실행?")
-                },
-                error : function(request,status,error) {
-                    console.log(request+"\n",status,"\n",error, "\n")
-                }
-            });
-            // return church_data;
-        }
+        // function inquiry_board() {
+        //     let church_no = window.church_data[0].ChurchNo;
+        //     console.log("church_no", church_no)
+        //     $.ajax({
+        //         url : '/ajax/inquiry_board',
+        //         type : "POST",
+        //         data : church_no,
+        //         success : function(result) {
+        //             for(let i = 0; i < result.length; i++) {
+        //                 let str = ` <tr>
+        //                     <td><h6>${result[i].BoardTitle}</h6></td>
+        //                     <td><h6>${result[i].BoardID}</h6></td>
+        //                     <td><h6>${result[i].BoardRegDate}</h6></td>
+        //                     <td><h6>${result[i].BoardHits}</h6></td>
+        //                     <td>
+        //                         <button class="likebtn" id="like1">
+        //                             <span id = heart><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
+        //                         </button>
+        //                     </td>
+        //                 </tr>`;
+        //                 church_board.append(str);
+        //             }
+        //             // console.log("얘는 왜 실행?")
+        //         },
+        //         error : function(request,status,error) {
+        //             console.log(request+"\n",status,"\n",error, "\n")
+        //         }
+        //     });
+        //     // return church_data;
+        // }
 
         function create_board() {
             //  오늘 날짜 포맷 만들기.
@@ -91,10 +90,8 @@
             $.ajax({
                 url : '/ajax/create_board',
                 type : "POST",
-                async: false, 
                 data : board_data,
                 success : function(result) {
-                    let church_board = $('.board');
                     console.log(result);
                     $('#reviewModal').modal("hide");
                     $(".modal-backdrop").remove();

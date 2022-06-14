@@ -115,9 +115,8 @@
 
         var search = '<%=church.name%>';
 
-        // 검색하기.
+        // 검색된 교회 데이터 가져오기
         function search_church() {
-            this.church_data;
             $.ajax({
                 url : '/ajax/search',
                 type : "POST",
@@ -144,7 +143,7 @@
                                 <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
 
                         church_info.append(str)
-                        this.inquiry_board();
+                        inquiry_board()
                     } else {
                     
                     }
@@ -157,6 +156,39 @@
             return church_data;
         }
 
+        // 게시판 조회하기.
+        function inquiry_board() {
+            let _church_no = window.church_data[0].ChurchNo;
+            $.ajax({
+                url : '/ajax/inquiry_board',
+                type : "POST",
+                data : {
+                    church_no : _church_no
+                },
+                success : function(result) {
+                    let church_board = $('.board');
+                    for(let i = 0; i < result.length; i++) {
+                        let str = ` <tr>
+                            <td><h6>${result[i].BoardTitle}</h6></td>
+                            <td><h6>${result[i].BoardID}</h6></td>
+                            <td><h6>${result[i].BoardRegDate}</h6></td>
+                            <td><h6>${result[i].BoardHits}</h6></td>
+                            <td>
+                                <button class="likebtn" id="like1">
+                                    <span id = heart><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
+                                </button>
+                            </td>
+                        </tr>`;
+                        church_board.append(str);
+                    }
+                    // console.log("얘는 왜 실행?")
+                },
+                error : function(request,status,error) {
+                    console.log(request+"\n",status,"\n",error, "\n")
+                }
+            });
+            // return church_data;
+        }
     </script>
 </head>
 
@@ -223,7 +255,7 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal" onclick="initButton();">글쓰기</button>
                     </div>
                         <table class="table table-hover" style="cursor: pointer;">
-                            <tbody class="board" onload="inquiry_board();">
+                            <tbody class="board" >
                                 <!-- <tr>
                                     <td><h6>예배가 너무 은혜스러워요</h6></td>
                                     <td><h6>exam</h6></td>
