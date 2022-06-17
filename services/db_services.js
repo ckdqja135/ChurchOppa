@@ -8,19 +8,19 @@ class db_services {
     // 게시글 등록
     async create_board(out, params) {
         let board_SQL = "INSERT INTO board (Church_No, BoardTitle, BoardRegDate, BoardLike, BoardHits, BoardID, BoardPW) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        let board_detail_SQL = "INSERT INTO board_detail (boardID, boardContent, boardTitle, BoardLike, BoardHits) VALUES  (?, ?, ?, ?, ?);";
+        let board_detail_SQL = "INSERT INTO board_detail (boardID, boardContent, boardTitle, BoardLike, BoardHits, writerPw, writerId) VALUES  (?, ?, ?, ?, ?, ?, ?);";
         // let JOBS_APPLICATION_LANG = "INSERT INTO JOBS_APPLICATION_LANG(JOBS_APPLICATION_SEQ, NAME) VALUES (?, ?);";
         let conn =  await this.dbc.getConnection();
         let result = null;
         let error = null;
-
+        console.log("board_detail_SQL", board_detail_SQL)
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
 
             let ins_application = await conn.query(board_SQL, [params.church_no, params.board_title, params.board_reg, 
                                                     params.board_like, params.board_hits, params.board_id, params.board_pw]);
             let board_seq = ins_application[0].insertId;
-            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.board_content, params.board_title, params.board_like, params.board_hits]);
+            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.board_content, params.board_title, params.board_like, params.board_hits, params.board_id, params.board_pw]);
             // const ins_application_lang = await conn.query(JOBS_APPLICATION_LANG, [jobAppSeq, params.name]);
             
             await conn.commit(); // 커밋
@@ -48,9 +48,35 @@ class db_services {
         let error = null;
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
-            let select_church = await conn.query(sql);
+            let select_board = await conn.query(sql);
             await conn.commit(); // 커밋
-            result = select_church[0];
+            result = select_board[0];
+            out(error, result);
+            console.log("result", result)
+        }catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
+    }
+
+       // 게시글 상세 페이지 데이터 가져오기
+    async get_board_detail (out, no) {
+        let sql = "SELECT * FROM board_detail where boardID = "+no+"";
+        console.log("sql", sql)
+        
+        let conn =  await this.dbc.getConnection();
+        let result = null;
+        let error = null;
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
+            let select_board = await conn.query(sql);
+            await conn.commit(); // 커밋
+            result = select_board[0];
             out(error, result);
             console.log("result", result)
         }catch (err) {

@@ -6,4 +6,8 @@ var db_service = require('../services/db_services');
 router.get('/', function(req, res, next) {
     res.render('html/Board', { title: 'ChurchOppa' });
 });
+
+router.post('/:id', function(req, res, next) {
+    res.render('html/Board', { title: 'ChurchOppa'});
+});
 module.exports = router;

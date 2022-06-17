@@ -1,5 +1,6 @@
 (function (window) {
     $(document).ready(function(){
+        get_board();
         var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
         var status = false; //수정과 대댓글을 동시에 적용 못하도록
         $("#list").click(function(){
@@ -28,7 +29,8 @@
             }
 
             var reply_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
-
+            
+            
             //값 셋팅
             var objParams = {
                     board_id        : $("#board_id").val(),
@@ -628,4 +630,33 @@
             */
         });
     });
+    function get_board() {
+
+        var _board_no = window.location.href.split('/')[4];
+        console.log(_board_no)
+        $.ajax({
+            url : '/ajax/board_detail',
+            type : "POST",
+            data : {
+                board_no : _board_no
+            },
+            success : function(result) {
+                console.log("zzzz", result)
+                let board_body = $(".modal-body");
+                if (result) {
+                    var str = `
+                    <h2> ${result[0].boardTitle} </h2>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">${result[0].writerPw}</label>
+                        <div class="board_content" type="text" readonly> ${result[0].boardContent} </textarea> 
+                    </div>
+                    `
+                }
+                board_body.append(str);
+            },
+            error : function(request,status,error) {
+                console.log(request+"\n",status,"\n",error, "\n")
+            }
+        });
+    }
 })(window);

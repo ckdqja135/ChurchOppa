@@ -11,10 +11,10 @@
 
     $(document).ready(function () {
         // 테이블 클릭시 페이지 이동.
-        $('.table').on('click', () => {
-            let link = '/Board';
-            location.href = link;
-        })
+        // $('.table').on('click', () => {
+        //     let link = '/Board';
+        //     location.href = link;
+        // })
 
         // 좋아요 버튼 클릭 이벤트.
         $("[id^=like]").on('click', function(e){
@@ -96,6 +96,7 @@
                     $('#reviewModal').modal("hide");
                     $(".modal-backdrop").remove();
                     initButton();
+                    $(".board").empty();
                     inquiry_board();
                     // console.log("얘는 왜 실행?")
                 },

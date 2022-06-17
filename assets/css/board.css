@@ -1,0 +1,5 @@
+div .board_content {
+    border: 1px solid #735e5e;
+    height: 600px;
+    overflow: auto;
+}

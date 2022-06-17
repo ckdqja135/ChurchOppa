@@ -24,13 +24,14 @@ router.post('/', function(req, res, next) {
     db_service.auto_search_church(out_func, req.body.keyword);
   } 
   else if (func_name == 'inquiry_board') {
-    console.log("zzzzz", req.body)
     db_service.inquiry_board(out_func, req.body.church_no)
     // db_service.search_church(out_func, "새지음교회");
   } else if (func_name == 'create_board') {
-    console.log("zzzzz", req.body)
     db_service.create_board(out_func, req.body)
     // db_service.search_church(out_func, "새지음교회");
+  } else if (func_name == 'board_detail') {
+    console.log("ddd", req.body.board_no)
+    db_service.get_board_detail(out_func, req.body.board_no)
   }
   else {
     res.json(null);

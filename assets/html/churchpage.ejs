@@ -31,6 +31,8 @@
     <script src="../js/popper.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/chuchpage.js"></script>
+    <script src="../js/common.js"></script>
+    
     <!-- <script src="../js/core.min.js"></script>
     <script src="../js/sha256.min.js">import SHA256 from "./sha256.min";
            console.log("aaaa", SHA256("test"))
@@ -166,19 +168,21 @@
                     church_no : _church_no
                 },
                 success : function(result) {
+                    console.log("result", result)
                     let church_board = $('.board');
                     for(let i = 0; i < result.length; i++) {
-                        let str = ` <tr>
-                            <td><h6>${result[i].BoardTitle}</h6></td>
-                            <td><h6>${result[i].BoardID}</h6></td>
-                            <td><h6>${result[i].BoardRegDate}</h6></td>
-                            <td><h6>${result[i].BoardHits}</h6></td>
-                            <td>
-                                <button class="likebtn" id="like1">
-                                    <span id = heart><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
-                                </button>
-                            </td>
-                        </tr>`;
+                        let str = ` 
+                                    <tr  <a onclick="move_link('/board/', ${result[i].BoardNo})">>
+                                        <td><h6>${result[i].BoardTitle}</h6></td>
+                                        <td><h6>${result[i].BoardID}</h6></td>
+                                        <td><h6>${result[i].BoardRegDate}</h6></td>
+                                        <td><h6>${result[i].BoardHits}</h6></td>
+                                        <td>
+                                            <button class="likebtn" id="like1">
+                                                <span id = heart><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
+                                            </button>
+                                        </td>
+                                    </tr>`;
                         church_board.append(str);
                     }
                     // console.log("얘는 왜 실행?")

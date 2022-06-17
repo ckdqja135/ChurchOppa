@@ -13,15 +13,35 @@
 -- 	 `ChurchJibun` VARCHAR(200) NULL,
 --   `ChurchAddr` VARCHAR(200) NULL,
 --   PRIMARY KEY (`ChurchNo`))
--- ENGINE = InnoDB
+-- ENGINE = InnoDB;
+
+-- 게시판 list 테이블
+-- CREATE TABLE `churchoppa`.`board` (
+--   `BoardNo` BIGINT(20) NOT NULL,
+--   `Church_No` BIGINT(20) NULL,
+--   `BoardRegDate` VARCHAR(45) NULL,
+--   `BoardLike` BIGINT(20) NULL,
+--   `BoardHits` BIGINT(20) NULL,
+--   `BoardID` VARCHAR(45) NULL,
+--   `BoardPW` VARCHAR(45) NULL);
+
+-- 게시판 디테일 테이블
+-- CREATE TABLE `churchoppa`.`board_detail` (
+--   `boardID` BIGINT(20) NOT NULL,
+--   `boardContent` VARCHAR(400) NULL,
+--   `boardTitle` VARCHAR(60) NULL,
+--   `boardLike` BIGINT(20) NULL,
+--   `boardHits` BIGINT(20) NULL,
+--   PRIMARY KEY (`boardID`));
+
+
 
 -- 교회 데이터 insert
 -- INSERT INTO `churchoppa`.`churchinfo` 
 -- (`ChurchNo`, `ChurchName`, `ChurchLocate`, `ChurchReli`, `ChurchScales`, `ChurchPastor`, `ChurchTel`, `ChurchLateX`, `ChurchLateY`, `ChurchHome`, `ChurchSerIMG`, `ChurchJibun`, `ChurchAddr`, `ChurchMapIMG`) VALUES 
 -- ('0', '새지음교회', '서울시 강동구', '기하성', '중', '박지민', '02-483-3277', '37.549219', '127.128118', 'https://www.ncchurch.kr/', 'https://user-images.githubusercontent.com/33046341/165232296-83913b29-d259-45f5-9873-2e886db625c2.png', '(우)12922 경기도 하남시 미사강변북로 122', '경기도 하남시 망월동 122-22', 'https://yt3.ggpht.com/ytc/AKedOLRzfoBtzKKqM2YLjjIOufODb25UrJnxYEHLNyfC=s900-c-k-c0x00ffffff-no-rj');
 
--- select * from churchinfo where churchname =  "새지음교회";
-select * from churchinfo where churchname = '새지음교회' LIMIT 0, 10;
+-- select * from churchinfo
 -- 칼럼 값 수정 시 사용.
 -- ALTER TABLE ChurchInfo MODIFY ChurchLateX DOUBLE
 -- ALTER TABLE ChurchInfo MODIFY ChurchLateY DOUBLE
@@ -29,4 +49,4 @@ select * from churchinfo where churchname = '새지음교회' LIMIT 0, 10;
 --  칼럼 추가
 -- ALTER TABLE ChurchInfo ADD ChurchMapIMG VARCHAR(200) NULL
 -- 칼럼명 변경
--- ALTER TABLE ChurchInfo CHANGE ChurchLPost ChurchAddr VARCHAR(200) NULL--
+-- ALTER TABLE ChurchInfo CHANGE ChurchLPost ChurchAddr VARCHAR(200) NULL--churchinfochurchinfo
