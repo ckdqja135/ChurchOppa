@@ -5,7 +5,7 @@ const cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var fs = require('fs');
 
 // dbconneciton 
 // var db_connector = require('./conf/db_conn');
@@ -22,6 +22,15 @@ app.set('view engine', 'ejs');
 
 
 app.use(logger('dev'));
+
+// log 기록하기
+app.use(
+  logger('common', {
+    stream: fs.createWriteStream('./access.log', { flags: 'a' }) 
+		// flags : a => 로그를 계속 덧붙인다
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -50,8 +59,9 @@ app.use(cookieParser());
 // pc, mobile 라우팅. routes 파일에서 device별 렌더링.
 app.use('/', require('./routes/index'));
 app.use('/search', require('./routes/chuchpage'));
-// app.use('/upload', require('./routes/upload'));
 app.use('/ajax/:func', require('./routes/ajax_func'));
+app.use('/board', require('./routes/board'));
+// app.use('/upload', require('./routes/upload'));
 // app.use('/:lang/users', require('./routes/users'));
 // app.use('/:lang/careers', require('./routes/careers'));
 // app.use('/:lang/openVacancies', require('./routes/openVacancies'));
@@ -90,9 +100,9 @@ app.use(cors());
 // });
 
 // app.use(express.static('images'));
-app.get('/Board', function(req, res){
-  res.render('Board.ejs');
-})
+// app.get('/Board', function(req, res){
+//   res.render('Board.ejs');
+// })
 
 // css파일을 가져오도록 설정.
 app.use('/', express.static(__dirname + '/assets'));
