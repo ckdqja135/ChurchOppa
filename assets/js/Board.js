@@ -647,7 +647,7 @@
                     var str = `
                     <h2> ${result[0].boardTitle} </h2>
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">${result[0].writerPw}</label>
+                        <label for="message-text" class="col-form-label">${result[0].writerId}</label>
                         <div class="board_content" type="text" readonly> ${result[0].boardContent} </textarea> 
                     </div>
                     `

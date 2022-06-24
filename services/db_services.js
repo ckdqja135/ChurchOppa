@@ -8,7 +8,7 @@ class db_services {
     // 게시글 등록
     async create_board(out, params) {
         let board_SQL = "INSERT INTO board (Church_No, BoardTitle, BoardRegDate, BoardLike, BoardHits, BoardID, BoardPW) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        let board_detail_SQL = "INSERT INTO board_detail (boardID, boardContent, boardTitle, BoardLike, BoardHits, writerPw, writerId) VALUES  (?, ?, ?, ?, ?, ?, ?);";
+        let board_detail_SQL = "INSERT INTO board_detail (boardID, boardContent, boardTitle, BoardLike, BoardHits, writerId, writerPw) VALUES  (?, ?, ?, ?, ?, ?, ?);";
         // let JOBS_APPLICATION_LANG = "INSERT INTO JOBS_APPLICATION_LANG(JOBS_APPLICATION_SEQ, NAME) VALUES (?, ?);";
         let conn =  await this.dbc.getConnection();
         let result = null;
