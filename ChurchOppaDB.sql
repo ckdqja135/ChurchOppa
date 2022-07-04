@@ -34,6 +34,16 @@
 --   `boardHits` BIGINT(20) NULL,
 --   PRIMARY KEY (`boardID`));
 
+-- CREATE TABLE `churchoppa`.`board_comment` (
+-- `CommentId` BIGINT(20) NULL,
+--  `BoardID` BIGINT(20) NULL,
+-- `CommentLike` BIGINT(20) NULL, 
+--  `CommentDepth` VARCHAR(45) NULL,
+--  `WriterId` VARCHAR(45) NULL,
+-- `WriterPw` VARCHAR(45) NULL,
+--  `Commnetperent` VARCHAR(45) NULL,
+--  `CommentContent` VARCHAR(200) NULL,
+--  PRIMARY KEY (`CommentId`));
 
 
 -- 교회 데이터 insert
