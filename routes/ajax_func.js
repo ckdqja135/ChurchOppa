@@ -30,9 +30,14 @@ router.post('/', function(req, res, next) {
     db_service.create_board(out_func, req.body)
     // db_service.search_church(out_func, "새지음교회");
   } else if (func_name == 'board_detail') {
-    console.log("ddd", req.body.board_no)
     db_service.get_board_detail(out_func, req.body.board_no)
+  } else if (func_name == 'board_comment') {
+    db_service.save_comment(out_func, req.body)
+  } else if (func_name == 'get_board_comment') {
+    console.log("req.body.board_idx", req.body.board_idx)
+    db_service.get_comment(out_func, Number(req.body.board_idx));
   }
+  
   else {
     res.json(null);
   } 

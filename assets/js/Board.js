@@ -42,28 +42,34 @@
             };
             var reply_id;
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
-            /*
-            $.ajax({
-                url         :   "/board/reply/save",
-                dataType    :   "json",
-                contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-                type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
-                data        :   objParams,
-                success     :   function(retVal){
+            
+            //값 셋팅
+            var objParams = {
+                board_id        : window.location.href.split('/')[4],
+                parent_id       : "0",  
+                depth           : "0",
+                reply_writer    : $("#reply_writer").val(),
+                reply_password  : $("#reply_password").val(),
+                reply_content   : reply_content,
+                reply_like      : 0
+            };
 
-                    if(retVal.code != "OK") {
-                        alert(retVal.message);
-                    }else{
-                        reply_id = retVal.reply_id;
-                    }
-                },
+            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            $.ajax({
+            url         :   "/ajax/board_comment",
+            type        :   "post",
+            data        :   objParams,
+            success     :   function(result){
+                if(result.length > 0) {
+                    console.log(result)
+                    reply_id = result.insertId;//DB에 저장했다 하고 순번을 생성
+                }
+            },
                 error       :   function(request, status, error){
                     console.log("AJAX_ERROR");
                 }
             });
-            */
-            reply_id = reply_count++;//DB에 저장했다 하고 순번을 생성
+            
 
             var reply_area = $("#reply_area");
             var reply = 
@@ -653,10 +659,55 @@
                     `
                 }
                 board_body.append(str);
+                get_board_comment(_board_no);
             },
             error : function(request,status,error) {
                 console.log(request+"\n",status,"\n",error, "\n")
             }
         });
+    }
+
+      // 댓글 조회하기.
+      function get_board_comment(_board_no) {
+        let borad_no = window.location.href.split('/')[4];
+        $.ajax({
+            url : '/ajax/get_board_comment',
+            type : "POST",
+            data : {
+                board_idx : _board_no
+            },
+            success : function(result) {
+                console.log("result", result)
+                for (let i = 0; i < result.length; i++) {
+                    // var reply_area = $("#reply_area");
+                    var reply = 
+                        '<tr reply_type="main">'+
+                        '   <td width="820px">'+
+                        result[i].CommentContent+
+                        '   </td>'+
+                        '   <td width="100px">'+
+                        result[i].WriterId+
+                        '   </td>'+
+                        '   <td width="100px">'+
+                        '       <input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                        '   </td>'+
+                        '   <td width="300px">'+
+                        '       <button name="reply_reply" reply_id = "'+result[i].CommentId+'">댓글</button>'+
+                        '       <button name="reply_modify" r_type = "main" reply_id = "'+result[i].CommentId+'">수정</button>      '+
+                        '       <button name="reply_del" reply_id = "'+result[i].CommentId+'">삭제</button>      '+
+                        '   </td>'+
+                        '</tr>';
+                    if($('#reply_area').contents().size()==0){
+                        $('#reply_area').append(reply);
+                    } else {
+                        $('#reply_area tr:last').after(reply);
+                    }
+                }
+            },
+            error : function(request,status,error) {
+                console.log(request+"\n",status,"\n",error, "\n")
+            }
+        });
+        // return church_data;
     }
 })(window);
