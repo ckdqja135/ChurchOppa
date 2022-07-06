@@ -169,7 +169,7 @@ class db_services {
         }
     }
 
-      // 댓글 조회
+    // 댓글 조회
     async get_comment (out, idx) {
         let sql = "select * from board_comment where BoardID = "+idx+"";
         console.log("sql", sql)
@@ -183,7 +183,6 @@ class db_services {
             await conn.commit(); // 커밋
             result = select_church[0];
             out(error, result);
-            console.log("result", result)
         }catch (err) {
             error = err;
             console.log(err)
@@ -194,6 +193,33 @@ class db_services {
             conn.release() // con 회수
         }
     }
+
+        // 댓글 삭제
+        async del_comment (out, params) {
+            let sql = "UPDATE board_comment SET CommentContent='작성자가 삭제한 글입니다.' " +
+                        "WHERE CommentId = "+params.reply_idx+" AND WriterPw = '"+params.reply_pw+"';";
+            console.log("sql", sql)
+            
+            let conn =  await this.dbc.getConnection();
+            let result = null;
+            let error = null;
+            try {
+                await conn.beginTransaction(); // 트랜잭션 적용 시작
+                let update_comment = await conn.query(sql);
+                await conn.commit(); // 커밋
+                result = update_comment[0];
+                out(error, result);
+                console.log("result", result)
+            }catch (err) {
+                error = err;
+                console.log(err)
+                out(error, result);
+                await conn.rollback() // 롤백
+                // return res.status(500).json(err)
+            } finally {
+                conn.release() // con 회수
+            }
+        }
 }
 
 module.exports = new db_services();

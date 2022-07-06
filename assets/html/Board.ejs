@@ -29,16 +29,16 @@
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=80d6fac198542c9021cd4229a30df6b2"></script>
 
     <script type="text/javascript" src="../js/Board.js"></script>
-    <script src="../css/board.css"></script>
+    <script type="text/css" src="../css/board.css"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        textarea{
-            width:100%;
-        }
-    </style>
+
+    <script> 
+  
+        </script>
 </head>
 
 <body>
+    
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/">교회오빠</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,5 +104,67 @@
             <button type="button" class="btn btn-secondary" id="BackBtn" onclick="javascript:history.back();" style="position: relative; left: 20px;">뒤로가기</button>
         </footer>
     </div>
+
+    <!-- confirm Modal HTML -->
+    <div class="modal fade" id="confirmModal" >
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header flex-column">
+                    <!-- <div class="icon-box">
+                        <i class="material-icons">&#xE5CD;</i>
+                    </div>						 -->
+                    <h4 class="modal-title w-100">삭제 확인</h4>	
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div>
+                    <p>정말로 삭제 하시겠습니까?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="Deletebtn" onclick="del_comment();">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>     
+
+    <!-- Delete Compleate Modal HTML -->
+    <div class="modal fade" id="DeleteModal" >
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <div class="icon-box">
+                        <i class="material-icons">&#xE876;</i>
+                    </div>				 -->
+                    <h4 class="modal-title w-100">삭제 완료</h4>	
+                </div>
+                <div>
+                    <p class="text-center">해당 댓글이 삭제되었습니다.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-block" data-dismiss="modal" onclick="location.reload();">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>   
+
+        <!-- Fail Modal HTML -->
+        <div class="modal fade" id="FailModal" >
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <div class="icon-box">
+                            <i class="material-icons">&#xE5CD;</i>
+                        </div>				 -->
+                        <h4 class="modal-title w-100">비밀번호 오류</h4>	
+                    </div>
+                    <div>
+                        <p class="text-center">비밀번호가 일치하지 않습니다.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger btn-block" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
-    </html>
+</html>

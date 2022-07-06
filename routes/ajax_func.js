@@ -34,8 +34,10 @@ router.post('/', function(req, res, next) {
   } else if (func_name == 'board_comment') {
     db_service.save_comment(out_func, req.body)
   } else if (func_name == 'get_board_comment') {
-    console.log("req.body.board_idx", req.body.board_idx)
     db_service.get_comment(out_func, Number(req.body.board_idx));
+  } else if (func_name == 'delete_comment') {
+    console.log("req", req.body)
+    db_service.del_comment(out_func, req.body);
   }
   
   else {

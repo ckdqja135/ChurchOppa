@@ -31,15 +31,15 @@
             var reply_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
             
             
-            //값 셋팅
-            var objParams = {
-                    board_id        : $("#board_id").val(),
-                    parent_id       : "0",  
-                    depth           : "0",
-                    reply_writer    : $("#reply_writer").val(),
-                    reply_password  : $("#reply_password").val(),
-                    reply_content   : reply_content
-            };
+            // //값 셋팅
+            // var objParams = {
+            //         board_id        : $("#board_id").val(),
+            //         parent_id       : "0",  
+            //         depth           : "0",
+            //         reply_writer    : $("#reply_writer").val(),
+            //         reply_password  : $("#reply_password").val(),
+            //         reply_content   : reply_content
+            // };
             var reply_id;
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
             
@@ -48,8 +48,8 @@
                 board_id        : window.location.href.split('/')[4],
                 parent_id       : "0",  
                 depth           : "0",
-                reply_writer    : $("#reply_writer").val(),
-                reply_password  : $("#reply_password").val(),
+                reply_writer    : $("#reply_writer").val().trim(),
+                reply_password  : $("#reply_password").val().trim(),
                 reply_content   : reply_content,
                 reply_like      : 0
             };
@@ -100,61 +100,24 @@
             $("#reply_password").val("");
             $("#reply_content").val("");
         });
-        //댓글 삭제
-        $(document).on("click","button[name='reply_del']", function(){
-            var check = false;
-            var reply_id = $(this).attr("reply_id");
-            var reply_password = "reply_password_"+reply_id;
-            if($("#"+reply_password).val().trim() == ""){
-                alert("패스워드을 입력하세요.");
-                $("#"+reply_password).focus();
-                return false;
-            }
-            //패스워드와 아이디를 넘겨 삭제를 한다.
-            //값 셋팅
-            var objParams = {
-                    reply_password  : $("#"+reply_password).val(),
-                    reply_id        : reply_id
-            };
-            //ajax 호출
-            /*
-            $.ajax({
-                url         :   "/board/reply/del",
-                dataType    :   "json",
-                contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-                type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
-                data        :   objParams,
-                success     :   function(retVal){
+            
+            // check = true;//삭제 되면 체크값을 true로 변경
 
-                    if(retVal.code != "OK") {
-                        alert(retVal.message);
-                    }else{
-                        check = true;
-                    }
-                },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-            */
-            check = true;//삭제 되면 체크값을 true로 변경
+            // if(check){
+            //     //삭제하면서 하위 댓글도 삭제
+            //     var prevTr = $(this).parent().parent().next(); //댓글의 다음
 
-            if(check){
-                //삭제하면서 하위 댓글도 삭제
-                var prevTr = $(this).parent().parent().next(); //댓글의 다음
-
-                while(prevTr.attr("reply_type")=="sub"){//댓글의 다음이 sub면 계속 넘어감
-                    prevTr = prevTr.next();
-                    prevTr.prev().remove();
-                }
-                //마지막 리플 처리
-                if(prevTr.attr("reply_type") == undefined){
-                    prevTr = $(this).parent().parent();
-                    prevTr.remove();
-                }
-                $(this).parent().parent().remove(); 
-            }
+            //     while(prevTr.attr("reply_type")=="sub"){//댓글의 다음이 sub면 계속 넘어감
+            //         prevTr = prevTr.next();
+            //         prevTr.prev().remove();
+            //     }
+            //     //마지막 리플 처리
+            //     if(prevTr.attr("reply_type") == undefined){
+            //         prevTr = $(this).parent().parent();
+            //         prevTr.remove();
+            //     }
+            //     $(this).parent().parent().remove(); 
+            // }
         });
         
         //댓글 수정 입력
@@ -635,7 +598,61 @@
             });
             */
         });
-    });
+    
+        // 댓글 index
+        var comment_idx;
+        // 작성자 비밀번호
+        var comment_pw;
+
+        $(document).on("click","button[name='reply_del']", function(){
+            // var check = false;
+            comment_idx = $(this).attr("reply_id");
+            comment_pw = "reply_password_"+comment_idx;
+    
+            if($("#"+comment_pw).val().trim() == ""){
+                alert("패스워드을 입력하세요.");
+                $("#"+comment_pw).focus();
+                return false;
+            } else {
+                jQuery.noConflict();
+                $('#confirmModal').modal('show');
+            }
+        });
+        
+        //댓글 삭제
+        function del_comment () {
+            // var reply_idx = $(this).attr("reply_id");
+            // var reply_password = "reply_password_"+reply_idx;
+            console.log(comment_idx, comment_pw)
+            //패스워드와 인덱스 넘겨 삭제를 한다.
+            //값 셋팅
+            var objParams = {
+                    reply_pw   : $("#"+comment_pw).val(),
+                    reply_idx        : comment_idx
+            };
+            //ajax 호출
+            $.ajax({
+                url         :   "/ajax/delete_comment",
+                type        :   "post",
+                data        :   objParams,
+                success     :   function(result){
+                    if(result.affectedRows > 0) {
+                        jQuery.noConflict();
+                        $('#confirmModal').modal('hide');
+                        $('#DeleteModal').modal('show');
+                    } else {
+                        jQuery.noConflict();
+                        $('#confirmModal').modal('hide');
+                        $('#FailModal').modal('show');
+                    }
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+        }
+
+    // 게시판 상세조회.
     function get_board() {
 
         var _board_no = window.location.href.split('/')[4];
@@ -668,8 +685,7 @@
     }
 
       // 댓글 조회하기.
-      function get_board_comment(_board_no) {
-        let borad_no = window.location.href.split('/')[4];
+    function get_board_comment(_board_no) {
         $.ajax({
             url : '/ajax/get_board_comment',
             type : "POST",
@@ -693,8 +709,8 @@
                         '   </td>'+
                         '   <td width="300px">'+
                         '       <button name="reply_reply" reply_id = "'+result[i].CommentId+'">댓글</button>'+
-                        '       <button name="reply_modify" r_type = "main" reply_id = "'+result[i].CommentId+'">수정</button>      '+
-                        '       <button name="reply_del" reply_id = "'+result[i].CommentId+'">삭제</button>      '+
+                        '       <button name="reply_modify" r_type = "main" reply_id = "'+result[i].CommentId+'">수정</button>'+
+                        '       <button name="reply_del" reply_id = "'+result[i].CommentId+'">삭제</button>'+
                         '   </td>'+
                         '</tr>';
                     if($('#reply_area').contents().size()==0){
@@ -710,4 +726,5 @@
         });
         // return church_data;
     }
+    window.del_comment = del_comment;
 })(window);
