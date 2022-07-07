@@ -32,11 +32,9 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/chuchpage.js"></script>
     <script src="../js/common.js"></script>
-    
-    <!-- <script src="../js/core.min.js"></script>
-    <script src="../js/sha256.min.js">import SHA256 from "./sha256.min";
-           console.log("aaaa", SHA256("test"))
-           </script> -->
+    <!-- <script type="module" src="../js/sha256.js"></script>
+    -->
+
     <!-- kakaoMap -->
     <script>
 
@@ -359,8 +357,51 @@
                 <div id="map" style="width:45%;height:350px">
             </div>
         </div>
+        <script	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+        <script>
+        // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
+        function day_month_format(n) {
+            return (n < 10 ? '0' : '') + n;
+        }
 
+        function create_board() {
+            //  오늘 날짜 포맷 만들기.
+            var date = new Date();
+            var month = day_month_format(date.getMonth()+1); //months (0-11)
+            var day = day_month_format(date.getDate()); //day (1-31)
+            var year = date.getFullYear();
+            var date_format =  year + "-" + month + "-" + day;
 
+            var board_data = {
+                church_no : window.church_data[0].ChurchNo,
+                board_title : $('#recipient-title').val().trim(),
+                board_content : $('#message-text').val(),
+                board_reg : date_format,
+                board_like : 0,
+                board_hits : 0,
+                board_id : $('#replyId').val().trim(),
+                board_pw : sha256($('#replyPassword').val().trim()),
+            };
+            $.ajax({
+                url : '/ajax/create_board',
+                type : "POST",
+                data : board_data,
+                success : function(result) {
+                    console.log(result);
+                    $('#reviewModal').modal("hide");
+                    $(".modal-backdrop").remove();
+                    initButton();
+                    $(".board").empty();
+                    inquiry_board();
+                    // console.log("얘는 왜 실행?")
+                },
+                error : function(request,status,error) {
+                    console.log(request+"\n",status,"\n",error, "\n")
+                }
+            });
+            // return church_data;
+        }
+    </script>
     <!-- <footer class="container">
         <div class="container row" style="float: none; margin:100 auto;">
             <div class="col-md-3" style="float: none; margin:0 auto;">

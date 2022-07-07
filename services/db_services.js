@@ -52,7 +52,6 @@ class db_services {
             await conn.commit(); // 커밋
             result = select_board[0];
             out(error, result);
-            console.log("result", result)
         }catch (err) {
             error = err;
             console.log(err)
@@ -74,11 +73,10 @@ class db_services {
         let error = null;
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
-            let select_board = await conn.query(sql);
+            let detail_board = await conn.query(sql);
             await conn.commit(); // 커밋
-            result = select_board[0];
+            result = detail_board[0];
             out(error, result);
-            console.log("result", result)
         }catch (err) {
             error = err;
             console.log(err)

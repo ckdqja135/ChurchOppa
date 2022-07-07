@@ -34,9 +34,9 @@
 
     
         // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
-        function day_month_format(n) {
-            return (n < 10 ? '0' : '') + n;
-        }
+        // function day_month_format(n) {
+        //     return (n < 10 ? '0' : '') + n;
+        // }
 
         // function inquiry_board() {
         //     let church_no = window.church_data[0].ChurchNo;
@@ -69,43 +69,43 @@
         //     // return church_data;
         // }
 
-        function create_board() {
-            //  오늘 날짜 포맷 만들기.
-            var date = new Date();
-            var month = day_month_format(date.getMonth()+1); //months (0-11)
-            var day = day_month_format(date.getDate()); //day (1-31)
-            var year = date.getFullYear();
-            var date_format =  year + "-" + month + "-" + day;
+        // function create_board() {
+        //     //  오늘 날짜 포맷 만들기.
+        //     var date = new Date();
+        //     var month = day_month_format(date.getMonth()+1); //months (0-11)
+        //     var day = day_month_format(date.getDate()); //day (1-31)
+        //     var year = date.getFullYear();
+        //     var date_format =  year + "-" + month + "-" + day;
 
-            var board_data = {
-                church_no : window.church_data[0].ChurchNo,
-                board_title : $('#recipient-title').val().trim(),
-                board_content : $('#message-text').val(),
-                board_reg : date_format,
-                board_like : 0,
-                board_hits : 0,
-                board_id : $('#replyId').val().trim(),
-                board_pw : $('#replyPassword').val().trim(),
-            };
-            $.ajax({
-                url : '/ajax/create_board',
-                type : "POST",
-                data : board_data,
-                success : function(result) {
-                    console.log(result);
-                    $('#reviewModal').modal("hide");
-                    $(".modal-backdrop").remove();
-                    initButton();
-                    $(".board").empty();
-                    inquiry_board();
-                    // console.log("얘는 왜 실행?")
-                },
-                error : function(request,status,error) {
-                    console.log(request+"\n",status,"\n",error, "\n")
-                }
-            });
-            // return church_data;
-        }
+        //     var board_data = {
+        //         church_no : window.church_data[0].ChurchNo,
+        //         board_title : $('#recipient-title').val().trim(),
+        //         board_content : $('#message-text').val(),
+        //         board_reg : date_format,
+        //         board_like : 0,
+        //         board_hits : 0,
+        //         board_id : $('#replyId').val().trim(),
+        //         board_pw : SHA256($('#replyPassword').val().trim()),
+        //     };
+        //     $.ajax({
+        //         url : '/ajax/create_board',
+        //         type : "POST",
+        //         data : board_data,
+        //         success : function(result) {
+        //             console.log(result);
+        //             $('#reviewModal').modal("hide");
+        //             $(".modal-backdrop").remove();
+        //             initButton();
+        //             $(".board").empty();
+        //             inquiry_board();
+        //             // console.log("얘는 왜 실행?")
+        //         },
+        //         error : function(request,status,error) {
+        //             console.log(request+"\n",status,"\n",error, "\n")
+        //         }
+        //     });
+        //     // return church_data;
+        // }
         window.initButton = initButton;
-        window.create_board = create_board;
+        // window.create_board = create_board;
 })(window);
