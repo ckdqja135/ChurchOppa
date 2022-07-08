@@ -3,104 +3,6 @@
         get_board();
         var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
         var status = false; //수정과 대댓글을 동시에 적용 못하도록
-        $("#list").click(function(){
-            alert("게시판 리스트로 이동");
-            //location.href = "/board/list";
-        });
-        //댓글 저장
-        $("#reply_save").click(function(){
-            //null 검사
-            if($("#reply_writer").val().trim() == ""){
-                alert("이름을 입력하세요.");
-                $("#reply_writer").focus();
-                return false;
-            }
-            
-            if($("#reply_password").val().trim() == ""){
-                alert("패스워드를 입력하세요.");
-                $("#reply_password").focus();
-                return false;
-            }
-
-            if($("#reply_content").val().trim() == ""){
-                alert("내용을 입력하세요.");
-                $("#reply_content").focus();
-                return false;
-            }
-
-            var reply_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
-            
-            
-            // //값 셋팅
-            // var objParams = {
-            //         board_id        : $("#board_id").val(),
-            //         parent_id       : "0",  
-            //         depth           : "0",
-            //         reply_writer    : $("#reply_writer").val(),
-            //         reply_password  : $("#reply_password").val(),
-            //         reply_content   : reply_content
-            // };
-            var reply_id;
-            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
-            
-            //값 셋팅
-            var objParams = {
-                board_id        : window.location.href.split('/')[4],
-                parent_id       : "0",  
-                depth           : "0",
-                reply_writer    : $("#reply_writer").val().trim(),
-                reply_password  : $("#reply_password").val().trim(),
-                reply_content   : reply_content,
-                reply_like      : 0
-            };
-
-            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
-            $.ajax({
-            url         :   "/ajax/board_comment",
-            type        :   "post",
-            data        :   objParams,
-            success     :   function(result){
-                if(result.length > 0) {
-                    console.log(result)
-                    reply_id = result.insertId;//DB에 저장했다 하고 순번을 생성
-                }
-            },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-            
-
-            var reply_area = $("#reply_area");
-            var reply = 
-                '<tr reply_type="main">'+
-                '   <td width="820px">'+
-                reply_content+
-                '   </td>'+
-                '   <td width="100px">'+
-                $("#reply_writer").val()+
-                '   </td>'+
-                '   <td width="100px">'+
-                '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-                '   </td>'+
-                '   <td width="300px">'+
-                '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
-                '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
-                '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
-                '   </td>'+
-                '</tr>';
-            if($('#reply_area').contents().size()==0){
-                $('#reply_area').append(reply);
-            } else {
-                $('#reply_area tr:last').after(reply);
-            }
-
-            //댓글 초기화
-            $("#reply_writer").val("");
-            $("#reply_password").val("");
-            $("#reply_content").val("");
-        });
-            
             // check = true;//삭제 되면 체크값을 true로 변경
 
             // if(check){
@@ -118,7 +20,7 @@
             //     }
             //     $(this).parent().parent().remove(); 
             // }
-        });
+    });
         
         //댓글 수정 입력
         $(document).on("click","button[name='reply_modify']", function(){
@@ -656,7 +558,6 @@
     function get_board() {
 
         var _board_no = window.location.href.split('/')[4];
-        console.log(_board_no)
         $.ajax({
             url : '/ajax/board_detail',
             type : "POST",
@@ -664,7 +565,6 @@
                 board_no : _board_no
             },
             success : function(result) {
-                console.log("zzzz", result)
                 let board_body = $(".modal-body");
                 if (result) {
                     var str = `
@@ -726,5 +626,88 @@
         });
         // return church_data;
     }
+    //댓글 저장
+    function insert_comment () {
+            //null 검사
+            if($("#reply_writer").val().trim() == ""){
+                alert("이름을 입력하세요.");
+                $("#reply_writer").focus();
+                return false;
+            }
+            
+            if($("#reply_password").val().trim() == ""){
+                alert("패스워드를 입력하세요.");
+                $("#reply_password").focus();
+                return false;
+            }
+
+            if($("#reply_content").val().trim() == ""){
+                alert("내용을 입력하세요.");
+                $("#reply_content").focus();
+                return false;
+            }
+
+            var reply_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
+            var reply_id;
+            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            
+            //값 셋팅
+            var objParams = {
+                board_id        : window.location.href.split('/')[4],
+                parent_id       : "0",  
+                depth           : "0",
+                reply_writer    : $("#reply_writer").val().trim(),
+                reply_password  : $("#reply_password").val().trim(),
+                reply_content   : reply_content,
+                reply_like      : 0
+            };
+
+            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            $.ajax({
+            url         :   "/ajax/board_comment",
+            type        :   "post",
+            data        :   objParams,
+            success     :   function(result){
+            if(result.length > 0) {
+                console.log(result)
+                reply_id = result.insertId; 
+
+            var reply_area = $("#reply_area");
+            var reply = 
+                '<tr reply_type="main">'+
+                '   <td width="820px">'+
+                reply_content+
+                '   </td>'+
+                '   <td width="100px">'+
+                $("#reply_writer").val()+
+                '   </td>'+
+                '   <td width="100px">'+
+                '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                '   </td>'+
+                '   <td width="300px">'+
+                '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
+                '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
+                '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
+                '   </td>'+
+                '</tr>';
+                
+                if($('#reply_area').contents().size()==0){
+                    reply_area.append(reply);
+                } else {
+                    $('#reply_area tr:last').after(reply);
+                }
+
+                //댓글 초기화
+                $("#reply_writer").val("");
+                $("#reply_password").val("");
+                $("#reply_content").val("");
+            }
+        },
+            error       :   function(request, status, error){
+                console.log("AJAX_ERROR");
+            }
+        });
+    }
+    window.insert_comment = insert_comment;
     window.del_comment = del_comment;
 })(window);

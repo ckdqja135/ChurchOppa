@@ -63,17 +63,19 @@ class db_services {
         }
     }
 
-       // 게시글 상세 페이지 데이터 가져오기
+    // 게시글 상세 페이지 데이터 가져오기
     async get_board_detail (out, no) {
-        let sql = "SELECT * FROM board_detail where boardID = "+no+"";
-        console.log("sql", sql)
+        let sel_sql = "SELECT * FROM board_detail WHERE boardID = "+no+"";
+        let upd_sql = "UPDATE board SET BoardHits = BoardHits + 1 WHERE BoardNo = "+no+"";
+        console.log("sql", upd_sql)
         
         let conn =  await this.dbc.getConnection();
         let result = null;
         let error = null;
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
-            let detail_board = await conn.query(sql);
+            let detail_board = await conn.query(sel_sql);
+            await conn.query(upd_sql);
             await conn.commit(); // 커밋
             result = detail_board[0];
             out(error, result);
