@@ -3,8 +3,14 @@
         get_board();
         var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
         var status = false; //수정과 대댓글을 동시에 적용 못하도록
+        // 뒤로가기 이벤트 수정.
+        window.onpageshow = function(event) {
+            if ( event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+                (location).attr("href", "/churchpage")
+            }
+        }
             // check = true;//삭제 되면 체크값을 true로 변경
-
+            // //댓글 삭제
             // if(check){
             //     //삭제하면서 하위 댓글도 삭제
             //     var prevTr = $(this).parent().parent().next(); //댓글의 다음
@@ -690,7 +696,7 @@
                 '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
                 '   </td>'+
                 '</tr>';
-                
+
                 if($('#reply_area').contents().size()==0){
                     reply_area.append(reply);
                 } else {
