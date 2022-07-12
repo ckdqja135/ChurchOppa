@@ -97,7 +97,7 @@
             </ul>
         </div>
         <footer>
-            <button type="button" class="btn btn-secondary" id="BackBtn" onclick="javascript:history.back();" style="position: relative; left: 20px;">뒤로가기</button>
+            <button type="button" class="btn btn-secondary" id="BackBtn" onclick="location.href = document.referrer;" style="position: relative; left: 20px;">뒤로가기</button>
         </footer>
     </div>
 
@@ -116,8 +116,8 @@
                     <p>정말로 삭제 하시겠습니까?</p>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="Deletebtn" onclick="del_comment();">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" id="Deletebtn" onclick="del_comment();">삭제</button>
                 </div>
             </div>
         </div>
@@ -137,7 +137,7 @@
                     <p class="text-center">해당 댓글이 삭제되었습니다.</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success btn-block" data-dismiss="modal" onclick="location.reload();">OK</button>
+                    <button class="btn btn-success btn-block" data-dismiss="modal" onclick="location.reload();">확인</button>
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ router.all('/', function(req, res, next) {
     res.render('html/churchpage', { title: 'ChurchOppa', church : req.query.name });
 });
 
+
 // router.all('/name=?', function(req, res) {
 //     console.log("req", req)
 //     res.render('html/churchpage', { title: 'ChurchOppa', church : req.query.name});
