@@ -1,19 +1,50 @@
 (function (window) {
     function likeEvent() {
         let heartSpan = document.querySelectorAll('.icon');
+        
         for(let i = 0; i< heartSpan.length; i++) {
-            heartSpan[i].addEventListener('click', function(e){
+            $(heartSpan[i]).on('click', function(e){
                 if(heartSpan[i].classList.value == "icon like-default") {
                     heartSpan[i].classList.value = "icon like-fill";
                     heartSpan[i].firstChild.classList.value = "fa fa-heart";
-                    console.log("Hihi")
+                    e.stopPropagation();
                 } else {
                     heartSpan[i].classList.value = "icon like-default";
                     heartSpan[i].firstChild.classList.value = "fa fa-heart-o";
+                    e.stopPropagation();
                 }
             });
         }
     }
+
+    $( "button[id*='like']" ).click(function() {
+        console.log($(this).attr('id'));
+    })
+
+    // function likeevent2()  {
+    //     var btn1 = document.querySelectorAll('btn like');
+    //     var btn2 = document.querySelectorAll('btn dislike');
+    //     console.log("btn1", btn1)
+    //     // btn1.addEventListener('click', function() {
+          
+    //     //     if (btn2.classList.contains('red')) {
+    //     //       btn2.classList.remove('red');
+    //     //     } 
+    //     //   this.classList.toggle('green');
+          
+    //     // });
+        
+    //     // btn2.addEventListener('click', function() {
+          
+    //     //     if (btn1.classList.contains('green')) {
+    //     //       btn1.classList.remove('green');
+    //     //     } 
+    //     //   this.classList.toggle('red');
+          
+    //     // });
+        
+        
+    // }
 
     // 모달 입력 값 초기화
     function initButton() {
@@ -46,7 +77,7 @@
                                     <td>
                                         <button class="likebtn" id="like${i}" onclick="likeEvent()">
                                             <span id = heart${i} class="icon like-default"><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
-                                        </button>
+                                        </button>   
                                     </td>
                                 </tr>`;
                     church_board.append(str);
@@ -102,6 +133,7 @@
         // return church_data;
     }
     window.likeEvent = likeEvent;
+    // window.likeevent2 = likeevent2;
     window.initButton = initButton;
     window.inquiry_board = inquiry_board;
     window.create_board = create_board;
