@@ -359,10 +359,10 @@
                 parent_id       : $(this).attr("reply_id"), 
                 depth           : "1",
                 reply_writer    : reply_reply_writer.val(),
-                reply_password  : reply_reply_password.val(),
+                reply_password  : sha256(reply_reply_password.val().trim()),
                 reply_content   : reply_reply_content_val
             };
-
+            
             var reply_id;
 
             //ajax 호출
@@ -529,7 +529,7 @@
             //패스워드와 인덱스 넘겨 삭제를 한다.
             //값 셋팅
             var objParams = {
-                    reply_pw   : $("#"+comment_pw).val(),
+                    reply_pw         : sha256( $("#"+comment_pw).val().trim()),
                     reply_idx        : comment_idx
             };
             //ajax 호출
@@ -553,7 +553,7 @@
                 }
             });
         }
-
+        
     // 게시판 상세조회.
     function get_board() {
 
@@ -657,11 +657,11 @@
                 parent_id       : "0",  
                 depth           : "0",
                 reply_writer    : $("#reply_writer").val().trim(),
-                reply_password  : $("#reply_password").val().trim(),
+                reply_password  : sha256($("#reply_password").val().trim()),
                 reply_content   : reply_content,
                 reply_like      : 0
             };
-
+            
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
             $.ajax({
             url         :   "/ajax/board_comment",
