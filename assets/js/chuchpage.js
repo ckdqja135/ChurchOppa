@@ -17,35 +17,6 @@
         }
     }
 
-    $( "button[id*='like']" ).click(function() {
-        console.log($(this).attr('id'));
-    })
-
-    // function likeevent2()  {
-    //     var btn1 = document.querySelectorAll('btn like');
-    //     var btn2 = document.querySelectorAll('btn dislike');
-    //     console.log("btn1", btn1)
-    //     // btn1.addEventListener('click', function() {
-          
-    //     //     if (btn2.classList.contains('red')) {
-    //     //       btn2.classList.remove('red');
-    //     //     } 
-    //     //   this.classList.toggle('green');
-          
-    //     // });
-        
-    //     // btn2.addEventListener('click', function() {
-          
-    //     //     if (btn1.classList.contains('green')) {
-    //     //       btn1.classList.remove('green');
-    //     //     } 
-    //     //   this.classList.toggle('red');
-          
-    //     // });
-        
-        
-    // }
-
     // 모달 입력 값 초기화
     function initButton() {
         $("#recipient-title").val("");
