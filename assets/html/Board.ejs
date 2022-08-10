@@ -10,7 +10,7 @@
     <title>교회 오빠</title>
     <!-- Bootstrap js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
 
     <!-- Bootstrap core CSS -->
@@ -58,8 +58,19 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel2">교회 후기</h5>
             </div>
+
         <div class="modal-body" id="modal">
-    
+            <!-- 이벤트를 확인하기 위한 dropdown 컨트롤 -->  
+            <!-- 이벤트는 event-dropdown 클래스로 걸었다. -->  
+            <div class="dropdown event-dropdown float-right"> 
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 설정
+                    <span class="caret"></span>    
+                </a>    
+                <ul class="dropdown-menu">      
+                    <li><a href="">수정</a></li>      
+                    <li><a href="">삭제</a></li>    
+                </ul>  
+            </div>  
         </div>
         <div class="row ml-auto mr-auto" width ="100%" id="reply_area">
             <ul class="list-group list-group-flush">

@@ -20,6 +20,21 @@
             //     }
             //     $(this).parent().parent().remove(); 
             // }
+            $('.event-dropdown').on('show.bs.dropdown', function () {   
+                console.log("메뉴가 열리기 전 이벤트!");  
+            });  
+            // dropdown 메뉴가 보이기 직후에 호출되는 이벤트  
+            $('.event-dropdown').on('shown.bs.dropdown', function () {    
+                console.log("메뉴가 열린 후 이벤트!");  
+            });  
+            // dropdown 메뉴가 사라지기 직전에 호출되는 이벤트  
+            $('.event-dropdown').on('hide.bs.dropdown', function () {   
+                console.log("메뉴가 닫히기 전 이벤트!");  
+            });  
+            // dropdown 메뉴가 사라진 직후에 호출되는 이벤트  
+            $('.event-dropdown').on('hidden.bs.dropdown	', function () {    
+                console.log("메뉴가 닫힌 후 이벤트!");  
+            });
     });
 
         //댓글 수정 취소
