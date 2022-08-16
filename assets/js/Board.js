@@ -437,7 +437,8 @@
         var comment_idx;
         // 작성자 비밀번호
         var comment_pw;
-
+        // 삭제 버튼 클릭 시 이벤트
+        // Todo 삭제 버튼 클릭 시 팝업 이벤트 추가하기. https://as-you-say.tistory.com/288
         $(document).on("click","button[name='reply_del']", function(){
             // var check = false;
             comment_idx = $(this).attr("reply_id");
@@ -453,34 +454,32 @@
             }
         });
 
-        //댓글 수정 함수
+        // 댓글 수정 함수
         function correct_comments() {
             var status = false; //수정과 대댓글을 동시에 적용 못하도록
             var check = false;
             var reply_id = $(this).attr("reply_id");
             var r_type = $(this).attr("r_type");
-            var reply_password = "reply_password_"+reply_id;
+            var reply_password = sha256( $("#"+comment_pw).val().trim());
 
-            if($("#"+reply_password).val().trim() == ""){
+            if($("#"+comment_pw).val().trim() == ""){
                 alert("패스워드을 입력하세요.");
-                $("#"+reply_password).focus();
+                $("#"+comment_pw).focus();
                 return false;
             }
 
             //패스워드와 아이디를 넘겨 패스워드 확인
             //값 셋팅
             var objParams = {
-                reply_password  : $("#"+reply_password).val(),
+                reply_password  : reply_password,
                 reply_id        : reply_id
             };
             //ajax 호출
-            /*
             $.ajax({
-                url         :   "/board/reply/check",
+                url         :   "/ajax/correct_comments",
                 dataType    :   "json",
                 contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
                 type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
                 data        :   objParams,
                 success     :   function(retVal){
                     if(retVal.code != "OK") {
@@ -490,10 +489,9 @@
                     }
                 },
                 error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
+                    console.log("AJAX_ERROR", request, status, error);
                 }
             });
-            */
 
             check = true;//패스워드가 맞으면 체크값을 true로 변경
             if(status){
@@ -539,9 +537,6 @@
         
         //댓글 삭제
         function del_comment () {
-            // var reply_idx = $(this).attr("reply_id");
-            // var reply_password = "reply_password_"+reply_idx;
-            console.log(comment_idx, comment_pw)
             //패스워드와 인덱스 넘겨 삭제를 한다.
             //값 셋팅
             var objParams = {
@@ -586,8 +581,9 @@
                     var str = `
                     <h2> ${result[0].boardTitle} </h2>
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">${result[0].writerId}</label>
-                        <div class="board_content" type="text" readonly> ${result[0].boardContent} </textarea> 
+                    <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="" style="margin:10px; display:none">수정</button>
+                    <textarea type="text" class="form-control" id="board-content" readonly="true" style="border:none; background:transparent; resize:none; height:400px;">${result[0].boardContent}</textarea> 
+                    <label for="message-text" class="col-form-label">${result[0].writerId}</label>
                     </div>
                     `
                 }
@@ -600,7 +596,7 @@
         });
     }
 
-      // 댓글 조회하기.
+    // 댓글 조회하기.
     function get_board_comment(_board_no) {
         $.ajax({
             url : '/ajax/get_board_comment',
@@ -724,6 +720,14 @@
             }
         });
     }
+
+    function correct_comments_button_event() {
+        $('#board-content').attr('readonly', false);
+        // $('#correct_btn').attr('display', 'block');
+        $('#correct_btn').show();
+        console.log($('#board-content').text());
+    }
+    window.correct_comments_button_event = correct_comments_button_event;
     window.correct_comments = correct_comments;
     window.insert_comment = insert_comment;
     window.del_comment = del_comment;
