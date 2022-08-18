@@ -103,6 +103,36 @@
         });
         // return church_data;
     }
+
+    function shareTwitter(){
+		// var sendText = window.location.href.split('/')[5];
+		let sendText = "교회 추천합니다.";
+		//var sendUrl = "www.mysoftwiz.com/en/openVacanciesDetail/"+seq; // 전달할 URL
+		window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + window.location.href);
+		// window.open("https://twitter.com/intent/tweet?&url=" + makeUrl());
+	}
+	function shareFacebook(){
+		let url = encodeURIComponent(window.location.href);
+		window.open("http://www.facebook.com/sharer/sharer.php?&u=" + url);
+	}
+	function shareLink(){
+		//var sendUrl = "www.mysoftwiz.com/en/openVacancies/"+seq;
+		var textArea = document.createElement("textarea");
+		document.body.appendChild(textArea);
+
+		textArea.value = window.location.href;
+
+		textArea.select();
+
+		document.execCommand('copy');
+		document.body.removeChild(textArea);
+
+		alert("The link has been copied.");
+	}
+
+    window.shareTwitter = shareTwitter;
+    window.shareFacebook = shareFacebook;
+    window.shareLink = shareLink;
     window.likeEvent = likeEvent;
     // window.likeevent2 = likeevent2;
     window.initButton = initButton;
