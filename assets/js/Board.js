@@ -581,12 +581,18 @@
                     var str = `
                     <h2> ${result[0].boardTitle} </h2>
                     <div class="form-group">
-                    <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="" style="margin:10px; display:none">수정</button>
-                    <textarea type="text" class="form-control" id="board-content" readonly="true" style="border:none; background:transparent; resize:none; height:400px;">${result[0].boardContent}</textarea> 
+                    <div class="input-group" style="display:none">
+                        <span class="input-group-text">비밀번호 입력</span> 
+                        <input type="password" class="form-control" id="writer_pw">
+                    </div>
+                    <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
+                    <textarea type="text" class="form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
+                    
                     <label for="message-text" class="col-form-label">${result[0].writerId}</label>
                     </div>
                     `
                 }
+                // style="border:none; background:transparent; resize:none; height:400px;"
                 board_body.append(str);
                 get_board_comment(_board_no);
             },
@@ -721,13 +727,42 @@
         });
     }
 
-    function correct_comments_button_event() {
+    function correct_board_button_event() {
         $('#board-content').attr('readonly', false);
-        // $('#correct_btn').attr('display', 'block');
         $('#correct_btn').show();
-        console.log($('#board-content').text());
+        $('.input-group').show();
     }
-    window.correct_comments_button_event = correct_comments_button_event;
+    
+    function correct_borad_event() {
+        $('#board-content').attr('readonly', true);
+        $('#correct_btn').hide();
+        $('.input-group').hide();
+
+         //값 셋팅
+        var objParams = {
+            board_id        : window.location.href.split('/')[4],
+            writer_password  : sha256($("#reply_password").val().trim()),
+            board_content   : $('#board-content').val().trim()
+        };
+        
+        //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+        $.ajax({
+            url         :   "/ajax/correct_borad",
+            type        :   "POST",
+            data        :   objParams,
+            success     :   function(result){
+            if(result.length > 0) {
+                console.log(result)
+            }
+        },
+            error       :   function(request, status, error){
+                console.log("AJAX_ERROR");
+            }
+        });
+    }
+
+    window.correct_borad_event = correct_borad_event;
+    window.correct_board_button_event = correct_board_button_event;
     window.correct_comments = correct_comments;
     window.insert_comment = insert_comment;
     window.del_comment = del_comment;

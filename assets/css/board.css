@@ -90,3 +90,7 @@ width: 400px;
     display: inline-block;
     margin: 100px auto;
 }
+
+.form-control {
+    border:none; background:transparent; resize:none; height:400px;
+}
