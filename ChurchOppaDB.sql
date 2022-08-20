@@ -19,6 +19,7 @@
 -- 게시판 list 테이블
 --  CREATE TABLE `churchoppa`.`board` (
 --   `BoardNo` BIGINT(20) NOT NULL,
+--   `BoardTitle VARCHAR(45) NULL,
 --   `Church_No` BIGINT(20) NULL,
 --   `BoardRegDate` VARCHAR(45) NULL,
 --   `BoardLike` BIGINT(20) NULL,
@@ -33,6 +34,8 @@
 --   `boardTitle` VARCHAR(60) NULL,
 --   `boardLike` BIGINT(20) NULL,
 --   `boardHits` BIGINT(20) NULL,
+--   `writerId` VARCHAR(45) NULL,
+--   `writerPw` mediumblob NULL,
 --   PRIMARY KEY (`boardID`));
 
 -- CREATE TABLE `churchoppa`.`board_comment` (
