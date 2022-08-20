@@ -11,7 +11,7 @@
     <!-- Bootstrap js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-
+    <!-- <script type="text/css" src="../css/churchpage.css"></script> -->
     <!-- Bootstrap core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
 
@@ -27,16 +27,18 @@
     <!-- Kakao Map -->
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=80d6fac198542c9021cd4229a30df6b2"></script>
 
+    <!-- icon -->
+    <!-- <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script> -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="../js/popper.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/chuchpage.js"></script>
     <script src="../js/common.js"></script>
+    
     <!-- <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script> -->
     <!-- <script type="module" src="../js/sha256.js"></script>
     -->
-
-    <!-- kakaoMap -->
     <script>
 
 </script>
@@ -211,8 +213,29 @@
                 <div class="church_info mt-4">
 
                 </div>
-                <div class="mt-4">
+                <div class="mt-5">
+                    <!-- 카카오 Map 들어가는 자리 -->
+                    <div id="map" style="width:70%;height:350px"></div>
                 </div>
+                    <p><h5>보고있는 교회 공유하기</h5></p>
+                    <div class="share_sns">
+                        <a href="javascript:shareTwitter();" class="sns_btn" id="twitter"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:shareFacebook();" class="sns_btn" id="facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+                                <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:shareLink();" class="sns_btn" id="link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                            </svg>
+                        </a>
+                    </div>
             </div>
                 <!-- 우측 컨텐츠 -->
                 <div class="col p-0 col-6">
@@ -328,12 +351,12 @@
             </div>
         </div>
         
-        <!-- 카카오 Map 들어가는 자리 -->
-        <div class="container">
-            <div class="row p-4">
-                <div id="map" style="width:45%;height:350px">
+   
+        <!-- <div class="container">
+            <div class="row pt-1">
+                <div id="map" style="width:40%;height:350px">
             </div>
-        </div>
+        </div> -->
         <script	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
     <!-- <footer class="container">
         <div class="container row" style="float: none; margin:100 auto;">

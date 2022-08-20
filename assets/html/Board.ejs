@@ -10,7 +10,7 @@
     <title>교회 오빠</title>
     <!-- Bootstrap js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
 
     <!-- Bootstrap core CSS -->
@@ -29,8 +29,8 @@
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=80d6fac198542c9021cd4229a30df6b2"></script>
     
     <script	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-    <script type="text/javascript" src="../js/Board.js"></script>
     <script type="text/css" src="../css/board.css"></script>
+    <script type="text/javascript" src="../js/Board.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
@@ -58,8 +58,19 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel2">교회 후기</h5>
             </div>
+
         <div class="modal-body" id="modal">
-    
+            <!-- 이벤트를 확인하기 위한 dropdown 컨트롤 -->  
+            <!-- 이벤트는 event-dropdown 클래스로 걸었다. -->  
+            <div class="dropdown event-dropdown float-right b-2"> 
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 설정
+                    <span class="caret"></span>    
+                </a>    
+                <ul class="dropdown-menu">      
+                    <li><a href="javascript:correct_comments_button_event();">수정</a></li>      
+                    <li><a href="">삭제</a></li>    
+                </ul>  
+            </div>  
         </div>
         <div class="row ml-auto mr-auto" width ="100%" id="reply_area">
             <ul class="list-group list-group-flush">
