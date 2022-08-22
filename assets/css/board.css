@@ -91,6 +91,10 @@ width: 400px;
     margin: 100px auto;
 }
 
-.form-control {
+.board-form-control {
     border:none; background:transparent; resize:none; height:400px;
+}
+
+textarea:focus {
+    outline: none;
 }

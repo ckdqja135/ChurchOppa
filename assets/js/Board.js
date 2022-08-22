@@ -586,7 +586,7 @@
                         <input type="password" class="form-control" id="writer_pw">
                     </div>
                     <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
-                    <textarea type="text" class="form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
+                    <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
                     
                     <label for="message-text" class="col-form-label">${result[0].writerId}</label>
                     </div>
