@@ -588,7 +588,9 @@
                             <input type="password" class="form-control" id="writer_pw">
                         </div>
                         
+                        <button type="button" class="btn btn-primary float-right" id="cancel_btn" onclick="correct_cancel_event()" style="margin:10px; display:none">취소</button>
                         <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
+                        <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="" style="margin:10px; display:none">삭제</button>
                         <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
                         <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
                     </div>
@@ -731,6 +733,7 @@
     // 설정 - 수정 메뉴 선택 시
     function correct_board_button_event() {
         $('#board-content').attr('readonly', false);
+        $('#cancel_btn').show();
         $('#correct_btn').show();
         $('.input-group').show();
         $('#settings').hide();
@@ -759,6 +762,7 @@
                     $('#confirmModal').modal('hide');
                     $('#correctModal').modal('show');
                     $('#board-content').attr('readonly', true);
+                    $('#cancel_btn').hide();
                     $('#correct_btn').hide();
                     $('.input-group').hide();
                     $('#settings').show();
@@ -774,7 +778,24 @@
             });
         }
     }
+    // 수정 취소 버튼 이벤트
+    function correct_cancel_event() {
+        $('#board-content').attr('readonly', true);
+        $('#correct_btn').hide();
+        $('#cancel_btn').hide();
+        $('.input-group').hide();
+        $('#settings').show();
+    }
 
+    // 설정 - 삭제 이벤트 
+    function delete_board_button_event() {
+        $('#board-content').attr('readonly', false);
+        $('#correct_btn').show();
+        $('.input-group').show();
+        $('#settings').hide();
+    }
+    window.correct_cancel_event = correct_cancel_event;
+    window.delete_board_button_event = delete_board_button_event;
     window.correct_borad_event = correct_borad_event;
     window.correct_board_button_event = correct_board_button_event;
     window.correct_comments = correct_comments;
