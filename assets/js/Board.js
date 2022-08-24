@@ -330,7 +330,7 @@
                 reply_reply_writer.val()+
                 '   </td>'+
                 '   <td width="100px">'+
-                '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
                 '   </td>'+
                 '   <td align="center">'+
                 '       <button name="reply_modify" r_type = "sub" reply_id = "'+reply_id+'">수정</button>'+
@@ -579,16 +579,18 @@
                 let board_body = $(".modal-body");
                 if (result) {
                     var str = `
-                    <h2> ${result[0].boardTitle} </h2>
-                    <div class="form-group">
-                    <div class="input-group" style="display:none">
-                        <span class="input-group-text">비밀번호 입력</span> 
-                        <input type="password" class="form-control" id="writer_pw">
-                    </div>
-                    <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
-                    <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
+                    <h2 class="board_title"> ${result[0].boardTitle} </h2>
+                    <h2 class="hits"> ${result[0].boardHits}</h2>
                     
-                    <label for="message-text" class="col-form-label">${result[0].writerId}</label>
+                    <div class="form-group">
+                        <div class="input-group" style="display:none">
+                            <span class="input-group-text">비밀번호 입력</span> 
+                            <input type="password" class="form-control" id="writer_pw">
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
+                        <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
+                        <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
                     </div>
                     `
                 }
@@ -726,39 +728,51 @@
             }
         });
     }
-
+    // 설정 - 수정 메뉴 선택 시
     function correct_board_button_event() {
         $('#board-content').attr('readonly', false);
         $('#correct_btn').show();
         $('.input-group').show();
+        $('#settings').hide();
     }
-    
+    // 수정 메뉴 선택 후 수정 버튼 클릭 시.
     function correct_borad_event() {
-        $('#board-content').attr('readonly', true);
-        $('#correct_btn').hide();
-        $('.input-group').hide();
-
          //값 셋팅
         var objParams = {
             board_id        : window.location.href.split('/')[4],
-            writer_password  : sha256($("#reply_password").val().trim()),
+            writer_password  : sha256($("#writer_pw").val().trim()),
             board_content   : $('#board-content').val().trim()
         };
-        
-        //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
-        $.ajax({
-            url         :   "/ajax/correct_borad",
-            type        :   "POST",
-            data        :   objParams,
-            success     :   function(result){
-            if(result.length > 0) {
-                console.log(result)
-            }
-        },
-            error       :   function(request, status, error){
-                console.log("AJAX_ERROR");
-            }
-        });
+        if($("#writer_pw").val().trim() == '') {
+            jQuery.noConflict();
+            console.log("dd", $("#writer_pw").val().trim())
+            $('#nullModal').modal('show');
+        } else {
+            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            $.ajax({
+                url         :   "/ajax/correct_borad",
+                type        :   "POST",
+                data        :   objParams,
+                success     :   function(result){
+                if(result.affectedRows > 0) {
+                    jQuery.noConflict();
+                    $('#confirmModal').modal('hide');
+                    $('#correctModal').modal('show');
+                    $('#board-content').attr('readonly', true);
+                    $('#correct_btn').hide();
+                    $('.input-group').hide();
+                    $('#settings').show();
+                } else {
+                    jQuery.noConflict();
+                    $('#confirmModal').modal('hide');
+                    $('#FailModal').modal('show');
+                }
+            },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+        }
     }
 
     window.correct_borad_event = correct_borad_event;

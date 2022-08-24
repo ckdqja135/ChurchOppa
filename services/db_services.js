@@ -67,6 +67,7 @@ class db_services {
     async get_board_detail (out, no) {
         let sel_sql = "SELECT * FROM board_detail WHERE boardID = "+no+"";
         let upd_sql = "UPDATE board SET BoardHits = BoardHits + 1 WHERE BoardNo = "+no+"";
+        let upd_dtail_sql = "UPDATE board_detail SET boardHits = boardHits + 1 WHERE BoardId = "+no+"";
         console.log("sql", upd_sql)
         
         let conn =  await this.dbc.getConnection();
@@ -76,6 +77,7 @@ class db_services {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
             let detail_board = await conn.query(sel_sql);
             await conn.query(upd_sql);
+            await conn.query(upd_dtail_sql);
             await conn.commit(); // 커밋
             result = detail_board[0];
             out(error, result);
@@ -224,8 +226,8 @@ class db_services {
 
     // 게시판 수정
     async correct_borad (out, params) {
-        let sql = "UPDATE board_comment SET CommentContent='"+params+"' " +
-                "WHERE CommentId = "+params.reply_idx+" AND WriterPw = '"+params.reply_pw+"';";
+        let sql = "UPDATE board_detail SET boardContent='"+params.board_content+"' " +
+                "WHERE boardID = "+params.board_id+" AND writerPw = '"+params.writer_password+"';";
         console.log("sql", sql)
 
         let conn =  await this.dbc.getConnection();

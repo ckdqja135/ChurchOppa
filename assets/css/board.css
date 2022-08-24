@@ -98,3 +98,29 @@ width: 400px;
 textarea:focus {
     outline: none;
 }
+.input-group {
+    width: 30%;
+}
+
+.board_title {
+    font-size: 26px;
+    font-weight: 800;
+    padding-bottom: 20px;
+    color:darkgreen
+}
+
+.board-form-control {
+    font-size: 16px;
+    font-weight: 400;
+}
+.write_id {
+    font-size: 15px;
+    font-weight: 800;
+    color:green
+}
+
+.hits {
+    font-size: 15px;
+    font-weight: 800;
+    float: right;
+}

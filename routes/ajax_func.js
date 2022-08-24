@@ -39,6 +39,8 @@ router.post('/', function(req, res, next) {
     db_service.del_comment(out_func, req.body);
   }else if (func_name == 'correct_comments') {
     db_service.correct_borad(out_func, req.body);
+  } else if (func_name == 'correct_borad') {
+    db_service.correct_borad(out_func, req.body);
   }
   
   else {
