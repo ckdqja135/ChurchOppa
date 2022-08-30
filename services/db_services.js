@@ -8,23 +8,24 @@ class db_services {
     // 게시글 등록
     async create_board(out, params) {
         let board_SQL = "INSERT INTO board (Church_No, BoardTitle, BoardRegDate, BoardLike, BoardHits, BoardID, BoardPW) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        let board_detail_SQL = "INSERT INTO board_detail (boardID, boardContent, boardTitle, BoardLike, BoardHits, writerId, writerPw) VALUES  (?, ?, ?, ?, ?, ?, ?);";
+        let board_detail_SQL = "INSERT INTO board_detail (boardID, churchNo, boardContent, boardTitle, BoardLike, BoardHits, writerId, writerPw) VALUES  (?, ?, ?, ?, ?, ?, ?, ?);";
         // let JOBS_APPLICATION_LANG = "INSERT INTO JOBS_APPLICATION_LANG(JOBS_APPLICATION_SEQ, NAME) VALUES (?, ?);";
         let conn =  await this.dbc.getConnection();
         let result = null;
         let error = null;
-        console.log("board_detail_SQL", board_detail_SQL)
+        // console.log("board_detail_SQL", board_detail_SQL)
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
 
             let ins_application = await conn.query(board_SQL, [params.church_no, params.board_title, params.board_reg, 
                                                     params.board_like, params.board_hits, params.board_id, params.board_pw]);
             let board_seq = ins_application[0].insertId;
-            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.board_content, params.board_title, params.board_like, params.board_hits, params.board_id, params.board_pw]);
+            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.church_no, params.board_content, params.board_title, params.board_like, params.board_hits, params.board_id, params.board_pw]);
             // const ins_application_lang = await conn.query(JOBS_APPLICATION_LANG, [jobAppSeq, params.name]);
             
             await conn.commit(); // 커밋
             result = ins_application_detail;
+            console.log(result)
             out(error, result);
         } catch (err) {
             error = err;
@@ -245,6 +246,39 @@ class db_services {
             console.log(err)
             out(error, result);
             await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
+    }
+
+    // 게시글 삭제하기.
+    async delete_borad (out, params) {
+
+        let board_delete_sql = "DELETE FROM board WHERE BoardID = "+ params.board_id +" AND ";
+        let borad_detail_delete_sql = "DELETE FROM board_detail " +
+        "WHERE boardId = "+ params.board_id +" AND WriterPw = '"+params.writer_password+"';";
+
+        let board_comment_del_sql = "DELETE FROM board_comment WHERE BoardID = "+ params.board_id +"";
+        console.log("sql", borad_detail_delete_sql);
+        console.log("sql", board_comment_del_sql);
+        
+        let conn =  await this.dbc.getConnection();
+        let result = null;
+        let error = null;
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
+            await conn.query(borad_delete_sql);
+            let delete_comment = await conn.query(board_comment_del_sql);
+            await conn.commit(); // 커밋
+            result = delete_comment[0];
+            out(error, result);
+            console.log("result", result)
+        }catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback(); // 롤백
             // return res.status(500).json(err)
         } finally {
             conn.release() // con 회수

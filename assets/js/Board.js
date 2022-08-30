@@ -590,7 +590,7 @@
                         
                         <button type="button" class="btn btn-primary float-right" id="cancel_btn" onclick="correct_cancel_event()" style="margin:10px; display:none">취소</button>
                         <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
-                        <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="" style="margin:10px; display:none">삭제</button>
+                        <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="delete_confirm();" style="margin:10px; display:none">삭제</button>
                         <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
                         <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
                     </div>
@@ -738,6 +738,7 @@
         $('.input-group').show();
         $('#settings').hide();
     }
+
     // 수정 메뉴 선택 후 수정 버튼 클릭 시.
     function correct_borad_event() {
          //값 셋팅
@@ -748,7 +749,6 @@
         };
         if($("#writer_pw").val().trim() == '') {
             jQuery.noConflict();
-            console.log("dd", $("#writer_pw").val().trim())
             $('#nullModal').modal('show');
         } else {
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
@@ -778,22 +778,65 @@
             });
         }
     }
+
     // 수정 취소 버튼 이벤트
     function correct_cancel_event() {
         $('#board-content').attr('readonly', true);
         $('#correct_btn').hide();
         $('#cancel_btn').hide();
         $('.input-group').hide();
+        $('#delete_btn').hide();
         $('#settings').show();
     }
 
-    // 설정 - 삭제 이벤트 
+    // 설정 - 삭제 메뉴 클릭 이벤트.
     function delete_board_button_event() {
-        $('#board-content').attr('readonly', false);
-        $('#correct_btn').show();
+        $('#delete_btn').show();
+        $('#cancel_btn').show();
         $('.input-group').show();
-        $('#settings').hide();
     }
+
+    function delete_confirm() {
+        jQuery.noConflict();
+        $('#delete_check_Modal').modal('show');
+    }
+
+    // 삭제 버튼 이벤트.
+    function delete_board_event() {
+            //값 셋팅
+        var objParams = {
+            board_id        : window.location.href.split('/')[4],
+            writer_password  : sha256($("#writer_pw").val().trim())
+        };
+
+        if($("#writer_pw").val().trim() == '') {
+            jQuery.noConflict();
+            $('#nullModal').modal('show');
+        } else {
+            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            $.ajax({
+                url         :   "/ajax/delete_board",
+                type        :   "POST",
+                data        :   objParams,
+                success     :   function(result){
+                if(result.affectedRows > 0) {
+                    jQuery.noConflict();
+                    $('#delete_check_Modal').modal('hide');
+                    $('#Delete_Modal').modal('show');
+                } else {
+                    jQuery.noConflict();
+                    $('#FailModal').modal('show');
+                }
+            },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+        }
+    }
+
+    window.delete_confirm = delete_confirm;
+    window.delete_board_event = delete_board_event;
     window.correct_cancel_event = correct_cancel_event;
     window.delete_board_button_event = delete_board_button_event;
     window.correct_borad_event = correct_borad_event;

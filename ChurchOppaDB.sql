@@ -36,6 +36,7 @@
 --   `boardHits` BIGINT(20) NULL,
 --   `writerId` VARCHAR(45) NULL,
 --   `writerPw` mediumblob NULL,
+
 --   PRIMARY KEY (`boardID`));
 
 -- CREATE TABLE `churchoppa`.`board_comment` (

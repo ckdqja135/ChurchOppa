@@ -124,6 +124,13 @@ textarea:focus {
     font-weight: 800;
     float: right;
 }
+
 #correct_btn {
     background-color: #ee3535;
+    border-color: #ee3535;
+}
+
+#delete_btn {
+    background-color: #ee3535;
+    border-color: #ee3535;
 }

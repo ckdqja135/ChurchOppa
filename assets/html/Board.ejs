@@ -69,7 +69,7 @@
                 </a>    
                 <ul class="dropdown-menu">      
                     <li><a href="javascript:correct_board_button_event();">수정</a></li>      
-                    <li><a href="">삭제</a></li>    
+                    <li><a href="javascript:delete_board_button_event();">삭제</a></li>    
                 </ul>  
             </div>  
         </div>
@@ -119,9 +119,9 @@
         <div class="modal-dialog modal-confirm">
             <div class="modal-content">
                 <div class="modal-header flex-column">
-                    <!-- <div class="icon-box">
+                    <div class="icon-box">
                         <i class="material-icons">&#xE5CD;</i>
-                    </div>						 -->
+                    </div>						
                     <h4 class="modal-title w-100">삭제 확인</h4>	
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
@@ -131,6 +131,28 @@
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
                     <button type="button" class="btn btn-primary" id="Deletebtn" onclick="del_comment();">삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>     
+
+    <!-- confirm Modal HTML -->
+    <div class="modal fade" id="delete_check_Modal" >
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header flex-column">
+                    <div class="icon-box">
+                        <i class="material-icons">&#xE5CD;</i>
+                    </div>						
+                    <h4 class="modal-title w-100">삭제 확인</h4>	
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div>
+                    <p>이 게시물을 정말로 삭제 하시겠습니까?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" id="Deletebtn" onclick="delete_board_event();">삭제</button>
                 </div>
             </div>
         </div>
@@ -154,7 +176,27 @@
                 </div>
             </div>
         </div>
-    </div>   
+    </div>
+
+        <!-- Delete Compleate Modal HTML -->
+        <div class="modal fade" id="Delete_Modal" >
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box">
+                            <i class="material-icons">done</i>
+                        </div>				
+                        <h4 class="modal-title w-100">삭제 완료</h4>	
+                    </div>
+                    <div>
+                        <p class="text-center">삭제되었습니다.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success btn-block" data-dismiss="modal" onclick="location.href = document.referrer;">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>   
 
         <!-- Delete Compleate Modal HTML -->
         <div class="modal fade" id="correctModal" >

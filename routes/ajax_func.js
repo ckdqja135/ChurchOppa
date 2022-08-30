@@ -41,6 +41,9 @@ router.post('/', function(req, res, next) {
     db_service.correct_borad(out_func, req.body);
   } else if (func_name == 'correct_borad') {
     db_service.correct_borad(out_func, req.body);
+  } else if (func_name == 'delete_board') {
+    console.log(req.body)
+    db_service.delete_borad(out_func, req.body);
   }
   
   else {
