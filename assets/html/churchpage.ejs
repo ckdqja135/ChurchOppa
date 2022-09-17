@@ -146,14 +146,13 @@
                                 <br />
                                 <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
                                 inquiry_board();
-                                church_info.append(str)
+                                church_info.append(str);
                     }
                 },
                 error : function(request,status,error) {
                     console.log(request+"\n",status,"\n",error, "\n")
                 }
             });
-            
             return church_data;
         }
         
