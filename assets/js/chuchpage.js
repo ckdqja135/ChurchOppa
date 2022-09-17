@@ -53,6 +53,8 @@
                                 </tr>`;
                     church_board.append(str);
                 }
+                pagination();
+                $('.pagination li:first-child').addClass("disabled");
                 // console.log("얘는 왜 실행?")
             },
             error : function(request,status,error) {
@@ -130,6 +132,84 @@
 		alert("The link has been copied.");
 	}
 
+    function refresh() {
+        $("#tablediv").load(window.location.href + " #tablediv>*", "");
+        inquiry_board();
+        pagination();
+    }
+
+    function pagination() {
+		var req_num_row=5;
+		var tr = $('.board tr');
+		var total_num_row = tr.length;
+        console.log("total_num_row", total_num_row)
+		var num_pages = 0;
+		if(total_num_row % req_num_row ==0){
+			num_pages = total_num_row / req_num_row;
+		}
+		if(total_num_row % req_num_row >=1){
+			num_pages = total_num_row / req_num_row;
+			num_pages++;
+			num_pages = Math.floor(num_pages++);
+		}
+
+
+    $('.pagination').append(`<li class="page-item disabled"><a class="page-link prev">Previous</a></li>`);
+
+    for(var i=1; i<=num_pages; i++) {
+        $('.pagination').append(`<li class="page-item"><a class="page-link ${i}">${i}</a></li>`);
+        $('.pagination li:nth-child(2)').addClass("active");
+        $('.pagination a').addClass("pagination-link");
+    }
+
+    $('.pagination').append(`<li class="page-item disabled"><a class="page-link next">Next</a></li>`);
+
+		tr.each(function(i) {
+            $(this).hide();
+            if(i+1 <= req_num_row) {
+                tr.eq(i).show();
+            }
+		});
+
+    $('.pagination a').click('.pagination-link', function(e) {
+        e.preventDefault();
+        tr.hide();
+        var page=$(this).text();
+        var temp=page-1;
+        var start=temp*req_num_row;
+        var current_link = temp;
+
+        console.log("page", page, "start", start, "temp", temp)
+
+    $('.pagination li').removeClass("active");
+        $(this).parent().addClass("active");
+
+        for(var i=0; i< req_num_row; i++){
+            tr.eq(start+i).show();
+        }
+
+        if(temp >= 1){
+            $('.pagination li:first-child').removeClass("disabled");
+        } else {
+            $('.pagination li:first-child').addClass("disabled");
+        }
+            
+		});
+
+        $('.page-link prev').click(function(e){
+            e.preventDefault();
+            $('.page-link 1 pagination-link').click();
+            $('.page-link prev li:first-child').removeClass("active");
+        });
+
+        $('.page-link next').click(function(e){
+            e.preventDefault();
+            $('.page-link next li:last-child').removeClass("active");
+        });
+	}
+
+    window.pagination = pagination;
+    window.refresh = refresh;
     window.shareTwitter = shareTwitter;
     window.shareFacebook = shareFacebook;
     window.shareLink = shareLink;

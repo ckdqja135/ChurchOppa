@@ -146,7 +146,7 @@
                                 <br />
                                 <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
                                 inquiry_board();
-                        church_info.append(str)
+                                church_info.append(str)
                     }
                 },
                 error : function(request,status,error) {
@@ -157,9 +157,6 @@
             return church_data;
         }
         
-    function refreshEvent() {
-        $('#table').bootstrapTable();
-    }
     </script>
 </head>
 
@@ -246,7 +243,7 @@
                     <h4>후기</h4>
 
                     <div class="form-row float-left" style="padding: 10px;">
-                        <button type="button" class="btn btn-warning" id="refreshbtn" onclick="">
+                        <button type="button" class="btn btn-warning" id="refreshbtn" onclick="refresh();">
                             새로고침
                         </button>
                     </div>
@@ -294,16 +291,9 @@
                         </table>
                     </div>
                         
-                        <ul class="pagination center-block" style="width:300px; padding:15px">
-                            <li class="page-item"><a class="page-link" href="#">← Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <!-- <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li> -->
-                            <!-- <li class="page-item"><a class="page-link" href="#">Next →</a></li> -->
-                        </ul>
-
+                    <ul class="pagination">
+    
+                    </ul>
                         <!-- 글 쓰기 Form -->
                         <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
