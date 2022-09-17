@@ -254,13 +254,14 @@ class db_services {
 
     // 게시글 삭제하기.
     async delete_borad (out, params) {
-
-        let board_delete_sql = "DELETE FROM board WHERE BoardID = "+ params.board_id +" AND ";
+        console.log("params", params)
+        let sql = "Select * FROM board_detail WHERE boardId = " + params.board_idx + "";
+        let board_delete_sql = "DELETE FROM board WHERE BoardNo = "+ params.board_idx +" AND Church_No = ?";
         let borad_detail_delete_sql = "DELETE FROM board_detail " +
-        "WHERE boardId = "+ params.board_id +" AND WriterPw = '"+params.writer_password+"';";
+        "WHERE boardId = "+ params.board_idx +" AND WriterPw = '"+params.writer_password+"';";
 
-        let board_comment_del_sql = "DELETE FROM board_comment WHERE BoardID = "+ params.board_id +"";
-        console.log("sql", borad_detail_delete_sql);
+        let board_comment_del_sql = "DELETE FROM board_comment WHERE BoardID = "+ params.board_idx +"";
+        console.log("sql", board_delete_sql);
         console.log("sql", board_comment_del_sql);
         
         let conn =  await this.dbc.getConnection();
@@ -268,10 +269,12 @@ class db_services {
         let error = null;
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
-            await conn.query(borad_delete_sql);
-            let delete_comment = await conn.query(board_comment_del_sql);
+            let select_result = await conn.query(sql);
+            await conn.query(borad_detail_delete_sql);
+            await conn.query(board_comment_del_sql);
+            result = await conn.query(board_delete_sql, select_result[0][0].churchNo);
             await conn.commit(); // 커밋
-            result = delete_comment[0];
+            // result = delete_comment[0]
             out(error, result);
             console.log("result", result)
         }catch (err) {

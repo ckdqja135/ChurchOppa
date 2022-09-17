@@ -404,6 +404,7 @@
             //ajax로 패스워드 검수 후 수정 페이지로 포워딩
             //값 셋팅
             var objParams = {
+                    
                     id       : $("#board_id").val(),    
                     password : $("#password").val()
             };
@@ -805,7 +806,7 @@
     function delete_board_event() {
             //값 셋팅
         var objParams = {
-            board_id        : window.location.href.split('/')[4],
+            board_idx        : window.location.href.split('/')[4],
             writer_password  : sha256($("#writer_pw").val().trim())
         };
 
@@ -819,7 +820,8 @@
                 type        :   "POST",
                 data        :   objParams,
                 success     :   function(result){
-                if(result.affectedRows > 0) {
+                    console.log(result)
+                if(result[0].affectedRows > 0) {
                     jQuery.noConflict();
                     $('#delete_check_Modal').modal('hide');
                     $('#Delete_Modal').modal('show');
