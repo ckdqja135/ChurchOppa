@@ -579,6 +579,7 @@
             success : function(result) {
                 let board_body = $(".modal-body");
                 if (result) {
+                    console.log("result", result)
                     var str = `
                     <h2 class="board_title"> ${result[0].boardTitle} </h2>
                     <h2 class="hits"> ${result[0].boardHits}</h2>
@@ -594,6 +595,8 @@
                         <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="delete_confirm();" style="margin:10px; display:none">삭제</button>
                         <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
                         <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
+                        <br />
+                        <h7 class="reg_date">${result[0].BoardRegDate}</h7>
                     </div>
                     `
                 }

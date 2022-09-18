@@ -8,7 +8,7 @@ class db_services {
     // 게시글 등록
     async create_board(out, params) {
         let board_SQL = "INSERT INTO board (Church_No, BoardTitle, BoardRegDate, BoardLike, BoardHits, BoardID, BoardPW) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        let board_detail_SQL = "INSERT INTO board_detail (boardID, churchNo, boardContent, boardTitle, BoardLike, BoardHits, writerId, writerPw) VALUES  (?, ?, ?, ?, ?, ?, ?, ?);";
+        let board_detail_SQL = "INSERT INTO board_detail (boardID, churchNo, boardContent, BoardRegDate, boardTitle, BoardLike, BoardHits, writerId, writerPw) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         // let JOBS_APPLICATION_LANG = "INSERT INTO JOBS_APPLICATION_LANG(JOBS_APPLICATION_SEQ, NAME) VALUES (?, ?);";
         let conn =  await this.dbc.getConnection();
         let result = null;
@@ -20,7 +20,7 @@ class db_services {
             let ins_application = await conn.query(board_SQL, [params.church_no, params.board_title, params.board_reg, 
                                                     params.board_like, params.board_hits, params.board_id, params.board_pw]);
             let board_seq = ins_application[0].insertId;
-            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.church_no, params.board_content, params.board_title, params.board_like, params.board_hits, params.board_id, params.board_pw]);
+            let ins_application_detail = await conn.query(board_detail_SQL,[board_seq, params.church_no, params.board_content, params.board_reg, params.board_title, params.board_like, params.board_hits, params.board_id, params.board_pw]);
             // const ins_application_lang = await conn.query(JOBS_APPLICATION_LANG, [jobAppSeq, params.name]);
             
             await conn.commit(); // 커밋
