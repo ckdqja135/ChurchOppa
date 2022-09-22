@@ -2,7 +2,6 @@
     $(document).ready(function(){
         get_board();
         var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
-        
             // check = true;//삭제 되면 체크값을 true로 변경
             // //댓글 삭제
             // if(check){
@@ -36,7 +35,7 @@
                 console.log("메뉴가 닫힌 후 이벤트!");  
             });
     });
-
+    var status = false; //수정과 대댓글을 동시에 적용 못하도록
         //댓글 수정 취소
         $(document).on("click","button[name='reply_modify_cancel']", function(){
             //원래 데이터를 가져온다.
@@ -350,109 +349,60 @@
             status = false;
         });
 
-        //글수정
-        $("#modify").click(function(){
-            var password = $("input[name='password']");
-
-            if(password.val().trim() == ""){
-                alert("패스워드를 입력하세요.");
-                password.focus();
-                return false;
-            }
-
-            //ajax로 패스워드 검수 후 수정 페이지로 포워딩
-            //값 셋팅
-            var objParams = {
-                id       : $("#board_id").val(),    
-                password : $("#password").val()
-            };
-            //ajax 호출
-            alert("패스워드 체크하고 맞으면 수정페이지로 이동");
-            /*
-            $.ajax({
-                url         :   "/board/check",
-                dataType    :   "json",
-                contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-                type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
-                data        :   objParams,
-                success     :   function(retVal){
-
-                    if(retVal.code != "OK") {
-                        alert(retVal.message);
-                    }else{
-                        location.href = "/board/edit?id="+$("#board_id").val();
-                    }
-                },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-            */
-        });
-
-        //글 삭제
-        $("#delete").click(function(){
-            var password = $("input[name='password']");
-
-            if(password.val().trim() == ""){
-                alert("패스워드를 입력하세요.");
-                password.focus();
-                return false;
-            }
-
-            //ajax로 패스워드 검수 후 수정 페이지로 포워딩
-            //값 셋팅
-            var objParams = {
-                    id       : $("#board_id").val(),    
-                    password : $("#password").val()
-            };
-            
-            alert("패스워드 체크하고 맞으면 게시글 삭제후 리스트 페이지 이동");
-            /*                 
-            //ajax 호출
-            $.ajax({
-                url         :   "/board/del",
-                dataType    :   "json",
-                contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-                type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
-                data        :   objParams,
-                success     :   function(retVal){
-                    if(retVal.code != "OK") {
-                        alert(retVal.message);
-                    }else{
-                        alert("삭제 되었습니다.");
-                        location.href = "/board/list";
-                    }
-                },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-            */
-        });
-    
         // 댓글 index
         var comment_idx;
         // 작성자 비밀번호
         var comment_pw;
         // 삭제 버튼 클릭 시 이벤트
         // Todo 삭제 버튼 클릭 시 팝업 이벤트 추가하기. https://as-you-say.tistory.com/288
-        $(document).on("click","button[name='reply_del']", function(){
+        $(document).on("click","button[name='reply_del']", function (){
             // var check = false;
             comment_idx = $(this).attr("reply_id");
             comment_pw = "reply_password_"+comment_idx;
-    
-            if($("#"+comment_pw).val().trim() == ""){
-                alert("패스워드을 입력하세요.");
-                $("#"+comment_pw).focus();
-                return false;
-            } else {
-                jQuery.noConflict();
-                $('#confirmModal').modal('show');
-            }
+            password_form_show(comment_idx)
+            // if($("#"+comment_pw).val().trim() == ""){
+            //     alert("패스워드을 입력하세요.");
+            //     $("#"+comment_pw).focus();
+            //     return false;
+            // } else {
+            //     jQuery.noConflict();
+            //     $('#confirmModal').modal('show');
+            // }
         });
+        function password_form_show(comment_id) {
+            console.log("뭘까?", )
+            $(`#reply_password_${comment_id}`).show();
+        }
+
+           //댓글 삭제
+        function del_comment () {
+            //패스워드와 인덱스 넘겨 삭제를 한다.
+            //값 셋팅
+            var objParams = {
+                    reply_pw         : sha256( $("#"+comment_pw).val().trim()),
+                    reply_idx        : comment_idx
+            };
+            //ajax 호출
+            $.ajax({
+                url         :   "/ajax/delete_comment",
+                type        :   "post",
+                data        :   objParams,
+                success     :   function(result){
+                    if(result.affectedRows > 0) {
+                        jQuery.noConflict();
+                        $('#confirmModal').modal('hide');
+                        $('#DeleteModal').modal('show');
+                    } else {
+                        jQuery.noConflict();
+                        $('#confirmModal').modal('hide');
+                        $('#FailModal').modal('show');
+                    }
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+        }
 
         // 댓글 수정 함수
         function correct_comments() {
@@ -535,36 +485,6 @@
             }
         }
         
-        //댓글 삭제
-        function del_comment () {
-            //패스워드와 인덱스 넘겨 삭제를 한다.
-            //값 셋팅
-            var objParams = {
-                    reply_pw         : sha256( $("#"+comment_pw).val().trim()),
-                    reply_idx        : comment_idx
-            };
-            //ajax 호출
-            $.ajax({
-                url         :   "/ajax/delete_comment",
-                type        :   "post",
-                data        :   objParams,
-                success     :   function(result){
-                    if(result.affectedRows > 0) {
-                        jQuery.noConflict();
-                        $('#confirmModal').modal('hide');
-                        $('#DeleteModal').modal('show');
-                    } else {
-                        jQuery.noConflict();
-                        $('#confirmModal').modal('hide');
-                        $('#FailModal').modal('show');
-                    }
-                },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-        }
-        
     // 게시판 상세조회.
     function get_board() {
 
@@ -578,6 +498,7 @@
             success : function(result) {
                 let board_body = $(".modal-body");
                 if (result) {
+                    console.log("result", result)
                     var str = `
                     <h2 class="board_title"> ${result[0].boardTitle} </h2>
                     <h2 class="hits"> ${result[0].boardHits}</h2>
@@ -585,7 +506,7 @@
                     <div class="form-group">
                         <div class="input-group" style="display:none">
                             <span class="input-group-text">비밀번호 입력</span> 
-                            <input type="password" class="form-control" id="writer_pw">
+                            <form><input type="password" class="form-control" id="writer_pw" autoComplete="off"></form>
                         </div>
                         
                         <button type="button" class="btn btn-primary float-right" id="cancel_btn" onclick="correct_cancel_event()" style="margin:10px; display:none">취소</button>
@@ -593,6 +514,8 @@
                         <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="delete_confirm();" style="margin:10px; display:none">삭제</button>
                         <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
                         <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
+                        <br />
+                        <h7 class="reg_date">${result[0].BoardRegDate}</h7>
                     </div>
                     `
                 }
@@ -617,7 +540,6 @@
             success : function(result) {
                 console.log("result", result)
                 for (let i = 0; i < result.length; i++) {
-                    // var reply_area = $("#reply_area");
                     var reply = 
                         '<tr reply_type="main">'+
                         '   <td width="820px">'+
@@ -627,7 +549,7 @@
                         result[i].WriterId+
                         '   </td>'+
                         '   <td width="100px">'+
-                        '       <input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                        '       <form><input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
                         '   </td>'+
                         '   <td width="300px">'+
                         '       <button name="reply_reply" reply_id = "'+result[i].CommentId+'">댓글</button>'+
@@ -640,6 +562,7 @@
                     } else {
                         $('#reply_area tr:last').after(reply);
                     }
+                    $(`#reply_password_${result[i].CommentId}`).hide();
                 }
             },
             error : function(request,status,error) {
@@ -704,12 +627,12 @@
                 $("#reply_writer").val()+
                 '   </td>'+
                 '   <td width="100px">'+
-                '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                '       <form><input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
                 '   </td>'+
                 '   <td width="300px">'+
                 '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
-                '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
-                '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
+                '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>'+
+                '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>'+
                 '   </td>'+
                 '</tr>';
 
@@ -723,6 +646,7 @@
                 $("#reply_writer").val("");
                 $("#reply_password").val("");
                 $("#reply_content").val("");
+                $(`#reply_password_${reply_id}`).hide();
             }
         },
             error       :   function(request, status, error){
@@ -805,7 +729,7 @@
     function delete_board_event() {
             //값 셋팅
         var objParams = {
-            board_id        : window.location.href.split('/')[4],
+            board_idx        : window.location.href.split('/')[4],
             writer_password  : sha256($("#writer_pw").val().trim())
         };
 
@@ -819,7 +743,8 @@
                 type        :   "POST",
                 data        :   objParams,
                 success     :   function(result){
-                if(result.affectedRows > 0) {
+                    console.log(result)
+                if(result[0].affectedRows > 0) {
                     jQuery.noConflict();
                     $('#delete_check_Modal').modal('hide');
                     $('#Delete_Modal').modal('show');
@@ -835,6 +760,7 @@
         }
     }
 
+    window.password_form_show = password_form_show;
     window.delete_confirm = delete_confirm;
     window.delete_board_event = delete_board_event;
     window.correct_cancel_event = correct_cancel_event;

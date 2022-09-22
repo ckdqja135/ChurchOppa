@@ -129,16 +129,29 @@
                     church_name : search
                 },
                 success : function(result) {
+                    
                     let church_info = $(".church_info");
+                    
+                    let establishment = "";
+
+                    
+
                     if (result) {
+                        if (result[0].ChurchEstablish == "")
+                            establishment = "정보 없음.";
+                        else 
+                            establishment = result[0].ChurchEstablish + "주년";
+                        
                         // data 전달
+                        console.log("result[0]", result[0])
+
                         church_data = result;
                         let str = "";
                         str = ` <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : ${result[0].ChurchLocate}</button>
                                 <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : ${result[0].ChurchReli}</button>
                                 <div class="col mb-2">
                                 </div>
-                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">규모 : ${result[0].ChurchScales}</button>
+                                <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">설립 : ${establishment}</button>
                                 <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">담임목사 : ${result[0].ChurchPastor}</button>
                                 <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">전화번호 : ${result[0].ChurchTel}</button>
                                 <br />

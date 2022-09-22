@@ -16,8 +16,9 @@ router.post('/', function(req, res, next) {
     res.json(result);
     // console.log("result", result)
   };
-  
-  if (func_name == 'search') {
+
+
+  if (func_name == 'search') {  
     db_service.search_church(out_func, req.body.church_name);
   } 
   else if (func_name == 'auto') {
@@ -42,7 +43,7 @@ router.post('/', function(req, res, next) {
   } else if (func_name == 'correct_borad') {
     db_service.correct_borad(out_func, req.body);
   } else if (func_name == 'delete_board') {
-    console.log(req.body)
+    console.log("church_idx", req)
     db_service.delete_borad(out_func, req.body);
   }
   
