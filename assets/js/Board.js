@@ -370,7 +370,6 @@
             // }
         });
         function password_form_show(comment_id) {
-            console.log("뭘까?", )
             $(`#reply_password_${comment_id}`).show();
         }
 
@@ -542,7 +541,7 @@
                 for (let i = 0; i < result.length; i++) {
                     var reply = 
                         '<tr reply_type="main">'+
-                        '   <td width="820px">'+
+                        '   <td width="800px" style="word-break:break-all">'+
                         result[i].CommentContent+
                         '   </td>'+
                         '   <td width="100px">'+
@@ -550,6 +549,8 @@
                         '   </td>'+
                         '   <td width="100px">'+
                         '       <form><input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
+                        '       <button class="btn btn-primary" id="delete_btn_'+ result[i].CommentId+'" onclick="comment_delete_confirm();" style="margin:10px; display:none">삭제</button>'+
+                        '       <button class="btn btn-primary" id="cancel_btn_'+ result[i].CommentId+'" onclick="comment_cancel();" style="margin:10px; display:none">취소</button>'+
                         '   </td>'+
                         '   <td width="300px">'+
                         '       <button name="reply_reply" reply_id = "'+result[i].CommentId+'">댓글</button>'+
