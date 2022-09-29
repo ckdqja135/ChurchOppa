@@ -371,6 +371,8 @@
         });
         function password_form_show(comment_id) {
             $(`#reply_password_${comment_id}`).show();
+            $(`#delete_btn_${comment_id}`).show();
+            $(`#cancel_btn_${comment_id}`).show();
         }
 
            //댓글 삭제
@@ -547,10 +549,10 @@
                         '   <td width="100px">'+
                         result[i].WriterId+
                         '   </td>'+
-                        '   <td width="100px">'+
+                        '   <td width="200px">'+
                         '       <form><input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
-                        '       <button class="btn btn-primary" id="delete_btn_'+ result[i].CommentId+'" onclick="comment_delete_confirm();" style="margin:10px; display:none">삭제</button>'+
-                        '       <button class="btn btn-primary" id="cancel_btn_'+ result[i].CommentId+'" onclick="comment_cancel();" style="margin:10px; display:none">취소</button>'+
+                        `       <button type="button" class="btn btn-primary" id="delete_btn_${result[i].CommentId}" onclick="comment_delete_confirm();">삭제</button>` +
+                        `       <button type="button" class="btn btn-primary" id="cancel_btn_${result[i].CommentId}" onclick="comment_cancel();">취소</button>` +
                         '   </td>'+
                         '   <td width="300px">'+
                         '       <button name="reply_reply" reply_id = "'+result[i].CommentId+'">댓글</button>'+
@@ -564,6 +566,8 @@
                         $('#reply_area tr:last').after(reply);
                     }
                     $(`#reply_password_${result[i].CommentId}`).hide();
+                    $(`#delete_btn_${result[i].CommentId}`).hide();
+                    $(`#cancel_btn_${result[i].CommentId}`).hide();
                 }
             },
             error : function(request,status,error) {
@@ -621,7 +625,7 @@
             var reply_area = $("#reply_area");
             var reply = 
                 '<tr reply_type="main">'+
-                '   <td width="820px">'+
+                '   <td width="800px" style="word-break:break-all">'+
                 reply_content+
                 '   </td>'+
                 '   <td width="100px">'+
