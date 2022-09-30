@@ -94,121 +94,7 @@
         $(document).on("click","button[name='reply_del']", function (){
             comment_idx = $(this).attr("reply_id");
             comment_pw = "reply_password_"+comment_idx;
-            password_form_show(comment_idx);
-        });
-        
-        //댓글 수정 저장
-        $(document).on("click","button[name='reply_modify_save']", function(){
-            var reply_id = $(this).attr("reply_id");
-            // null 체크
-            if($("#reply_modify_writer_"+reply_id).val().trim() == ""){
-                alert("이름을 입력하세요.");
-                $("#reply_modify_writer_"+reply_id).focus();
-                return false;
-            }
-
-            if($("#reply_modify_password_"+reply_id).val().trim() == ""){
-                alert("패스워드를 입력하세요.");
-                $("#reply_modify_password_"+reply_id).focus();
-                return false;
-            }
-
-            if($("#reply_modify_content_"+reply_id).val().trim() == ""){
-                alert("내용을 입력하세요.");
-                $("#reply_modify_content_"+reply_id).focus();
-                return false;
-            }
-            //DB에 업데이트 하고
-            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
-            var reply_content = $("#reply_modify_content_"+reply_id).val().replace("\n", "<br>"); //개행처리
-            var r_type = $(this).attr("r_type");
-            var parent_id;
-            var depth;
-
-            if(r_type=="main"){
-                parent_id = "0";
-                depth = "0";
-            }else{
-                parent_id = $(this).attr("reply_id");
-                depth = "1";
-            }
-
-            //값 셋팅
-            var objParams = {
-                board_id        : $("#board_id").val(),
-                parent_id       : parent_id, 
-                depth           : depth,
-                reply_writer    : $("#reply_modify_writer_"+reply_id).val(),
-                reply_password  : $("#reply_modify_password_"+reply_id).val(),
-                reply_content   : reply_content
-            };
-            /*
-            $.ajax({
-                url         :   "/board/reply/update",
-                dataType    :   "json",
-                contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-                type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
-                data        :   objParams,
-                success     :   function(retVal){
-                    if(retVal.code != "OK") {
-                        alert(retVal.message);
-                    }else{
-                        reply_id = retVal.reply_id;
-                    }
-                },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-            */
-            //수정된댓글 내용을 적고
-            if(r_type=="main"){
-                reply = 
-                    '<tr reply_type="main">'+
-                    '   <td width="820px">'+
-                    $("#reply_modify_content_"+reply_id).val()+
-                    '   </td>'+
-                    '   <td width="100px">'+
-                    $("#reply_modify_writer_"+reply_id).val()+
-                    '   </td>'+
-                    '   <td width="100px">'+
-                    '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-                    '   </td>'+
-                    '   <td align="center">'+
-                    '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
-                    '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
-                    '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
-                    '   </td>'+
-                    '</tr>';
-            }else{
-                reply = 
-                    '<tr reply_type="sub">'+
-                    '   <td width="820px"> → '+
-                    $("#reply_modify_content_"+reply_id).val()+
-                    '   </td>'+
-                    '   <td width="100px">'+
-                    $("#reply_modify_writer_"+reply_id).val()+
-                    '   </td>'+
-                    '   <td width="100px">'+
-                    '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-                    '   </td>'+
-                    '   <td align="center">'+
-                    '       <button name="reply_modify" r_type = "sub" reply_id = "'+reply_id+'">수정</button>'+
-                    '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>'+
-                    '   </td>'+
-                    '</tr>';
-            }
-            
-            var prevTr = $(this).parent().parent();
-            //자기 위에 붙이기
-            prevTr.after(reply);
-
-            //자기 자신 삭제
-            $(this).parent().parent().remove(); 
-
-            status = false;
-            
+            delete_comment_show_event(comment_idx);
         });
 
         //대댓글 입력창
@@ -397,6 +283,115 @@
         }
     }
 
+    //댓글 수정 저장
+    $(document).on("click","button[name='reply_modify']", function(){
+        comment_idx = $(this).attr("reply_id");
+        modify_form_show(comment_idx);
+        // null 체크
+        // if($("#reply_modify_password_"+reply_id).val().trim() == ""){
+        //     alert("패스워드를 입력하세요.");
+        //     $("#reply_modify_password_"+reply_id).focus();
+        //     return false;
+        // }
+
+        // if($("#reply_modify_content_"+reply_id).val().trim() == ""){
+        //     alert("내용을 입력하세요.");
+        //     $("#reply_modify_content_"+reply_id).focus();
+        //     return false;
+        // }
+        // //DB에 업데이트 하고
+        // //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+        // var reply_content = $("#reply_modify_content_"+reply_id).val().replace("\n", "<br>"); //개행처리
+        // var r_type = $(this).attr("r_type");
+        // var parent_id;
+        // var depth;
+
+        // if(r_type=="main"){
+        //     parent_id = "0";
+        //     depth = "0";
+        // }else{
+        //     parent_id = $(this).attr("reply_id");
+        //     depth = "1";
+        // }
+
+        // //값 셋팅
+        // var objParams = {
+        //     board_id        : $("#board_id").val(),
+        //     parent_id       : parent_id, 
+        //     depth           : depth,
+        //     reply_writer    : $("#reply_modify_writer_"+reply_id).val(),
+        //     reply_password  : $("#reply_modify_password_"+reply_id).val(),
+        //     reply_content   : reply_content
+        // };
+        // /*
+        // $.ajax({
+        //     url         :   "/board/reply/update",
+        //     dataType    :   "json",
+        //     contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
+        //     type        :   "post",
+        //     async       :   false, //동기: false, 비동기: ture
+        //     data        :   objParams,
+        //     success     :   function(retVal){
+        //         if(retVal.code != "OK") {
+        //             alert(retVal.message);
+        //         }else{
+        //             reply_id = retVal.reply_id;
+        //         }
+        //     },
+        //     error       :   function(request, status, error){
+        //         console.log("AJAX_ERROR");
+        //     }
+        // });
+        // */
+        // //수정된댓글 내용을 적고
+        // if(r_type=="main"){
+        //     reply = 
+        //         '<tr reply_type="main">'+
+        //         '   <td width="820px">'+
+        //         $("#reply_modify_content_"+reply_id).val()+
+        //         '   </td>'+
+        //         '   <td width="100px">'+
+        //         $("#reply_modify_writer_"+reply_id).val()+
+        //         '   </td>'+
+        //         '   <td width="100px">'+
+        //         '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+        //         '   </td>'+
+        //         '   <td align="center">'+
+        //         '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
+        //         '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
+        //         '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
+        //         '   </td>'+
+        //         '</tr>';
+        // }else{
+        //     reply = 
+        //         '<tr reply_type="sub">'+
+        //         '   <td width="820px"> → '+
+        //         $("#reply_modify_content_"+reply_id).val()+
+        //         '   </td>'+
+        //         '   <td width="100px">'+
+        //         $("#reply_modify_writer_"+reply_id).val()+
+        //         '   </td>'+
+        //         '   <td width="100px">'+
+        //         '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+        //         '   </td>'+
+        //         '   <td align="center">'+
+        //         '       <button name="reply_modify" r_type = "sub" reply_id = "'+reply_id+'">수정</button>'+
+        //         '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>'+
+        //         '   </td>'+
+        //         '</tr>';
+        // }
+        
+        // var prevTr = $(this).parent().parent();
+        // //자기 위에 붙이기
+        // prevTr.after(reply);
+
+        // //자기 자신 삭제
+        // $(this).parent().parent().remove(); 
+
+        // status = false;
+        
+    });
+
     // 댓글 수정 함수
     function correct_comments(comment_id) {
         var status = false; //수정과 대댓글을 동시에 적용 못하도록
@@ -450,7 +445,7 @@
                 }
 
                 var txt_reply_writer = $(this).parent().prev().prev().html().trim(); //댓글작성자 가져오기
-
+                
                 //입력받는 창 등록
                 var replyEditor = 
                     '<tr id="reply_add" class="reply_modify">'+
@@ -474,13 +469,13 @@
                 
                 //자기 자신 삭제
                 $(this).parent().parent().remove(); 
+                status = false;
             }
         }
     }
         
     // 게시판 상세조회.
     function get_board() {
-
         var _board_no = window.location.href.split('/')[4];
         $.ajax({
             url : '/ajax/board_detail',
@@ -495,13 +490,13 @@
                     var str = `
                     <h2 class="board_title"> ${result[0].boardTitle} </h2>
                     <h2 class="hits"> ${result[0].boardHits}</h2>
-                    
+
                     <div class="form-group">
                         <div class="input-group" style="display:none">
                             <span class="input-group-text">비밀번호 입력</span> 
                             <form><input type="password" class="form-control" id="writer_pw" autoComplete="off"></form>
                         </div>
-                        
+
                         <button type="button" class="btn btn-primary float-right" id="cancel_btn" onclick="correct_cancel_event()" style="margin:10px; display:none">취소</button>
                         <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
                         <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="delete_confirm();" style="margin:10px; display:none">삭제</button>
@@ -544,12 +539,13 @@
                         '   <td width="200px">'+
                         '       <form><input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
                         `       <button type="button" class="btn btn-danger" id="delete_btn_${result[i].CommentId}" onclick="del_comment(${result[i].CommentId});">삭제</button>` +
+                        `       <button type="button" class="btn btn-warning" id="modify_btn_${result[i].CommentId}" onclick="">수정</button>` +
                         `       <button type="button" class="btn btn-success" id="cancel_btn_${result[i].CommentId}" onclick="comment_cancel_event(${result[i].CommentId});">취소</button>` +
                         '   </td>'+
                         '   <td width="300px">'+
                         '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id = "'+result[i].CommentId+'">댓글</button>'+
-                        '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+result[i].CommentId+'">수정</button>'+
-                        '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+result[i].CommentId+'" onclick="password_form_show();">삭제</button>'+
+                        '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+result[i].CommentId+'"">수정</button>'+
+                        '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+result[i].CommentId+'">삭제</button>'+
                         '   </td>'+
                         '</tr>';
                     if($('#reply_area').contents().size()==0){
@@ -560,6 +556,7 @@
                     $(`#reply_password_${result[i].CommentId}`).hide();
                     $(`#delete_btn_${result[i].CommentId}`).hide();
                     $(`#cancel_btn_${result[i].CommentId}`).hide();
+                    $(`#modify_btn_${result[i].CommentId}`).hide();
                 }
             },
             error : function(request,status,error) {
@@ -626,12 +623,13 @@
                 '   <td width="100px">'+
                 '       <form><input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
                 `       <button type="button" class="btn btn-danger" id="delete_btn_${reply_id}" onclick="del_comment(${reply_id});">삭제</button>` +
+                `       <button type="button" class="btn btn-warning" id="modify_btn_${result[i].CommentId}" onclick="">수정</button>` +
                 `       <button type="button" class="btn btn-success" id="cancel_btn_${reply_id}" onclick="comment_cancel_event(${reply_id});">취소</button>` +
                 '   </td>'+
                 '   <td width="300px">'+
                 '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id = "'+reply_id+'">댓글</button>'+
                 '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+reply_id+'">수정</button>'+
-                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+reply_id+'" onclick="password_form_show();">삭제</button>'+
+                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+reply_id+'" onclick="delete_comment_show_event();">삭제</button>'+
                 '   </td>'+
                 '</tr>';
 
@@ -648,6 +646,7 @@
                 $(`#reply_password_${reply_id}`).hide();
                 $(`#delete_btn_${reply_id}`).hide();
                 $(`#cancel_btn_${reply_id}`).hide();
+                $(`#modify_btn_${reply_id}`).hide();
             }
         },
             error       :   function(request, status, error){
@@ -719,6 +718,7 @@
         $(`#reply_password_${commentId}`).hide();
         $(`#delete_btn_${commentId}`).hide();
         $(`#cancel_btn_${commentId}`).hide();
+        $(`#modify_btn_${commentId}`).hide();
     }
 
     // 설정 - 삭제 메뉴 클릭 이벤트.
@@ -729,9 +729,16 @@
     }
 
     // 댓글 - 삭제 버튼 클릭 시.
-    function password_form_show(comment_id) {
+    function delete_comment_show_event(comment_id) {
         $(`#reply_password_${comment_id}`).show();
         $(`#delete_btn_${comment_id}`).show();
+        $(`#cancel_btn_${comment_id}`).show();
+    }
+
+    // 댓글 - 수정 버튼 클릭 시.
+    function modify_form_show(comment_id) {
+        $(`#reply_password_${comment_id}`).show();
+        $(`#modify_btn_${comment_id}`).show();
         $(`#cancel_btn_${comment_id}`).show();
     }
 
@@ -776,8 +783,9 @@
         }
     }
 
+    window.modify_form_show = modify_form_show;
     window.comment_cancel_event = comment_cancel_event;
-    window.password_form_show = password_form_show;
+    window.delete_comment_show_event = delete_comment_show_event;
     window.delete_confirm = delete_confirm;
     window.delete_board_event = delete_board_event;
     window.correct_cancel_event = correct_cancel_event;
