@@ -536,7 +536,7 @@
                     var reply = 
                         '<tr reply_type="main">'+
                         '   <td width="800px" style="word-break:break-all">'+
-                        result[i].CommentContent+
+                        `     <textarea type="text" class="comment-form-control" id="cmment_content" readonly="true">${result[i].CommentContent}</textarea>`+
                         '   </td>'+
                         '   <td width="100px">'+
                         result[i].WriterId+

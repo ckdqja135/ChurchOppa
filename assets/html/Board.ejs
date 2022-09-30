@@ -95,6 +95,10 @@
                         </td>
                     </tr>
                 </table> -->
+            </div>
+          
+        <footer>
+            <div class="row pt-5">
                 <li class="list-group-item">
                     <div class="form-inline pb-3" >
                         <label for="replyId"><i class="fa fa-user-circle-o fa"></i></label>
@@ -102,15 +106,18 @@
                         <label for="replyPassword"><i class="fa fa-unlock-alt fa mr-2 pl-2"></i></label>
                         <input type="password" id="reply_password" class="form-control ml-1" placeholder="Enter password" maxlength="8">
                     </div>
-                    <div class="form-inline mb-2">
-                        <textarea class="form-control" id="reply_content" rows="3" style="width: 700px;" maxlength="200" placeholder="최대 200자까지 작성가능."></textarea>
-                        <button type="button" class="btn btn-dark mt-3" id="reply_save" style="position: relative; left: 100px;" onclick="insert_comment()">댓글 달기</button>
+                    <div class="row pl-2">
+                        <textarea class="form-control" id="reply_content" rows="3" maxlength="100" placeholder="최대 100자까지 작성가능."></textarea>
+                        <div class="col_comment">
+                            <button type="button" class="btn btn-dark" id="reply_save" style="position: relative; left: 100px;" onclick="insert_comment()">댓글 달기</button>
+                        </div>
                     </div>
                 </li>
             </ul>
         </div>
-        <footer>
+        <div class="row pt-3">
             <button type="button" class="btn btn-secondary" id="BackBtn" onclick="location.href = document.referrer;" style="position: relative; left: 20px;">뒤로가기</button>
+        </div>
         </footer>
     </div>
 
