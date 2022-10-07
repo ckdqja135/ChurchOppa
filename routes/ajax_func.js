@@ -27,22 +27,39 @@ router.post('/', function(req, res, next) {
   else if (func_name == 'inquiry_board') {
     db_service.inquiry_board(out_func, req.body.church_no)
     // db_service.search_church(out_func, "새지음교회");
-  } else if (func_name == 'create_board') {
+  } 
+  
+  else if (func_name == 'create_board') {
     db_service.create_board(out_func, req.body)
     // db_service.search_church(out_func, "새지음교회");
-  } else if (func_name == 'board_detail') {
+  } 
+  
+  else if (func_name == 'board_detail') {
     db_service.get_board_detail(out_func, req.body.board_no)
-  } else if (func_name == 'board_comment') {
+  } 
+  
+  else if (func_name == 'board_comment') {
     db_service.save_comment(out_func, req.body)
-  } else if (func_name == 'get_board_comment') {
+  } 
+  
+  else if (func_name == 'get_board_comment') {
     db_service.get_comment(out_func, Number(req.body.board_idx));
-  } else if (func_name == 'delete_comment') {
+  }
+  
+  else if (func_name == 'delete_comment') {
     db_service.del_comment(out_func, req.body);
-  }else if (func_name == 'correct_comments') {
-    // db_service.correct_borad(out_func, req.body);
-  } else if (func_name == 'correct_borad') {
+  }
+  
+  else if (func_name == 'correct_comments') {
+    db_service.upd_comment(out_func, req.body);
+    console.log("req.body", req.body)
+  }
+  
+  else if (func_name == 'correct_borad') {
     db_service.correct_borad(out_func, req.body);
-  } else if (func_name == 'delete_board') {
+  } 
+  
+  else if (func_name == 'delete_board') {
     console.log("church_idx", req)
     db_service.delete_borad(out_func, req.body);
   }
