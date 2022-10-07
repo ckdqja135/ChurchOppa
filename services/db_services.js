@@ -225,6 +225,33 @@ class db_services {
         }
     }
 
+    // 댓글 수정
+    async upd_comment (out, params) {
+        let sql = "UPDATE board_comment SET CommentContent='"+params.reply_content+"' " +
+                    "WHERE CommentId = "+params.reply_idx+" AND WriterPw = '"+params.reply_pw+"';";
+        console.log("sql", sql)
+        
+        let conn =  await this.dbc.getConnection();
+        let result = null;
+        let error = null;
+        try {
+            await conn.beginTransaction(); // 트랜잭션 적용 시작
+            let update_comment = await conn.query(sql);
+            await conn.commit(); // 커밋
+            result = update_comment[0];
+            out(error, result);
+            console.log("result", result)
+        }catch (err) {
+            error = err;
+            console.log(err)
+            out(error, result);
+            await conn.rollback() // 롤백
+            // return res.status(500).json(err)
+        } finally {
+            conn.release() // con 회수
+        }
+    }
+
     // 게시판 수정
     async correct_borad (out, params) {
         let sql = "UPDATE board_detail SET boardContent='"+params.board_content+"' " +
