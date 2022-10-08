@@ -422,6 +422,13 @@
                 success     :   function(result){
                     if (result.affectedRows > 0) {
                         console.log(result)
+                        jQuery.noConflict();
+                        $('#confirmModal').modal('hide');
+                        $('#correctModal').modal('show');
+                        $(`#comment_content_${comment_id}`).attr('readonly', true);
+                        $(`#reply_password_${comment_id}`).hide();
+                        $(`#modify_btn_${comment_id}`).hide();
+                        $(`#cancel_btn_${comment_id}`).hide();
                     } else {
                         jQuery.noConflict();
                         $('#confirmModal').modal('hide');
@@ -433,11 +440,11 @@
                 }
             });
 
-            // check = true;//패스워드가 맞으면 체크값을 true로 변경
-            // if(status){
-            //     alert("수정과 대댓글은 동시에 불가합니다.");
-            //     return false;
-            // }
+            check = true;//패스워드가 맞으면 체크값을 true로 변경
+            if(status){
+                alert("수정과 대댓글은 동시에 불가합니다.");
+                return false;
+            }
 
             // if(check){
             //     status = true;
@@ -626,7 +633,7 @@
                 '   <td width="100px">'+
                 '       <form><input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
                 `       <button type="button" class="btn btn-danger" id="delete_btn_${reply_id}" onclick="del_comment(${reply_id});">삭제</button>` +
-                `       <button type="button" class="btn btn-warning" id="modify_btn_${result[i].CommentId}" onclick="correct_comments(${result[i].CommentId});">수정</button>` +
+                `       <button type="button" class="btn btn-warning" id="modify_btn_${reply_id}" onclick="correct_comments(${reply_id});">수정</button>` +
                 `       <button type="button" class="btn btn-success" id="cancel_btn_${reply_id}" onclick="comment_cancel_event(${reply_id});">취소</button>` +
                 '   </td>'+
                 '   <td width="300px">'+
@@ -666,7 +673,7 @@
         $('#settings').hide();
     }
 
-    // 수정 메뉴 선택 후 수정 버튼 클릭 시.
+    // 게시글 수정 이벤트 -> 수정 버튼 클릭 이벤트.
     function correct_borad_event() {
          //값 셋팅
         var objParams = {
