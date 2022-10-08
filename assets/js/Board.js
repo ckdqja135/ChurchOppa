@@ -2,23 +2,6 @@
     $(document).ready(function(){
         get_board();
         var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
-            // check = true;//삭제 되면 체크값을 true로 변경
-            // //댓글 삭제
-            // if(check){
-            //     //삭제하면서 하위 댓글도 삭제
-            //     var prevTr = $(this).parent().parent().next(); //댓글의 다음
-
-            //     while(prevTr.attr("reply_type")=="sub"){//댓글의 다음이 sub면 계속 넘어감
-            //         prevTr = prevTr.next();
-            //         prevTr.prev().remove();
-            //     }
-            //     //마지막 리플 처리
-            //     if(prevTr.attr("reply_type") == undefined){
-            //         prevTr = $(this).parent().parent();
-            //         prevTr.remove();
-            //     }
-            //     $(this).parent().parent().remove(); 
-            // }
             $('.event-dropdown').on('show.bs.dropdown', function () {   
                 console.log("메뉴가 열리기 전 이벤트!");  
             });  
@@ -35,6 +18,7 @@
                 console.log("메뉴가 닫힌 후 이벤트!");  
             });
     });
+
     var status = false; //수정과 대댓글을 동시에 적용 못하도록
         //댓글 수정 취소
         $(document).on("click","button[name='reply_modify_cancel']", function(){
@@ -314,36 +298,6 @@
         //     depth = "1";
         // }
 
-        // //값 셋팅
-        // var objParams = {
-        //     board_id        : $("#board_id").val(),
-        //     parent_id       : parent_id, 
-        //     depth           : depth,
-        //     reply_writer    : $("#reply_modify_writer_"+reply_id).val(),
-        //     reply_password  : $("#reply_modify_password_"+reply_id).val(),
-        //     reply_content   : reply_content
-        // };
-        // /*
-        // $.ajax({
-        //     url         :   "/board/reply/update",
-        //     dataType    :   "json",
-        //     contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-        //     type        :   "post",
-        //     async       :   false, //동기: false, 비동기: ture
-        //     data        :   objParams,
-        //     success     :   function(retVal){
-        //         if(retVal.code != "OK") {
-        //             alert(retVal.message);
-        //         }else{
-        //             reply_id = retVal.reply_id;
-        //         }
-        //     },
-        //     error       :   function(request, status, error){
-        //         console.log("AJAX_ERROR");
-        //     }
-        // });
-        // */
-        // //수정된댓글 내용을 적고
         // if(r_type=="main"){
         //     reply = 
         //         '<tr reply_type="main">'+
@@ -394,14 +348,24 @@
 
     // 댓글 수정 함수
     function correct_comments(comment_idx) {
-        var status = false; //수정과 대댓글을 동시에 적용 못하도록
-        var check = false;
         // var reply_idx = $(this).attr("reply_id");
         var r_type = $(this).attr("r_type");
         var reply_password = sha256($(`#reply_password_${comment_idx}`).val().trim());
         var comment_content = $(`#comment_content_${comment_idx}`).val();
 
-        console.log("comment_content", comment_content, reply_password)
+        if(r_type=="main"){    
+            parent_id = "0";
+            depth = "0";
+        }else{
+            parent_id = $(this).attr("reply_id");
+            depth = "1";
+        }
+
+        if(status){
+            alert("수정과 대댓글은 동시에 불가합니다.");
+            return false;
+        }
+
         //패스워드와 아이디를 넘겨 패스워드 확인
         //값 셋팅
         var objParams = {
@@ -425,10 +389,10 @@
                         jQuery.noConflict();
                         $('#confirmModal').modal('hide');
                         $('#correctModal').modal('show');
-                        $(`#comment_content_${comment_id}`).attr('readonly', true);
-                        $(`#reply_password_${comment_id}`).hide();
-                        $(`#modify_btn_${comment_id}`).hide();
-                        $(`#cancel_btn_${comment_id}`).hide();
+                        $(`#comment_content_${comment_idx}`).attr('readonly', true);
+                        $(`#reply_password_${comment_idx}`).hide();
+                        $(`#modify_btn_${comment_idx}`).hide();
+                        $(`#cancel_btn_${comment_idx}`).hide();
                     } else {
                         jQuery.noConflict();
                         $('#confirmModal').modal('hide');
@@ -439,49 +403,10 @@
                     console.log("AJAX_ERROR", request, status, error);
                 }
             });
-
-            check = true;//패스워드가 맞으면 체크값을 true로 변경
-            if(status){
-                alert("수정과 대댓글은 동시에 불가합니다.");
-                return false;
-            }
-
-            // if(check){
-            //     status = true;
-            //     //자기 위에 댓글 수정창 입력하고 기존값을 채우고 자기 자신 삭제
-            //     var txt_reply_content = comment_content; //댓글내용 가져오기
-            //     if(r_type=="sub"){
-            //         txt_reply_content = txt_reply_content.replace("→ ","");//대댓글의 뎁스표시(화살표) 없애기
-            //     }
-
-            //     var txt_reply_writer = $(this).parent().prev().prev().html().trim(); //댓글작성자 가져오기
-                
-            //     //입력받는 창 등록
-            //     var replyEditor = 
-            //         '<tr id="reply_add" class="reply_modify">'+
-            //         '   <td width="820px">'+
-            //         '       <textarea name="reply_modify_content_'+reply_id+'" id="reply_modify_content_'+reply_id+'" rows="3" cols="50">'+txt_reply_content+'</textarea>'+ //기존 내용 넣기
-            //         '   </td>'+
-            //         '   <td width="100px">'+
-            //         '       <input type="text" name="reply_modify_writer_'+reply_id+'" id="reply_modify_writer_'+reply_id+'" style="width:100%;" maxlength="10" placeholder="작성자" value="'+txt_reply_writer+'"/>'+ //기존 작성자 넣기
-            //         '   </td>'+
-            //         '   <td width="100px">'+
-            //         '       <input type="password" name="reply_modify_password_'+reply_id+'" id="reply_modify_password_'+reply_id+'" style="width:100%;" maxlength="10" placeholder="패스워드"/>'+
-            //         '   </td>'+
-            //         '   <td align="center">'+
-            //         '       <button name="reply_modify_save" r_type = "'+r_type+'" reply_id="'+reply_id+'">등록</button>'+
-            //         '       <button name="reply_modify_cancel" r_type = "'+r_type+'" r_content = "'+txt_reply_content+'" r_writer = "'+txt_reply_writer+'" reply_id="'+reply_id+'">취소</button>'+
-            //         '   </td>'+
-            //         '</tr>';
-            //     var prevTr = $(this).parent().parent();
-            //     //자기 위에 붙이기
-            //     prevTr.after(replyEditor);
-                
-            //     //자기 자신 삭제
-            //     $(this).parent().parent().remove(); 
-            //     status = false;
-            // }
         }
+
+        check = true;//패스워드가 맞으면 체크값을 true로 변경
+
     }
         
     // 게시판 상세조회.
@@ -553,9 +478,9 @@
                         `       <button type="button" class="btn btn-success" id="cancel_btn_${result[i].CommentId}" onclick="comment_cancel_event(${result[i].CommentId});">취소</button>` +
                         '   </td>'+
                         '   <td width="300px">'+
-                        '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id = "'+result[i].CommentId+'">댓글</button>'+
-                        '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+result[i].CommentId+'"">수정</button>'+
-                        '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+result[i].CommentId+'">삭제</button>'+
+                        '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id ="'+result[i].CommentId+'" id="comment_'+result[i].CommentId+'">댓글</button>'+
+                        '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+result[i].CommentId+'" id="mod_'+result[i].CommentId+'">수정</button>'+
+                        '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+result[i].CommentId+'" id="del_'+result[i].CommentId+'">삭제</button>'+
                         '   </td>'+
                         '</tr>';
                     if($('#reply_area').contents().size()==0){
@@ -567,6 +492,12 @@
                     $(`#delete_btn_${result[i].CommentId}`).hide();
                     $(`#cancel_btn_${result[i].CommentId}`).hide();
                     $(`#modify_btn_${result[i].CommentId}`).hide();
+                    
+                    if($(`#comment_content_${result[i].CommentId}`).val() == '작성자가 삭제한 글입니다.') {
+                        $(`#comment_${result[i].CommentId}`).attr("disabled", true);
+                        $(`#mod_${result[i].CommentId}`).attr("disabled", true);
+                        $(`#del_${result[i].CommentId}`).attr("disabled", true);
+                    }
                 }
             },
             error : function(request,status,error) {
