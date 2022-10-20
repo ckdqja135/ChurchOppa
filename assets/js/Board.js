@@ -106,8 +106,8 @@
                 '       <input type="password" name="reply_reply_password" style="width:100%;" maxlength="10" placeholder="패스워드"/>'+
                 '   </td>'+
                 '   <td align="center">'+
-                '       <button name="reply_save" type="button" class="btn btn-dark" r_type="main" reply_id="'+reply_id+'" id="mod_'+reply_id+'">등록</button>'+
-                '       <button name="reply_cancel" type="button" class="btn btn-success" reply_id="'+reply_id+'" id="del_'+reply_id+'">취소</button>'+
+                '       <button name="reply_reply_save" type="button" class="btn btn-dark" r_type="main" reply_id="'+reply_id+'" id="mod_'+reply_id+'">등록</button>'+
+                '       <button name="reply_reply_cancel" type="button" class="btn btn-success" reply_id="'+reply_id+'" id="del_'+reply_id+'">취소</button>'+
                 '   </td>'+
                 '</tr>';
 
@@ -217,6 +217,7 @@
 
             prevTr.after(reply);
             $("#reply_add").remove();
+            $("#reply_password").hide();
             status = false;
         });
 
@@ -673,6 +674,7 @@
         $(`#reply_password_${comment_id}`).show();
         $(`#delete_btn_${comment_id}`).show();
         $(`#cancel_btn_${comment_id}`).show();
+        $(`#modify_btn_${comment_id}`).hide();
     }
 
     // 댓글 - 수정 버튼 클릭 시.
@@ -681,6 +683,7 @@
         $(`#reply_password_${comment_id}`).show();
         $(`#modify_btn_${comment_id}`).show();
         $(`#cancel_btn_${comment_id}`).show();
+        $(`#delete_btn_${comment_id}`).hide();
     }
 
     // 설정 - 삭제 시 확인 모달 창.
