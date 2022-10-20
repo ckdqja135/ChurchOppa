@@ -16,16 +16,17 @@
          - [x] 게시판 detail DB 작업 완료.
    #### - [x] 게시판 댓글 작업.
          - [x] 댓글 DB 작업완료.
-         - [x] 댓글 작업(Insert, Delete).
+         - [x] 댓글 작업(Insert, Delete, Update, Select).
  #### - [x] 검색 결과 없을 때 이벤트 추가.
+ #### - [x] 페이징 작업.
  
 ## TODO
  - Index Page Ranking 기능 도입.
  - DB내에 존재하는 데이터들을 바탕으로 자동완성 기능 추가.(같은 이름 같은 지역일 때, 같은 이름 다른 지역일 때 어떻게 처리 할 것인지에 대한 처리)
  - 검색한 페이지 내에 검색창 동작되도록 추가.
- - 페이징 작업.
+ 
  - 게시판 작업관련.
    - 좋아요 연동
    - 댓글 작업 
-    - 대댓글 작업(Insert, Delete, Update)
-    - 댓글 작업(Update)
+    - 대댓글 작업(Insert, Delete, Update, Select)
+
