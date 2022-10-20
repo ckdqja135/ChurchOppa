@@ -1,9 +1,8 @@
 (function (window) {
     $(document).ready(function(){
         get_board();
-        var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
-            $('.event-dropdown').on('show.bs.dropdown', function () {   
-                console.log("메뉴가 열리기 전 이벤트!");  
+        $('.event-dropdown').on('show.bs.dropdown', function () {   
+            console.log("메뉴가 열리기 전 이벤트!");  
             });  
             // dropdown 메뉴가 보이기 직후에 호출되는 이벤트  
             $('.event-dropdown').on('shown.bs.dropdown', function () {    
@@ -17,8 +16,9 @@
             $('.event-dropdown').on('hidden.bs.dropdown	', function () {    
                 console.log("메뉴가 닫힌 후 이벤트!");  
             });
-    });
-
+        });
+        
+    var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
     var status = false; //수정과 대댓글을 동시에 적용 못하도록
         //댓글 수정 취소
         $(document).on("click","button[name='reply_modify_cancel']", function(){
@@ -97,7 +97,7 @@
             var replyEditor = 
                 '<tr id="reply_add" class="reply_reply">'+
                 '   <td width="820px">'+
-                '       <textarea name="reply_reply_content" rows="3" cols="50"></textarea>'+
+                '       <textarea name="reply_reply_content" rows="3" cols="50" maxlength="100" placeholder="최대 100자까지 작성가능."></textarea>'+
                 '   </td>'+
                 '   <td width="100px">'+
                 '       <input type="text" name="reply_reply_writer" style="width:100%;" maxlength="10" placeholder="작성자"/>'+
@@ -106,8 +106,8 @@
                 '       <input type="password" name="reply_reply_password" style="width:100%;" maxlength="10" placeholder="패스워드"/>'+
                 '   </td>'+
                 '   <td align="center">'+
-                '       <button name="reply_reply_save" reply_id="'+reply_id+'">등록</button>'+
-                '       <button name="reply_reply_cancel">취소</button>'+
+                '       <button name="reply_save" type="button" class="btn btn-dark" r_type="main" reply_id="'+reply_id+'" id="mod_'+reply_id+'">등록</button>'+
+                '       <button name="reply_cancel" type="button" class="btn btn-success" reply_id="'+reply_id+'" id="del_'+reply_id+'">취소</button>'+
                 '   </td>'+
                 '</tr>';
 
@@ -209,8 +209,8 @@
                 '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
                 '   </td>'+
                 '   <td align="center">'+
-                '       <button name="reply_modify" r_type = "sub" reply_id = "'+reply_id+'">수정</button>'+
-                '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>'+
+                '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+reply_id+'" id="mod_'+reply_id+'">수정</button>'+
+                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+reply_id+'" id="del_'+reply_id+'">삭제</button>'+
                 '   </td>'+
                 '</tr>';
             var prevTr = $(this).parent().parent().prev();
@@ -421,7 +421,6 @@
             success : function(result) {
                 let board_body = $(".modal-body");
                 if (result) {
-                    console.log("result", result)
                     var str = `
                     <h2 class="board_title"> ${result[0].boardTitle} </h2>
                     <h2 class="hits"> ${result[0].boardHits}</h2>
