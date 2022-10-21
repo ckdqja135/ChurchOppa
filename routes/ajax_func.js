@@ -63,6 +63,11 @@ router.post('/', function(req, res, next) {
     console.log("church_idx", req)
     db_service.delete_borad(out_func, req.body);
   }
+
+  else if (func_name == 'nested_comment') {
+    console.log("nested_comment", req.body)
+    db_service.save_comment(out_func, req.body)
+  }
   
   else {
     res.json(null);

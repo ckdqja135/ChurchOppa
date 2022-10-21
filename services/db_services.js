@@ -152,18 +152,22 @@ class db_services {
         let conn =  await this.dbc.getConnection();
         let result = null;
         let error = null;
-
+        let ins_application = "";
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
-
-            let ins_application = await conn.query(comment_SQL, [params.board_id, params.depth, params.reply_writer, 
-                                                    params.reply_password, params.parent_id, params.reply_content, params.reply_like]);
+            if (params.depth == 0) {
+                ins_application = await conn.query(comment_SQL, [params.board_idx, params.depth, params.comment_writer, 
+                                                        params.comment_password, params.parent_id, params.comment_content, params.comment_like]);
+            } else if(params.depth == 1) {
+                ins_application = await conn.query(comment_SQL, [params.board_idx, params.depth, params.reply_writer, 
+                    params.reply_password, params.parent_idx, params.reply_content, params.reply_like]);
+            }
             await conn.commit(); // 커밋
             result = ins_application;
             out(error, result);
             console.log("댓글 ins :", result)
         } catch (err) {
-            error = "[Error} : " + params.board_id + "번 게시물의 " + params.reply_writer + "의 유저의 댓글등록이 실패하였습니다.";
+            error = "[Error} : " + params.board_idx + "번 게시물의 " + params.comment_writer + "의 유저의 댓글등록이 실패하였습니다.";
             console.log(err)
             out(error, result);
             await conn.rollback() // 롤백
