@@ -84,7 +84,7 @@
         //대댓글 입력창
         $(document).on("click","button[name='reply_reply']",function(){ //동적 이벤트
             if(status){
-                alert("수정과 대댓글은 동시에 불가합니다.");
+                alert("열린 대댓글창을 닫아 주시기 바랍니다.");
                 return false;
             }
 
@@ -163,15 +163,64 @@
 
             //값 셋팅
             var objParams = {
-                board_id        : $("#board_id").val(),
-                parent_id       : $(this).attr("reply_id"), 
+                board_idx       : window.location.href.split('/')[4],
+                parent_idx       : $(this).attr("reply_id"), 
                 depth           : "1",
                 reply_writer    : reply_reply_writer.val(),
                 reply_password  : sha256(reply_reply_password.val().trim()),
-                reply_content   : reply_reply_content_val
+                reply_content   : reply_reply_content_val,
+                reply_like : 0
             };
-            
+            console.log("objParams", objParams)
             var reply_id;
+
+            $.ajax({
+                url         :   "/ajax/nested_comment",
+                type        :   "post",
+                data        :   objParams,
+                success     :   function(result){
+                if(result.length > 0) {
+                    console.log(result)
+                    reply_id = result.insertId; 
+    
+                var reply_area = $("#reply_area");
+                var reply = 
+                    '<tr reply_type="sub">'+
+                    '   <td width="820px"> → '+
+                    reply_reply_content_val+
+                    '   </td>'+
+                    '   <td width="100px">'+
+                    reply_reply_writer.val()+
+                    '   </td>'+
+                    '   <td width="100px">'+
+                    '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                    '   </td>'+
+                    '   <td align="center">'+
+                    '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+result.parent_idx+'" id="mod_'+result.parent_idx+'">수정</button>'+
+                    '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+result.parent_idx+'" id="del_'+result.parent_idx+'">삭제</button>'+
+                    '   </td>'+
+                    '</tr>';
+    
+                    if($('#reply_area').contents().size()==0){
+                        reply_area.append(reply);
+                    } else {
+                        $('#reply_area tr:last').after(reply);
+                    }
+    
+                    //댓글 초기화
+                    $("#reply_writer").val("");
+                    $("#reply_password").val("");
+                    $("#reply_content").val("");
+                    $(`#reply_password_${result.parent_idx}`).hide();
+                    $(`#delete_btn_${result.parent_idx}`).hide();
+                    $(`#cancel_btn_${result.parent_idx}`).hide();
+                    $(`#modify_btn_${result.parent_idx}`).hide();
+                }
+            },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
 
             //ajax 호출
             /*
@@ -463,30 +512,56 @@
             success : function(result) {
                 console.log("result", result)
                 for (let i = 0; i < result.length; i++) {
-                    var reply = 
-                        '<tr reply_type="main">'+
-                        '   <td width="800px" style="word-break:break-all">'+
-                        `     <textarea type="text" class="comment-form-control" id="comment_content_${result[i].CommentId}" readonly="true">${result[i].CommentContent}</textarea>`+
-                        '   </td>'+
-                        '   <td width="100px">'+
-                        result[i].WriterId+
-                        '   </td>'+
-                        '   <td width="200px">'+
-                        '       <form><input type="password" id="reply_password_'+result[i].CommentId+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
-                        `       <button type="button" class="btn btn-danger" id="delete_btn_${result[i].CommentId}" onclick="del_comment(${result[i].CommentId});">삭제</button>` +
-                        `       <button type="button" class="btn btn-warning" id="modify_btn_${result[i].CommentId}" onclick="correct_comments(${result[i].CommentId});">수정</button>` +
-                        `       <button type="button" class="btn btn-success" id="cancel_btn_${result[i].CommentId}" onclick="comment_cancel_event(${result[i].CommentId});">취소</button>` +
-                        '   </td>'+
-                        '   <td width="300px">'+
-                        '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id ="'+result[i].CommentId+'" id="comment_'+result[i].CommentId+'">댓글</button>'+
-                        '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+result[i].CommentId+'" id="mod_'+result[i].CommentId+'">수정</button>'+
-                        '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+result[i].CommentId+'" id="del_'+result[i].CommentId+'">삭제</button>'+
-                        '   </td>'+
+                    var comment = "";
+                    if (result[i].CommentDepth == "0") {
+                        comment +=`<tr reply_type="main">
+                                        <td width="800px" style="word-break:break-all">
+                                            <textarea type="text" class="comment-form-control" id="comment_content_${result[i].CommentId}" readonly="true">${result[i].CommentContent}</textarea>
+                                        </td>
+                                        <td width="100px">
+                                        ${result[i].WriterId}
+                                        </td> `
+                            comment +=   `<td width="200px">
+                                            <form><input type="password" id="reply_password_${result[i].CommentId}" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>
+                                            <button type="button" class="btn btn-danger" id="delete_btn_${result[i].CommentId}" onclick="del_comment(${result[i].CommentId});">삭제</button>
+                                            <button type="button" class="btn btn-warning" id="modify_btn_${result[i].CommentId}" onclick="correct_comments(${result[i].CommentId});">수정</button>
+                                            <button type="button" class="btn btn-success" id="cancel_btn_${result[i].CommentId}" onclick="comment_cancel_event(${result[i].CommentId});">취소</button>
+                                        </td>`
+                            comment +=
+                                    `   <td width="300px">
+                                            <button name="reply_reply" type="button" class="btn btn-primary" reply_id ="${result[i].CommentId}" id="comment_${result[i].CommentId}">댓글</button>
+                                            <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${result[i].CommentId}" id="mod_${result[i].CommentId}">수정</button>
+                                            <button name="reply_del" type="button" class="btn btn-danger" reply_id="${result[i].CommentId}" id="del_${result[i].CommentId}">삭제</button>
+                                        </td>
+                                    </tr>`
+                    }
+                    if(result[i].CommentDepth == "1") {
+                        comment += '<tr reply_type="sub">'+
+                            '   <td width="820px"> → '+
+                                    `<textarea type="text" class="comment-form-control" id="comment_content_${result[i].Commnetperent}" readonly="true">${result[i].CommentContent}</textarea>` 
+                            '   </td>'+
+                            '   <td width="100px">'+
+                            result[i].WriterId +
+                            '   </td>'+
+                            '   <td width="100px">'+
+                            '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                            '   </td>'+
+                            '   <td align="center">'+
+                            '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+result[i].Commnetperent
+                            +'" id="mod_'+result[i].Commnetperent
+                            +'">수정</button>'+
+                            '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+result[i].Commnetperent
+                            +'" id="del_'+result[i].Commnetperent
+                            +'">삭제</button>'+
+                            '   </td>'+
                         '</tr>';
+                    }
+
+
                     if($('#reply_area').contents().size()==0){
-                        $('#reply_area').append(reply);
+                        $('#reply_area').append(comment);
                     } else {
-                        $('#reply_area tr:last').after(reply);
+                        $('#reply_area tr:last').after(comment);
                     }
                     $(`#reply_password_${result[i].CommentId}`).hide();
                     $(`#delete_btn_${result[i].CommentId}`).hide();
@@ -506,7 +581,7 @@
         });
         // return church_data;
     }
-    //댓글 저장
+    //댓글 등록.
     function insert_comment () {
             //null 검사
             if($("#reply_writer").val().trim() == ""){
@@ -527,19 +602,19 @@
                 return false;
             }
 
-            var reply_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
-            var reply_id;
+            var comment_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
+            var comment_id;
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
             
             //값 셋팅
             var objParams = {
-                board_id        : window.location.href.split('/')[4],
+                board_idx        : window.location.href.split('/')[4],
                 parent_id       : "0",  
                 depth           : "0",
-                reply_writer    : $("#reply_writer").val().trim(),
-                reply_password  : sha256($("#reply_password").val().trim()),
-                reply_content   : reply_content,
-                reply_like      : 0
+                comment_writer    : $("#reply_writer").val().trim(),
+                comment_password  : sha256($("#reply_password").val().trim()),
+                comment_content   : comment_content,
+                comment_like      : 0
             };
             
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
@@ -550,44 +625,44 @@
             success     :   function(result){
             if(result.length > 0) {
                 console.log(result)
-                reply_id = result.insertId; 
+                comment_id = result.insertId; 
 
-            var reply_area = $("#reply_area");
-            var reply = 
+            var comment_area = $("#reply_area");
+            var comment = 
                 '<tr reply_type="main">'+
                 '   <td width="800px" style="word-break:break-all">'+
-                reply_content+
+                commenty_content+
                 '   </td>'+
                 '   <td width="100px">'+
                 $("#reply_writer").val()+
                 '   </td>'+
                 '   <td width="100px">'+
-                '       <form><input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
-                `       <button type="button" class="btn btn-danger" id="delete_btn_${reply_id}" onclick="del_comment(${reply_id});">삭제</button>` +
-                `       <button type="button" class="btn btn-warning" id="modify_btn_${reply_id}" onclick="correct_comments(${reply_id});">수정</button>` +
-                `       <button type="button" class="btn btn-success" id="cancel_btn_${reply_id}" onclick="comment_cancel_event(${reply_id});">취소</button>` +
+                '       <form><input type="password" id="reply_password_'+comment_id+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
+                `       <button type="button" class="btn btn-danger" id="delete_btn_${comment_id}" onclick="del_comment(${comment_id});">삭제</button>` +
+                `       <button type="button" class="btn btn-warning" id="modify_btn_${comment_id}" onclick="correct_comments(${comment_id});">수정</button>` +
+                `       <button type="button" class="btn btn-success" id="cancel_btn_${comment_id}" onclick="comment_cancel_event(${comment_id});">취소</button>` +
                 '   </td>'+
                 '   <td width="300px">'+
-                '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id = "'+reply_id+'">댓글</button>'+
-                '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+reply_id+'">수정</button>'+
-                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+reply_id+'" onclick="delete_comment_show_event();">삭제</button>'+
+                '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id = "'+comment_id+'">댓글</button>'+
+                '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+comment_id+'">수정</button>'+
+                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+comment_id+'" onclick="delete_comment_show_event();">삭제</button>'+
                 '   </td>'+
                 '</tr>';
 
                 if($('#reply_area').contents().size()==0){
-                    reply_area.append(reply);
+                    comment_area.append(comment);
                 } else {
-                    $('#reply_area tr:last').after(reply);
+                    $('#reply_area tr:last').after(comment);
                 }
 
                 //댓글 초기화
                 $("#reply_writer").val("");
                 $("#reply_password").val("");
                 $("#reply_content").val("");
-                $(`#reply_password_${reply_id}`).hide();
-                $(`#delete_btn_${reply_id}`).hide();
-                $(`#cancel_btn_${reply_id}`).hide();
-                $(`#modify_btn_${reply_id}`).hide();
+                $(`#reply_password_${comment_id}`).hide();
+                $(`#delete_btn_${comment_id}`).hide();
+                $(`#cancel_btn_${comment_id}`).hide();
+                $(`#modify_btn_${comment_id}`).hide();
             }
         },
             error       :   function(request, status, error){
