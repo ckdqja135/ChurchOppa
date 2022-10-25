@@ -1,3 +1,9 @@
+Public : Bootstrap, EJS, CSS
+Front : Vanilla JS
+Back : Node, Express
+
+------------------------------------------
+
 # ChurchOppa
 ## Compleate
  #### - [x]  Index Page 디자인 
