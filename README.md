@@ -1,6 +1,6 @@
 ##### Public : Bootstrap, EJS, CSS <br />
 ##### Front : Vanilla JS <br />
-##### Back : Node, Express <br />
+##### Back : Node JS, Express <br />
 
 ------------------------------------------
 
