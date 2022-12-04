@@ -42,3 +42,6 @@
 ## Search Page
 <img src="https://user-images.githubusercontent.com/33046341/205471344-f5aca365-132e-454d-b6ad-60babd47219a.png" width="90%"></img>
 
+## Church Page
+<img src="https://user-images.githubusercontent.com/33046341/205471496-4552c762-1f56-4d83-a08b-566b01d0cfb5.png" width="90%"></img>
+
