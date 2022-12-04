@@ -40,5 +40,5 @@
 
 # Image
 ## Search Page
-<img src="[https://user-images.githubusercontent.com/33046341/77127383-93289780-6a8f-11ea-94ac-ca63e4cf0777.png](https://user-images.githubusercontent.com/33046341/205471344-f5aca365-132e-454d-b6ad-60babd47219a.png)" width="90%"></img>
+<img src="https://user-images.githubusercontent.com/33046341/205471344-f5aca365-132e-454d-b6ad-60babd47219a.png" width="90%"></img>
 
