@@ -45,3 +45,5 @@
 ## Church Page
 <img src="https://user-images.githubusercontent.com/33046341/205471770-5c3ef6b9-1fa9-4089-a496-6d4adc63e88d.png" width="90%"></img>
 
+## Board Page
+<img src="https://user-images.githubusercontent.com/33046341/205471984-7d8ed9ee-b249-4f15-87f2-a95589999a6e.png" width="90%"></img
