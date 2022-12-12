@@ -46,4 +46,4 @@
 <img src="https://user-images.githubusercontent.com/33046341/206989955-0de364e4-fe37-441f-bf17-8ce969e69518.png" width="90%"></img>
 
 ## Board Page
-<img src="https://user-images.githubusercontent.com/33046341/205471984-7d8ed9ee-b249-4f15-87f2-a95589999a6e.png" width="90%"></img
+<img src="https://user-images.githubusercontent.com/33046341/205471984-7d8ed9ee-b249-4f15-87f2-a95589999a6e.png" width="90%"></img>
