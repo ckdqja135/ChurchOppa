@@ -5,6 +5,11 @@
         <!-- Bootstrap -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
         <link rel="stylesheet" type="text/css" href="../css/index.css">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -34,27 +39,17 @@
                                 </div>
                             </div>
                         </form>
-                        <div id="container">
-                        
-                            <table id="user-table">
-                                <tbody class="auto_result">
-                                </tbody>
-                            </table>
-                        </div>
+
                         <script>
                             $(document).ready(function() {
                                 $("#search").keyup(function() {
-                                        // auto_search();
+                                    auto_search();
                                 })
                             })
 
                             function auto_search() {
-                                if ($("#search").val() == '') {
-                                    $("#user-table").empty();
-                                }
                                 var _keyword = $("#search").val();
-                                if (isEmpty(_keyword))
-                                    $("#user-table > tbody > tr").hide();
+
                                 $.ajax({
                                     url : '/ajax/auto',
                                     type : "POST",
@@ -63,26 +58,12 @@
                                         keyword : isEmpty(_keyword) ? "''" : _keyword
                                     },
                                     success : function(result) {
-                                        let church_info = $(".auto_result");
-                                        if (result) {
-                                            // data 전달
-                                            var temp = $("#user-table > tbody > tr > td:nth-child(5n+1):contains('" + _keyword + "')");
-                                            // church_data = result;
-                                            let str = "";
+                                        if (result.length > 0) {
                                             for (let i = 0; i < result.length; i++) {
-                                                str += `  
-                                                        <tr >
-                                                            <td>${result[i].ChurchName} &nbsp; &nbsp; &nbsp; </td>
-                                                            <td>${result[i].ChurchLocate} &nbsp; &nbsp; &nbsp;</td>
-                                                            <td>${result[i].ChurchPastor} &nbsp; &nbsp; &nbsp;</td>
-                                                        </tr>
-                                                    `
+                                                $( "#search" ).autocomplete({
+                                                    source: [ result[i].ChurchName + " / " +result[i].ChurchLocate],
+                                                });
                                             }
-                                            church_info.append(str)
-                                            console.log(result)
-                                            $(temp).parent().show();
-                                        } else {
-                                        
                                         }
                                     },
                                     error : function(request,status,error) {
