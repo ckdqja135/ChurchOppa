@@ -42,10 +42,36 @@
 
                         <script>
                             $(document).ready(function() {
-                                $("#search").keyup(function() {
-                                    auto_search();
+                                $( "#search" ).autocomplete({
+                                    source: function(request, response) {
+                                        var _keyword = $("#search").val();
+                                        $.ajax({
+                                            url : '/ajax/auto',
+                                            type : "POST",
+                                            async: false, 
+                                            data : {
+                                                keyword : isEmpty(_keyword) ? "''" : _keyword
+                                            },
+                                            success: function(data) {
+                                                response($.map(data, function(item) {
+                                                    console.log("item", item)
+                                                    return {
+                                                        label: item.ChurchName,
+                                                        value: item.ChurchName,
+                                                        gubun: item.ChurchLocate
+                                                    }
+                                                }));
+                                            }
+                                        });
+                                    },
+                                    minLength: 1,
+                                    error : function(request,status,error) {
+                                        console.log(request+"\n",status,"\n",error, "\n")
+                                    }
                                 })
                             })
+
+                    
 
                             function auto_search() {
                                 var _keyword = $("#search").val();
@@ -62,8 +88,16 @@
                                             for (let i = 0; i < result.length; i++) {
                                                 $( "#search" ).autocomplete({
                                                     source: [ result[i].ChurchName + " / " +result[i].ChurchLocate],
+                                                    response: function(event, ui) {
+                                                        console.log(ui.content)
+                                                        if (ui.content.length === 0) {
+                                                            console.log("검색결과 없어.")
+                                                        }
+                                                    }
                                                 });
-                                            }
+                                            } 
+                                        } else {
+
                                         }
                                     },
                                     error : function(request,status,error) {
