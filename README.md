@@ -6,7 +6,10 @@
 
 # ChurchOppa
 ## Compleate
- #### - [x]  Index Page 디자인 
+ #### - Index Page 작업
+   #### - [x]  Index Page 디자인 
+   #### - [x]  자동완성 이벤트.
+#### - Church Page 작업   
  #### - [x]  ChurchPage 디자인 
     - [x] 카카오 지도 연동(위도 경도, 기타 등등 DB작업 완료.)
     - [x] 교회 정보(DB 작업 완료), 글쓰기 버튼, 글쓰기 목록 디자인 추가.
