@@ -140,72 +140,97 @@
     }
 
     function pagination() {
-		var req_num_row = 5;
+		var req_num_row = 2;
 		var tr = $('.board tr');
 		var total_num_row = tr.length;
         console.log("total_num_row", total_num_row)
-		var num_pages = 0;
-		if(total_num_row % req_num_row ==0){
-			num_pages = total_num_row / req_num_row;
-		}
-		if(total_num_row % req_num_row >=1){
-			num_pages = total_num_row / req_num_row;
-			num_pages++;
-			num_pages = Math.floor(num_pages++);
-		}
 
+		var num_pages = 0;
+
+		if(total_num_row % req_num_row ==0){
+            num_pages = total_num_row / req_num_row;
+        }
+        
+        if(total_num_row % req_num_row >=1){
+            num_pages = total_num_row / req_num_row;
+            num_pages++;
+            num_pages = Math.floor(num_pages);
+        }
 
         $('.pagination').append(`<li class="page-item disabled"><a class="page-link prev">Previous</a></li>`);
 
+        // 페이징 버튼 생성
         for(var i=1; i<=num_pages; i++) {
             $('.pagination').append(`<li class="page-item"><a class="page-link ${i}">${i}</a></li>`);
             $('.pagination li:nth-child(2)').addClass("active");
             $('.pagination a').addClass("pagination-link");
         }
+
+        if (num_pages > 1) { // 페이지가 1개 이상일 때만 next 버튼을 생성.
+            $('.pagination').append(`<li class="page-item"><a class="page-link next active">Next</a></li>`);
+        }
+
+        tr.each(function(i) {
+            $(this).hide();
+            if(i+1 <= req_num_row) {
+                tr.eq(i).show();
+            }
+        });
         
-        $('.pagination').append(`<li class="page-item disabled"><a class="page-link next">Next</a></li>`);
-
-            tr.each(function(i) {
-                $(this).hide();
-                if(i+1 <= req_num_row) {
-                    tr.eq(i).show();
-                }
-            });
-
-        $('.pagination a').click('.pagination-link', function(e) {
+        $('.pagination-link').click(function(e) {
             e.preventDefault();
             tr.hide();
-            var page=$(this).text();
-            var temp=page-1;
-            var start=temp*req_num_row;
+            var page = $(this).text();
+            var temp = page - 1;
+            var start = temp * req_num_row;
             var current_link = temp;
-
+        
             console.log("page", page, "start", start, "temp", temp)
-
-        $('.pagination li').removeClass("active");
-        $(this).parent().addClass("active");
-
-        for(var i=0; i< req_num_row; i++){
-            tr.eq(start+i).show();
-        }
-
-        if(temp >= 1){
-            $('.pagination li:first-child').removeClass("disabled");
-        } else {
-            $('.pagination li:first-child').addClass("disabled");
-        }
-            
-		});
-
-        $('.page-link prev').click(function(e){
-            e.preventDefault();
-            $('.page-link 1 pagination-link').click();
-            $('.page-link prev li:first-child').removeClass("active");
+        
+            $('.pagination li').removeClass("active");
+            $(this).parent().addClass("active");
+        
+            for(var i = 0; i < req_num_row; i++) {
+                tr.eq(start + i).show();
+            }
+        
+            if(temp >= 1) {
+                $('.pagination li:first-child').removeClass("disabled");
+            } else {
+                $('.pagination li:first-child').addClass("disabled");
+            }
+        
+            if (num_pages == page) { // 페이지가 마지막일 때, next 버튼 비활성화 처리
+                $('.page-link.next').parent().addClass('disabled');
+            } else {
+                $('.page-link.next').parent().removeClass('disabled');
+            }
         });
 
-        $('.page-link next').click(function(e){
+        // Previous 버튼 클릭 이벤트.
+        $('.page-link.prev').click(function(e) {
             e.preventDefault();
-            $('.page-link next li:last-child').removeClass("active");
+            var active = $('.pagination li.active');
+            var prev = active.prev('.page-item:not(.disabled)');
+            if (prev.length) {
+                active.removeClass('active');
+                prev.addClass('active');
+                var page = prev.children('.page-link').text();
+                console.log("page2222", page)
+                $('.pagination-link').eq(page-1).trigger('click');
+            }
+        });
+        // Next 버튼 클릭 이벤트.
+        $('.page-link.next').click(function(e) {
+            e.preventDefault();
+            var active = $('.pagination li.active');
+            var next = active.next('.page-item:not(.disabled)');
+            if (next.length) {
+                active.removeClass('active');
+                next.addClass('active');
+                var page = next.children('.page-link').text();
+                $('.pagination-link').eq(page).trigger('click');
+            }
         });
 	}
 

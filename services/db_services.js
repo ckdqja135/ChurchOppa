@@ -301,9 +301,11 @@ class db_services {
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
             let select_result = await conn.query(sql);
+
             await conn.query(borad_detail_delete_sql);
             await conn.query(board_comment_del_sql);
-            result = await conn.query(board_delete_sql, select_result[0][0].churchNo);
+            
+            result = await conn.query(board_delete_sql, select_result[0][0].ChurchNo);
             await conn.commit(); // 커밋
             // result = delete_comment[0]
             out(error, result);
