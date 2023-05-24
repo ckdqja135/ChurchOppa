@@ -600,7 +600,7 @@
                                         <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment.CommentId}" id="mod_sub_reply_${comment.CommentId}">수정</button>
                                         <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment.CommentId}" id="del_sub_${comment.CommentId}">삭제</button>
                                     </td>
-                            </tr>`;
+                                </tr>`;
             }
 
             if ($('#reply_area').contents().size() == 0) {
@@ -653,12 +653,13 @@
                 return false;
             }
 
-            var comment_content = $("#reply_content").val().replace("\n", "<br>"); //개행처리
-            var comment_id;
-            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            //개행처리
+            let comment_content = $("#reply_content").val().replace("\n", "<br>");
+            // 댓글 id
+            let comment_id;
             
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 board_idx        : window.location.href.split('/')[4],
                 parent_id       : "0",  
                 depth           : "0",
@@ -667,8 +668,7 @@
                 comment_content   : comment_content,
                 comment_like      : 0
             };
-            
-            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+
             $.ajax({
             url         :   "/ajax/board_comment",
             type        :   "post",
@@ -676,10 +676,9 @@
             success     :   function(result){
             if(result.length > 0) {
                 console.log(result)
-                comment_id = result.insertId; 
-                console.log("comment_id", comment_id)
-            var comment_area = $("#reply_area");
-            var comment = 
+                comment_id = result[0].insertId; 
+            let comment_area = $("#reply_area");
+            let comment = 
                 `<tr reply_type="main">
                     <td width="800px" style="word-break:break-all">
                         ${comment_content}
@@ -699,7 +698,6 @@
                         <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment_id}" onclick="delete_comment_show_event();">삭제</button>
                     </td>
                 </tr>`;
-            
 
                 if($('#reply_area').contents().size()==0){
                     comment_area.append(comment);
@@ -734,12 +732,12 @@
     // 게시글 수정 이벤트 -> 수정 버튼 클릭 이벤트.
     function correct_borad_event() {
          //값 셋팅
-        var objParams = {
+        let obj_params = {
             board_id        : window.location.href.split('/')[4],
             writer_password  : sha256($("#writer_pw").val().trim()),
             board_content   : $('#board-content').val().trim()
         };
-        if($("#writer_pw").val().trim() == '') {
+        if ($("#writer_pw").val().trim() == '') {
             jQuery.noConflict();
             $('#nullModal').modal('show');
         } else {
@@ -747,7 +745,7 @@
             $.ajax({
                 url         :   "/ajax/correct_borad",
                 type        :   "POST",
-                data        :   objParams,
+                data        :   obj_params,
                 success     :   function(result){
                 if(result.affectedRows > 0) {
                     jQuery.noConflict();
