@@ -156,7 +156,7 @@
             $('.pagination').append('<li class="page-item"><a class="page-link prev">Previous</a></li>');
         }
 
-        // 페이지 버튼 추가
+        // 페이지 버튼 추가 i는 페이지 버튼에 보여질 숫자기 떄문에 1부터 시작하는게 맞음.
         for (var i = 1; i <= num_pages; i++) {
             $('.pagination').append(`<li class="page-item"><a class="page-link ${i} pagination-link">${i}</a></li>`);
             $('.pagination li:nth-child(2)').addClass('active');

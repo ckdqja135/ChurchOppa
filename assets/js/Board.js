@@ -501,86 +501,137 @@
         });
     }
 
-    // 댓글 조회하기.
     function get_board_comment(_board_no) {
         $.ajax({
-            url : '/ajax/get_board_comment',
-            type : "POST",
-            data : {
-                board_idx : _board_no
+            url: '/ajax/get_board_comment',
+            type: 'POST',
+            data: {
+                board_idx: _board_no
             },
-            success : function(result) {
+            success: function(result) {
                 console.log("result", result)
-                for (let i = 0; i < result.length; i++) {
-                    var comment = "";
-                    if (result[i].CommentDepth == "0") {
-                        comment +=`<tr reply_type="main">
-                                        <td width="800px" style="word-break:break-all">
-                                            <textarea type="text" class="comment-form-control" id="comment_content_${result[i].CommentId}" readonly="true">${result[i].CommentContent}</textarea>
-                                        </td>
-                                        <td width="100px">
-                                        ${result[i].WriterId}
-                                        </td> `
-                            comment +=   `<td width="200px">
-                                            <form><input type="password" id="reply_password_${result[i].CommentId}" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>
-                                            <button type="button" class="btn btn-danger" id="delete_btn_${result[i].CommentId}" onclick="del_comment(${result[i].CommentId});">삭제</button>
-                                            <button type="button" class="btn btn-warning" id="modify_btn_${result[i].CommentId}" onclick="correct_comments(${result[i].CommentId});">수정</button>
-                                            <button type="button" class="btn btn-success" id="cancel_btn_${result[i].CommentId}" onclick="comment_cancel_event(${result[i].CommentId});">취소</button>
-                                        </td>`
-                            comment +=
-                                    `   <td width="300px">
-                                            <button name="reply_reply" type="button" class="btn btn-primary" reply_id ="${result[i].CommentId}" id="comment_${result[i].CommentId}">댓글</button>
-                                            <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${result[i].CommentId}" id="mod_${result[i].CommentId}">수정</button>
-                                            <button name="reply_del" type="button" class="btn btn-danger" reply_id="${result[i].CommentId}" id="del_${result[i].CommentId}">삭제</button>
-                                        </td>
-                                    </tr>`
-                    }
-                    if(result[i].CommentDepth == "1") {
-                        comment += '<tr reply_type="sub">'+
-                            '   <td width="820px"> → '+
-                                    `<textarea type="text" class="comment-form-control" id="comment_content_${result[i].Commnetperent}" readonly="true">${result[i].CommentContent}</textarea>` 
-                            '   </td>'+
-                            '   <td width="100px">'+
-                            result[i].WriterId +
-                            '   </td>'+
-                            '   <td width="100px">'+
-                            '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-                            '   </td>'+
-                            '   <td align="center">'+
-                            '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+result[i].Commnetperent
-                            +'" id="mod_'+result[i].Commnetperent
-                            +'">수정</button>'+
-                            '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+result[i].Commnetperent
-                            +'" id="del_'+result[i].Commnetperent
-                            +'">삭제</button>'+
-                            '   </td>'+
-                        '</tr>';
-                    }
-
-
-                    if($('#reply_area').contents().size()==0){
-                        $('#reply_area').append(comment);
-                    } else {
-                        $('#reply_area tr:last').after(comment);
-                    }
-                    $(`#reply_password_${result[i].CommentId}`).hide();
-                    $(`#delete_btn_${result[i].CommentId}`).hide();
-                    $(`#cancel_btn_${result[i].CommentId}`).hide();
-                    $(`#modify_btn_${result[i].CommentId}`).hide();
-                    
-                    if($(`#comment_content_${result[i].CommentId}`).val() == '작성자가 삭제한 글입니다.') {
-                        $(`#comment_${result[i].CommentId}`).attr("disabled", true);
-                        $(`#mod_${result[i].CommentId}`).attr("disabled", true);
-                        $(`#del_${result[i].CommentId}`).attr("disabled", true);
-                    }
-                }
+                var comments = build_comment_hierarchy(result); // 계층적인 댓글 구조를 생성
+    
+                display_comments(comments);
             },
-            error : function(request,status,error) {
-                console.log(request+"\n",status,"\n",error, "\n")
+            error: function(request, status, error) {
+                console.log(request + "\n", status, "\n", error, "\n")
             }
         });
-        // return church_data;
     }
+
+    // 계층적인 댓글 구조 생성 함수
+    function build_comment_hierarchy(comments) {
+        // 댓글을 ID를 기준으로 매핑할 객체
+        const commentMap = {};
+
+        // 모든 댓글을 commentMap에 추가하고 부모-자식 관계 설정
+        comments.forEach(comment => {
+            // children 배열 생성
+            comment.children = []; 
+
+            // commentMap에 댓글 추가
+            commentMap[comment.CommentId] = comment;
+            // 부모 댓글이 있는 경우, 부모 댓글의 children 배열에 자신 추가
+            if (comment.CommentDepth !== "0") {
+                const parentComment = commentMap[comment.Commnetperent];
+
+                if (parentComment) {
+                    parentComment.children.push(comment);
+                }
+            }
+        });
+
+        const rootComments = [];
+
+        // 최상위 댓글 찾기
+        comments.forEach(comment => {
+            if (comment.CommentDepth === "0") {
+                rootComments.push(comment);
+            }
+        });
+    
+        return rootComments;
+    }
+    
+      // 댓글 표시 함수
+    function display_comments(comments) {
+        for (var i = 0; i < comments.length; i++) {
+            let comment = comments[i];
+            let commentHTML = '';
+
+        if (comment.CommentDepth == "0") {
+            commentHTML += `<tr reply_type="main">
+                                <td width="800px" style="word-break:break-all">
+                                    <textarea type="text" class="comment-form-control" id="comment_content_${comment.CommentId}" readonly="true">${comment.CommentContent}</textarea>
+                            </td>
+                            <td width="100px">
+                                ${comment.WriterId}
+                            </td>`
+            commentHTML += `<td width="200px">
+                                <input type="password" id="reply_password_${comment.CommentId}" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>
+                                <button type="button" class="btn btn-danger" id="delete_btn_${comment.CommentId}" onclick="del_comment(${comment.CommentId});">삭제</button>
+                                <button type="button" class="btn btn-warning" id="modify_btn_${comment.CommentId}" onclick="correct_comments(${comment.CommentId});">수정</button>
+                                <button type="button" class="btn btn-success" id="cancel_btn_${comment.CommentId}" onclick="comment_cancel_event(${comment.CommentId});">취소</button>
+                            </td>`
+            commentHTML += `<td width="300px">
+                                <button name="reply_reply" type="button" class="btn btn-primary" reply_id="${comment.CommentId}" id="comment_${comment.CommentId}">댓글</button>
+                                <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment.CommentId}" id="mod_${comment.CommentId}">수정</button>
+                                <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment.CommentId}" id="del_${comment.CommentId}">삭제</button>
+                            </td>
+                            </tr>;`
+            } 
+
+            if (comment.CommentDepth == "1") { 
+                commentHTML += `<tr reply_type="sub">
+                                    <td width="820px"> →
+                                        <textarea type="text" class="comment-form-control" id="comment_content_${comment.Commnetperent}" readonly="true">${comment.CommentContent}</textarea>
+                                    </td>
+
+                                    <td width="100px">
+                                        ${comment.WriterId}
+                                    </td>
+
+                                    <td width="100px">
+                                        <input type="password" id="sub_reply_password_${comment.CommentId}" style="width:100px;" maxlength="10" autoComplete="off" placeholder="패스워드"/>
+                                    </td>
+
+                                    <td width="300px">
+                                        <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment.CommentId}" id="mod_sub_reply_${comment.CommentId}">수정</button>
+                                        <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment.CommentId}" id="del_sub_${comment.CommentId}">삭제</button>
+                                    </td>
+                            </tr>`;
+            }
+
+            if ($('#reply_area').contents().size() == 0) {
+                $('#reply_area').append(commentHTML);
+            } else {
+                $('#reply_area tr:last').after(commentHTML);
+            }
+            // 댓글
+            $(`#reply_password_${comment.CommentId}`).hide();
+            $(`#delete_btn_${comment.CommentId}`).hide();
+            $(`#cancel_btn_${comment.CommentId}`).hide();
+            $(`#modify_btn_${comment.CommentId}`).hide();
+
+            // 대댓글
+            $(`#sub_reply_password_${comment.CommentId}`).hide();
+            // $(`#mod_sub_reply_${comment.CommentId}`).hide();
+            $(`#del_sub_${comment.CommentId}`).hide();
+
+            // 댓글 삭제 처리.
+            if ($(`#comment_content_${comment.CommentId}`).val() == '작성자가 삭제한 글입니다.') {
+                $(`#comment_${comment.CommentId}`).attr("disabled", true);
+                $(`#mod_${comment.CommentId}`).attr("disabled", true);
+                $(`#del_${comment.CommentId}`).attr("disabled", true);
+            }
+            
+            if (comment.children.length > 0) {
+                display_comments(comment.children); // 재귀적으로 자식 댓글 표시
+            }
+        }
+    }
+
     //댓글 등록.
     function insert_comment () {
             //null 검사
@@ -626,28 +677,29 @@
             if(result.length > 0) {
                 console.log(result)
                 comment_id = result.insertId; 
-
+                console.log("comment_id", comment_id)
             var comment_area = $("#reply_area");
             var comment = 
-                '<tr reply_type="main">'+
-                '   <td width="800px" style="word-break:break-all">'+
-                commenty_content+
-                '   </td>'+
-                '   <td width="100px">'+
-                $("#reply_writer").val()+
-                '   </td>'+
-                '   <td width="100px">'+
-                '       <form><input type="password" id="reply_password_'+comment_id+'" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>'+
-                `       <button type="button" class="btn btn-danger" id="delete_btn_${comment_id}" onclick="del_comment(${comment_id});">삭제</button>` +
-                `       <button type="button" class="btn btn-warning" id="modify_btn_${comment_id}" onclick="correct_comments(${comment_id});">수정</button>` +
-                `       <button type="button" class="btn btn-success" id="cancel_btn_${comment_id}" onclick="comment_cancel_event(${comment_id});">취소</button>` +
-                '   </td>'+
-                '   <td width="300px">'+
-                '       <button name="reply_reply" type="button" class="btn btn-primary" reply_id = "'+comment_id+'">댓글</button>'+
-                '       <button name="reply_modify" type="button" class="btn btn-warning" r_type = "main" reply_id = "'+comment_id+'">수정</button>'+
-                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id = "'+comment_id+'" onclick="delete_comment_show_event();">삭제</button>'+
-                '   </td>'+
-                '</tr>';
+                `<tr reply_type="main">
+                    <td width="800px" style="word-break:break-all">
+                        ${comment_content}
+                    </td>
+                    <td width="100px">
+                        ${$("#reply_writer").val()}
+                    </td>
+                    <td width="100px">
+                        <form><input type="password" id="reply_password_${comment_id}" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>
+                        <button type="button" class="btn btn-danger" id="delete_btn_${comment_id}" onclick="del_comment(${comment_id});">삭제</button>
+                        <button type="button" class="btn btn-warning" id="modify_btn_${comment_id}" onclick="correct_comments(${comment_id});">수정</button>
+                        <button type="button" class="btn btn-success" id="cancel_btn_${comment_id}" onclick="comment_cancel_event(${comment_id});">취소</button>
+                    </td>
+                    <td width="300px">
+                        <button name="reply_reply" type="button" class="btn btn-primary" reply_id="${comment_id}">댓글</button>
+                        <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment_id}">수정</button>
+                        <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment_id}" onclick="delete_comment_show_event();">삭제</button>
+                    </td>
+                </tr>`;
+            
 
                 if($('#reply_area').contents().size()==0){
                     comment_area.append(comment);
@@ -729,7 +781,7 @@
         $('#settings').show();
     }
 
-     // 댓글 취소 버튼 이벤트
+    // 댓글 취소 버튼 이벤트
     function comment_cancel_event(commentId) {
         $(`#reply_password_${commentId}`).hide();
         $(`#delete_btn_${commentId}`).hide();
