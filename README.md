@@ -28,6 +28,7 @@
          - [x] 댓글 작업(Insert, Delete, Update, Select).
  #### - [x] 검색 결과 없을 때 이벤트 추가.
  #### - [x] 페이징 작업.
+         - [x] 이전, 다음 이동 이벤트 작업완료.
  
 ## TODO
  - Index Page Ranking 기능 도입.
