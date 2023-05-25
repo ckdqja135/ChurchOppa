@@ -817,7 +817,7 @@
         $('#delete_check_Modal').modal('show');
     }
 
-    // 삭제 버튼 이벤트.
+    // 글 삭제 버튼 이벤트.
     function delete_board_event() {
             //값 셋팅
         var objParams = {
@@ -835,16 +835,18 @@
                 type        :   "POST",
                 data        :   objParams,
                 success     :   function(result){
-                    console.log(result)
-                if(result[0].affectedRows > 0) {
+                    // console.log(result)
+                if (result[0].affectedRows > 0 ) {
                     jQuery.noConflict();
                     $('#delete_check_Modal').modal('hide');
                     $('#Delete_Modal').modal('show');
                 } else {
                     jQuery.noConflict();
+                    $('#delete_check_Modal').modal('hide');
                     $('#FailModal').modal('show');
                 }
-            },
+                },
+
                 error       :   function(request, status, error){
                     console.log("AJAX_ERROR");
                 }

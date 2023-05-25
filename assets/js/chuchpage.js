@@ -200,7 +200,7 @@
             // 클릭한 페이지로 현재 페이지 갱신
             start_page = parseInt(clicked_page.text());
             // 시작 인덱스 계산
-            let start = (page - 1) * req_num_row;
+            let start = (start_page - 1) * req_num_row;
             // 종료 인덱스 계산
             let end = start + req_num_row;
 

@@ -284,40 +284,45 @@ class db_services {
     }
 
     // 게시글 삭제하기.
-    async delete_borad (out, params) {
-        console.log("params", params)
-        let sql = "Select * FROM board_detail WHERE boardId = " + params.board_idx + "";
-        let board_delete_sql = "DELETE FROM board WHERE BoardNo = "+ params.board_idx +" AND Church_No = ?";
+    async delete_borad(out, params) {
+        console.log("params", params);
+        let sql = "SELECT * FROM board_detail WHERE boardId = " + params.board_idx + "";
+        let board_delete_sql = "DELETE FROM board WHERE BoardNo = " + params.board_idx + " AND Church_No = ?";
         let borad_detail_delete_sql = "DELETE FROM board_detail " +
-        "WHERE boardId = "+ params.board_idx +" AND WriterPw = '"+params.writer_password+"';";
-
-        let board_comment_del_sql = "DELETE FROM board_comment WHERE BoardID = "+ params.board_idx +"";
+            "WHERE boardId = " + params.board_idx + " AND WriterPw = '" + params.writer_password + "';";
+    
+        let board_comment_del_sql = "DELETE FROM board_comment WHERE BoardID = " + params.board_idx + "";
         console.log("sql", board_delete_sql);
         console.log("sql", board_comment_del_sql);
-        
-        let conn =  await this.dbc.getConnection();
+    
+        let conn = await this.dbc.getConnection();
         let result = null;
         let error = null;
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
             let select_result = await conn.query(sql);
-
-            await conn.query(borad_detail_delete_sql);
-            await conn.query(board_comment_del_sql);
+    
+            // borad_detail_delete_sql 쿼리 실행
+            let detail_delete_result = await conn.query(borad_detail_delete_sql);
+            console.log("detail_delete_result ", detail_delete_result)
+            if (detail_delete_result[0].affectedRows > 0) {
+                // borad_detail_delete_sql 영향을 받은 행이 있다면 board_delete_sql 쿼리 실행
+                result = await conn.query(board_delete_sql, select_result[0][0].ChurchNo);
+                await conn.query(board_comment_del_sql);
+                await conn.commit(); // 커밋
+                out(error, detail_delete_result);
+            } else {
+                out("No rows affected by borad_detail_delete_sql", detail_delete_result);
+            }
+            console.log("result", result);
             
-            result = await conn.query(board_delete_sql, select_result[0][0].ChurchNo);
-            await conn.commit(); // 커밋
-            // result = delete_comment[0]
-            out(error, result);
-            console.log("result", result)
-        }catch (err) {
+        } catch (err) {
             error = err;
-            console.log(err)
+            console.log(err);
             out(error, result);
             await conn.rollback(); // 롤백
-            // return res.status(500).json(err)
         } finally {
-            conn.release() // con 회수
+            conn.release(); // con 회수
         }
     }
 }
