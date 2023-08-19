@@ -7,12 +7,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs');
 
-// dbconneciton 
-// var db_connector = require('./conf/db_conn');
-// console.log(db_connector);
-// var dbc = db_connector.init(); // db connection
-// db_connector.test_open(dbc);
-
 
 
 var app = express();
@@ -35,41 +29,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// app.get('/search=?', function(req, res) {
-//   let sql = 'select * from churchinfo where ChurchName = ?';
-//   let params = req.query.name;
-
-//   dbc.query(sql , params, function(err, row, fields){//row => 결과값
-//       if(err){
-//           console.log(err);
-//       }
-
-//       if(row.length > 0) {
-//           // res.json({ok: true, churchname: row})
-//           res.render('churchpage.ejs', {church : row});
-//           console.log("hey!!!!", row)
-//       } else {
-//           res.sendFile(__dirname + '/assets/html/resultNotfound.html');
-//       }
-//   });
-// })
-
-
 // use routes
-// pc, mobile 라우팅. routes 파일에서 device별 렌더링.
 app.use('/', require('./routes/index'));
 app.use('/search=?', require('./routes/chuchpage'));
 app.use('/ajax/:func', require('./routes/ajax_func'));
 app.use('/board', require('./routes/board'));
-// app.use('/upload', require('./routes/upload'));
-// app.use('/:lang/users', require('./routes/users'));
-// app.use('/:lang/careers', require('./routes/careers'));
-// app.use('/:lang/openVacancies', require('./routes/openVacancies'));
-// app.use('/:lang/openVacanciesDetail', require('./routes/openVacanciesDetail'));
-// app.use('/:lang/policy', require('./routes/policy'));
-// app.use('/:lang/policy_kr', require('./routes/policy_kr'));
-// app.use('/:lang/ip', require('./routes/ip'));
-// app.use('/:lang/apply', require('./routes/apply'));
 
 // security 처리
 // helmet -> Header 설정 바꿔주는 Module.
