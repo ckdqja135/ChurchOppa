@@ -17,6 +17,10 @@
         }
     }
 
+    $(document).ready(function(){
+        inquiry_board();
+    });
+
     // 모달 입력 값 초기화
     function initButton() {
         $("#recipient-title").val("");
@@ -30,40 +34,40 @@
     // 게시판 조회하기.
     function inquiry_board() {
         let _church_no = window.church_data[0].ChurchNo;
-        $.ajax({
-            url : '/ajax/inquiry_board',
-            type : "POST",
-            data : {
-                church_no : _church_no
-            },
-            success : function(result) {
-                let church_board = $('.board');
-                for(let i = 0; i < result.length; i++) {
-                    let str = ` 
-                                <tr >
-                                    <td id="title" style="cursor: pointer;" ><a onclick="move_link('/board/', ${result[i].BoardNo})"><h6>${result[i].BoardTitle}</h6></td>
-                                    <td id="id"><h6>${result[i].BoardID}</h6></td>
-                                    <td id="Regdate"><h6>${result[i].BoardRegDate}</h6></td>
-                                    <td id="hits"><h6>${result[i].BoardHits}</h6></td>
-                                    <td>
-                                        <button class="likebtn" id="like${i}" onclick="likeEvent()">
-                                            <span id = heart${i} class="icon like-default"><i class="fa fa-heart-o" aria-hidden="true" ></i> ${result[i].BoardLike} </span>
-                                        </button>   
-                                    </td>
-                                </tr>`;
-                    church_board.append(str);
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/ajax/inquiry_board', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let result = JSON.parse(xhr.responseText);
+                let church_board = document.querySelector('.board');
+                for (let i = 0; i < result.length; i++) {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `<td id="title" style="cursor: pointer;">
+                        <a onclick="move_link('/board/', ${result[i].BoardNo})">
+                            <h6>${result[i].BoardTitle}</h6>
+                        </a>
+                    </td>
+                    <td id="id"><h6>${result[i].BoardID}</h6></td>
+                    <td id="Regdate"><h6>${result[i].BoardRegDate}</h6></td>
+                    <td id="hits"><h6>${result[i].BoardHits}</h6></td>
+                    <td>
+                        <button class="likebtn" id="like${i}" onclick="likeEvent()">
+                            <span id="heart${i}" class="icon like-default">
+                                <i class="fa fa-heart-o" aria-hidden="true"></i> ${result[i].BoardLike}
+                            </span>
+                        </button>
+                    </td>`;
+                    church_board.appendChild(tr);
                 }
-                if($('.pagination li').length <= 0) {
+                if (document.querySelectorAll('.pagination li').length <= 0) {
                     pagination();
                 }
-                // console.log("얘는 왜 실행?")
-            },
-            error : function(request,status,error) {
-                console.log(request+"\n",status,"\n",error, "\n")
             }
-        });
-        // return church_data;
+        };
+        xhr.send(`church_no=${_church_no}`);
     }
+
     // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
     function day_month_format(n) {
         return (n < 10 ? '0' : '') + n;
@@ -98,7 +102,6 @@
                 initButton();
                 $(".board").empty();
                 inquiry_board();
-                // console.log("얘는 왜 실행?")
             },
             error : function(request,status,error) {
                 console.log(request+"\n",status,"\n",error, "\n")
@@ -132,12 +135,6 @@
 		alert("The link has been copied.");
 	}
 
-    function refresh() {
-        inquiry_board();
-        $("#tablediv").load(window.location.href + " #tablediv>*", "");
-        // pagination();
-    }
-
     // 페이징 함수
     function pagination() {
         // 시작 페이지
@@ -150,7 +147,7 @@
         let total_num_row = tr.length;
         // 전체 페이지 수 계산
         let num_pages = Math.ceil(total_num_row / req_num_row);
-    
+
          // 이전 버튼 추가
         if (num_pages > 0) {
             $('.pagination').append('<li class="page-item"><a class="page-link prev">Previous</a></li>');
@@ -160,13 +157,13 @@
         for (var i = 1; i <= num_pages; i++) {
             $('.pagination').append(`<li class="page-item"><a class="page-link ${i} pagination-link">${i}</a></li>`);
             $('.pagination li:nth-child(2)').addClass('active');
-        }   
+        }
 
         // 다음 버튼 추가
         if (num_pages > 1) {
             $('.pagination').append('<li class="page-item"><a class="page-link next">Next</a></li>');
         }
-        
+
         // 시작 페이지일 경우 이전 버튼 비활성화
         if (start_page == 1) {
             $('.page-link.prev').parent().addClass('disabled');
@@ -193,7 +190,7 @@
 
             // 이미 활성화된 페이지를 클릭한 경우 아무 동작도 하지 않음
             if (active.hasClass('active')) {
-                return; 
+                return;
             }
             // 모든 행을 숨김 처리하여 보이지 않도록 함
             tr.hide();
@@ -228,9 +225,9 @@
         $('.prev').click(function (e) {
             e.preventDefault();
             // 현재 활성화된 페이지 버튼 가져오기
-            let active = $('.pagination .page-item.active'); 
+            let active = $('.pagination .page-item.active');
             // 이전 페이지 버튼 찾기
-            let prev_button = active.prevAll('.page-item:not(.disabled):not(.prev)').first(); 
+            let prev_button = active.prevAll('.page-item:not(.disabled):not(.prev)').first();
 
             if (prev_button.length) {
                 // 이전 페이지가 현재 활성화된 페이지가 아닐 때만 이전 버튼 클릭 이벤트 실행
@@ -239,27 +236,26 @@
                 }
             }
         });
-        
+
         // 다음 페이지 이동 이벤트.
         $('.next').click(function (e) {
             e.preventDefault();
             // 현재 활성화된 페이지 버튼 가져오기
-            let active = $('.pagination li.active'); 
+            let active = $('.pagination li.active');
             // 다음 페이지 버튼 찾기
-            let next_button = active.next('.page-item:not(.disabled)'); 
+            let next_button = active.next('.page-item:not(.disabled)');
 
             if (next_button.length) {
                 // 다음 페이지의 숫자 가져오기
-                let next_page_number = parseInt(next_button.children('.page-link').text()); 
+                let next_page_number = parseInt(next_button.children('.page-link').text());
                 // 해당 숫자의 페이지 버튼 클릭 이벤트 실행
-                $('.pagination-link').eq(next_page_number-1).trigger('click'); 
+                $('.pagination-link').eq(next_page_number-1).trigger('click');
             }
         });
     }
 
 
     window.pagination = pagination;
-    window.refresh = refresh;
     window.shareTwitter = shareTwitter;
     window.shareFacebook = shareFacebook;
     window.shareLink = shareLink;

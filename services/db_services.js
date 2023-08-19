@@ -301,13 +301,12 @@ class db_services {
         try {
             await conn.beginTransaction(); // 트랜잭션 적용 시작
             let select_result = await conn.query(sql);
-    
             // borad_detail_delete_sql 쿼리 실행
             let detail_delete_result = await conn.query(borad_detail_delete_sql);
-            console.log("detail_delete_result ", detail_delete_result)
+
             if (detail_delete_result[0].affectedRows > 0) {
                 // borad_detail_delete_sql 영향을 받은 행이 있다면 board_delete_sql 쿼리 실행
-                result = await conn.query(board_delete_sql, select_result[0][0].ChurchNo);
+                result = await conn.query(board_delete_sql, select_result[0][0].churchNo);
                 await conn.query(board_comment_del_sql);
                 await conn.commit(); // 커밋
                 out(error, detail_delete_result);
