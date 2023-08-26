@@ -588,9 +588,9 @@
                         <button type="button" class="btn btn-success" id="cancel_btn_${comment_id}" onclick="comment_cancel_event(${comment_id});">취소</button>
                     </td>
                     <td width="300px">
-                        <button name="reply_reply" type="button" class="btn btn-primary" reply_id="${comment_id}">댓글</button>
-                        <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment_id}">수정</button>
-                        <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment_id}" onclick="delete_comment_show_event();">삭제</button>
+                        <button name="reply_reply" type="button" class="btn btn-primary" reply_id="${comment_id}" id="comment_${comment_id}">댓글</button>
+                        <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment_id}" id="mod_${comment_id}">수정</button>
+                        <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment_id}" onclick="delete_comment_show_event();" id="del_${comment_id}">삭제</button>
                     </td>
                 </tr>`;
 
@@ -703,6 +703,9 @@
         $(`#delete_btn_${comment_id}`).show();
         $(`#cancel_btn_${comment_id}`).show();
         $(`#modify_btn_${comment_id}`).hide();
+        $(`#mod_${comment_id}`).hide();
+        $(`#del_${comment_id}`).hide();
+        $(`#comment_${comment_id}`).hide();
     }
 
     // 댓글 - 수정 버튼 클릭 시.
