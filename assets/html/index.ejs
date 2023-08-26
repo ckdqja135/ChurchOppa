@@ -89,7 +89,7 @@
                                                 $( "#search" ).autocomplete({
                                                     source: [ result[i].ChurchName + " / " +result[i].ChurchLocate],
                                                     response: function(event, ui) {
-                                                        console.log(ui.content)
+                                                        // console.log(ui.content)
                                                         if (ui.content.length === 0) {
                                                             console.log("검색결과 없어.")
                                                         }

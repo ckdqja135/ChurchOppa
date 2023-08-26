@@ -129,21 +129,14 @@
                     church_name : search
                 },
                 success : function(result) {
-                    
                     let church_info = $(".church_info");
-                    
                     let establishment = "";
-
-                    
 
                     if (result) {
                         if (result[0].ChurchEstablish == "")
                             establishment = "정보 없음.";
                         else 
                             establishment = result[0].ChurchEstablish + "주년";
-                        
-                        // data 전달
-                        console.log("result[0]", result[0])
 
                         church_data = result;
                         let str = "";

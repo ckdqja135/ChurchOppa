@@ -1,22 +1,7 @@
 (function (window) {
     $(document).ready(function(){
         get_board();
-        $('.event-dropdown').on('show.bs.dropdown', function () {   
-            console.log("메뉴가 열리기 전 이벤트!");  
-            });  
-            // dropdown 메뉴가 보이기 직후에 호출되는 이벤트  
-            $('.event-dropdown').on('shown.bs.dropdown', function () {    
-                console.log("메뉴가 열린 후 이벤트!");  
-            });  
-            // dropdown 메뉴가 사라지기 직전에 호출되는 이벤트  
-            $('.event-dropdown').on('hide.bs.dropdown', function () {   
-                console.log("메뉴가 닫히기 전 이벤트!");  
-            });  
-            // dropdown 메뉴가 사라진 직후에 호출되는 이벤트  
-            $('.event-dropdown').on('hidden.bs.dropdown	', function () {    
-                console.log("메뉴가 닫힌 후 이벤트!");  
-            });
-        });
+    });
         
     var reply_count = 0; //원래 DB에 저장하고 저장 아이디 번호를 넘겨줘야 하는데 DB 없이 댓글 소스만 있어 DB 에서 아이디 증가하는것처럼 스크립트에서 순번을 생성
     var status = false; //수정과 대댓글을 동시에 적용 못하도록
@@ -222,28 +207,6 @@
                 }
             });
 
-            //ajax 호출
-            /*
-            $.ajax({
-                url         :   "/board/reply/save",
-                dataType    :   "json",
-                contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
-                type        :   "post",
-                async       :   false, //동기: false, 비동기: ture
-                data        :   objParams,
-                success     :   function(retVal){
-                    if(retVal.code != "OK") {
-                        alert(retVal.message);
-                    }else{
-                        reply_id = retVal.reply_id;
-                    }
-                },
-                error       :   function(request, status, error){
-                    console.log("AJAX_ERROR");
-                }
-            });
-            */
-
             reply_id = reply_count++;//DB에 저장했다 하고 순번을 생성
 
             var reply = 
@@ -321,79 +284,6 @@
     $(document).on("click","button[name='reply_modify']", function(){
         comment_idx = $(this).attr("reply_id");
         modify_form_show(comment_idx);
-        // null 체크
-        // if($("#reply_modify_password_"+reply_id).val().trim() == ""){
-        //     alert("패스워드를 입력하세요.");
-        //     $("#reply_modify_password_"+reply_id).focus();
-        //     return false;
-        // }
-
-        // if($("#reply_modify_content_"+reply_id).val().trim() == ""){
-        //     alert("내용을 입력하세요.");
-        //     $("#reply_modify_content_"+reply_id).focus();
-        //     return false;
-        // }
-        // //DB에 업데이트 하고
-        // //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
-        // var reply_content = $("#reply_modify_content_"+reply_id).val().replace("\n", "<br>"); //개행처리
-        // var r_type = $(this).attr("r_type");
-        // var parent_id;
-        // var depth;
-
-        // if(r_type=="main"){
-        //     parent_id = "0";
-        //     depth = "0";
-        // }else{
-        //     parent_id = $(this).attr("reply_id");
-        //     depth = "1";
-        // }
-
-        // if(r_type=="main"){
-        //     reply = 
-        //         '<tr reply_type="main">'+
-        //         '   <td width="820px">'+
-        //         $("#reply_modify_content_"+reply_id).val()+
-        //         '   </td>'+
-        //         '   <td width="100px">'+
-        //         $("#reply_modify_writer_"+reply_id).val()+
-        //         '   </td>'+
-        //         '   <td width="100px">'+
-        //         '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-        //         '   </td>'+
-        //         '   <td align="center">'+
-        //         '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
-        //         '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
-        //         '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
-        //         '   </td>'+
-        //         '</tr>';
-        // }else{
-        //     reply = 
-        //         '<tr reply_type="sub">'+
-        //         '   <td width="820px"> → '+
-        //         $("#reply_modify_content_"+reply_id).val()+
-        //         '   </td>'+
-        //         '   <td width="100px">'+
-        //         $("#reply_modify_writer_"+reply_id).val()+
-        //         '   </td>'+
-        //         '   <td width="100px">'+
-        //         '       <input type="password" id="reply_password_'+reply_id+'" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-        //         '   </td>'+
-        //         '   <td align="center">'+
-        //         '       <button name="reply_modify" r_type = "sub" reply_id = "'+reply_id+'">수정</button>'+
-        //         '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>'+
-        //         '   </td>'+
-        //         '</tr>';
-        // }
-        
-        // var prevTr = $(this).parent().parent();
-        // //자기 위에 붙이기
-        // prevTr.after(reply);
-
-        // //자기 자신 삭제
-        // $(this).parent().parent().remove(); 
-
-        // status = false;
-        
     });
 
     // 댓글 수정 함수
@@ -461,64 +351,97 @@
         
     // 게시판 상세조회.
     function get_board() {
-        var _board_no = window.location.href.split('/')[4];
-        $.ajax({
-            url : '/ajax/board_detail',
-            type : "POST",
-            data : {
-                board_no : _board_no
+        var _board_no = window.location.href.split('/')[4]; // 현재 URL에서 게시판 번호 추출
+
+        // fetch 함수를 사용하여 요청 전송
+        fetch('/ajax/board_detail', {
+            method: 'POST', // POST 메서드 사용
+            headers: {
+                'Content-Type': 'application/json' // JSON 형식의 데이터 전송을 위한 헤더 설정
             },
-            success : function(result) {
-                let board_body = $(".modal-body");
+            body: JSON.stringify({
+                board_no: _board_no // 게시판 번호를 JSON 형식으로 변환하여 본문에 포함
+            })
+        })
+            .then(response => {
+                // 응답이 성공적인지 확인
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                // 응답 데이터를 JSON 형식으로 파싱하여 반환
+                return response.json();
+            })
+            .then(result => {
+                let board_body = document.querySelector(".modal-body"); // 모달 본문 선택
                 if (result) {
                     var str = `
-                    <h2 class="board_title"> ${result[0].boardTitle} </h2>
-                    <h2 class="hits"> ${result[0].boardHits}</h2>
+            <h2 class="board_title"> ${result[0].boardTitle} </h2>
+            <h2 class="hits"> ${result[0].boardHits}</h2>
 
-                    <div class="form-group">
-                        <div class="input-group" style="display:none">
-                            <span class="input-group-text">비밀번호 입력</span> 
-                            <form><input type="password" class="form-control" id="writer_pw" autoComplete="off"></form>
-                        </div>
+            <div class="form-group">
+                <div class="input-group" style="display:none">
+                    <span class="input-group-text">비밀번호 입력</span> 
+                    <form><input type="password" class="form-control" id="writer_pw" autoComplete="off"></form>
+                </div>
 
-                        <button type="button" class="btn btn-primary float-right" id="cancel_btn" onclick="correct_cancel_event()" style="margin:10px; display:none">취소</button>
-                        <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
-                        <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="delete_confirm();" style="margin:10px; display:none">삭제</button>
-                        <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
-                        <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
-                        <br />
-                        <h7 class="reg_date">${result[0].BoardRegDate}</h7>
-                    </div>
-                    `
+                <button type="button" class="btn btn-primary float-right" id="cancel_btn" onclick="correct_cancel_event()" style="margin:10px; display:none">취소</button>
+                <button type="button" class="btn btn-primary float-right" id="correct_btn" onclick="correct_borad_event();" style="margin:10px; display:none">수정</button>
+                <button type="button" class="btn btn-primary float-right" id="delete_btn" onclick="delete_confirm();" style="margin:10px; display:none">삭제</button>
+                <textarea type="text" class="board-form-control" id="board-content" readonly="true">${result[0].boardContent}</textarea> 
+                <label for="message-text" class="write_id" id="writer_id">${result[0].writerId}</label>
+                <br />
+                <h7 class="reg_date">${result[0].BoardRegDate}</h7>
+            </div>
+            `;
                 }
-                // style="border:none; background:transparent; resize:none; height:400px;"
-                board_body.append(str);
-                get_board_comment(_board_no);
-            },
-            error : function(request,status,error) {
-                console.log(request+"\n",status,"\n",error, "\n")
-            }
-        });
+                // 모달 본문에 내용 추가
+                board_body.innerHTML = str;
+
+                get_board_comment(_board_no); // 댓글 가져오는 함수 호출
+            })
+            .catch(error => {
+                // 네트워크 요청 실패나 처리 중 오류가 발생한 경우 실행됨
+                console.error('Fetch error:', error);
+            });
     }
 
+
+    /**
+     * fuction : 게시글의 댓글들을 조회하는 함수.
+     * 사용자에게 보여지는 정보를 요청할 때는 보안 및 데이터 노출을 피하기 위해 POST 요청하였음.
+     * */
     function get_board_comment(_board_no) {
-        $.ajax({
-            url: '/ajax/get_board_comment',
-            type: 'POST',
-            data: {
-                board_idx: _board_no
+        // '/ajax/get_board_comment' 주소로 POST 요청을 보냄
+        fetch('/ajax/get_board_comment', {
+            method: 'POST', // POST 메서드를 사용
+            headers: {
+                'Content-Type': 'application/json' // 요청의 헤더에 JSON 형식을 사용하도록 지정
             },
-            success: function(result) {
-                console.log("result", result)
+            body: JSON.stringify({
+                board_idx: _board_no // 요청 본문에 게시판 번호를 JSON 형식으로 포함
+            })
+        })
+            .then(response => {
+                // 응답이 성공적인지 확인
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                // JSON 형태로 된 응답 데이터를 추출하여 반환
+                return response.json();
+            })
+            .then(result => {
+                // 성공적으로 JSON 데이터를 받아 처리한 후 실행됨
+                console.log("result", result);
                 var comments = build_comment_hierarchy(result); // 계층적인 댓글 구조를 생성
-    
-                display_comments(comments);
-            },
-            error: function(request, status, error) {
-                console.log(request + "\n", status, "\n", error, "\n")
-            }
-        });
+                display_comments(comments); // 댓글을 화면에 표시
+            })
+            .catch(error => {
+                // 네트워크 요청이 실패하거나 처리 과정에서 오류가 발생한 경우 실행됨
+                console.error('Fetch error:', error);
+            });
     }
+
+
 
     // 계층적인 댓글 구조 생성 함수
     function build_comment_hierarchy(comments) {
@@ -557,9 +480,11 @@
       // 댓글 표시 함수
     function display_comments(comments) {
         for (var i = 0; i < comments.length; i++) {
+            // 현재 순회중인 댓글 객체
             let comment = comments[i];
+            // 댓글의 HTML 코드를 저장할 변수
             let commentHTML = '';
-
+        // 댓글의 깊이가 0일 경우
         if (comment.CommentDepth == "0") {
             commentHTML += `<tr reply_type="main">
                                 <td width="800px" style="word-break:break-all">
@@ -580,9 +505,9 @@
                                 <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment.CommentId}" id="del_${comment.CommentId}">삭제</button>
                             </td>
                             </tr>;`
-            } 
-
-            if (comment.CommentDepth == "1") { 
+            }
+            // 댓글의 깊이가 1일 경우 (대댓글)
+            if (comment.CommentDepth == "1") {
                 commentHTML += `<tr reply_type="sub">
                                     <td width="820px"> →
                                         <textarea type="text" class="comment-form-control" id="comment_content_${comment.Commnetperent}" readonly="true">${comment.CommentContent}</textarea>
@@ -625,7 +550,7 @@
                 $(`#mod_${comment.CommentId}`).attr("disabled", true);
                 $(`#del_${comment.CommentId}`).attr("disabled", true);
             }
-            
+
             if (comment.children.length > 0) {
                 display_comments(comment.children); // 재귀적으로 자식 댓글 표시
             }
@@ -687,7 +612,9 @@
                         ${$("#reply_writer").val()}
                     </td>
                     <td width="100px">
-                        <form><input type="password" id="reply_password_${comment_id}" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/></form>
+                        <form>
+                            <input type="password" id="reply_password_${comment_id}" style="width:100px;" maxlength="10" placeholder="패스워드" autoComplete="off"/>
+                        </form>
                         <button type="button" class="btn btn-danger" id="delete_btn_${comment_id}" onclick="del_comment(${comment_id});">삭제</button>
                         <button type="button" class="btn btn-warning" id="modify_btn_${comment_id}" onclick="correct_comments(${comment_id});">수정</button>
                         <button type="button" class="btn btn-success" id="cancel_btn_${comment_id}" onclick="comment_cancel_event(${comment_id});">취소</button>

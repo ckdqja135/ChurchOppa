@@ -1,4 +1,5 @@
 (function (window) {
+    var church_data = []; // 전역 스코프에서 배열 정의 및 초기화
     function likeEvent() {
         let heartSpan = document.querySelectorAll('.icon');
         
@@ -16,10 +17,6 @@
             });
         }
     }
-
-    $(document).ready(function(){
-        inquiry_board();
-    });
 
     // 모달 입력 값 초기화
     function initButton() {

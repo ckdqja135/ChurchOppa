@@ -32,12 +32,11 @@
 	}
 	function shareTwitter(text){
 		var sendText = text;
-		//var sendUrl = "www.mysoftwiz.com/en/openVacancies/"+seq; // 전달할 URL
 		window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + window.location.href);
 	}
-	function shareFacebook(text){
-		//var sendUrl = "www.mysoftwiz.com/en/openVacancies/"+seq; // 전달할 URL
-		window.open("http://www.facebook.com/sharer/sharer.php?u=" + window.location.href);
+	function shareFacebook(){
+		console.log("window.location.href ", window.location.href)
+		window.open("http://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href));
 	}
 	function shareLink(){
 		//var sendUrl = "www.mysoftwiz.com/en/openVacancies/"+seq;

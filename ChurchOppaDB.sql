@@ -54,7 +54,7 @@
 -- 교회 데이터 insert
 INSERT INTO `churchoppa`.`churchinfo` 
 (`ChurchNo`, `ChurchName`, `ChurchLocate`, `ChurchReli`, `ChurchScales`, `ChurchPastor`, `ChurchTel`, `ChurchLateX`, `ChurchLateY`, `ChurchHome`, `ChurchSerIMG`, `ChurchJibun`, `ChurchAddr`, `ChurchMapIMG`) VALUES 
-('0', '새지음교회', '서울시 강동구', '기하성', '중', '박지민', '02-483-3277', '37.549219', '127.128118', 'https://www.ncchurch.kr/', 'https://user-images.githubusercontent.com/33046341/165232296-83913b29-d259-45f5-9873-2e886db625c2.png', '(우) 05318 서울특별시 강동구 상암로12길 10', '서울특별시 강동구 천호동 287-7', 'https://yt3.ggpht.com/ytc/AKedOLRzfoBtzKKqM2YLjjIOufODb25UrJnxYEHLNyfC=s900-c-k-c0x00ffffff-no-rj');
+('1', '낙원교회', '서울시 송파구', '장로회(합동)', '중', '오승일', '02-423-6994', '37.5008784', '127.1044591', 'http://www.nagweon.org/', 'https://user-images.githubusercontent.com/33046341/165232296-83913b29-d259-45f5-9873-2e886db625c2.png', '(우) 05318 서울특별시 송파구 가락로11길 7', '서울특별시 송파구 석촌동 257-2', 'https://github.com/ckdqja135/ChurchOppa/assets/33046341/fdde0cba-6dd4-4509-82ab-28c102ee0e2e');
 
 -- select * from churchinfo
 -- 칼럼 값 수정 시 사용.
