@@ -29,7 +29,13 @@
 
     // 게시판 조회하기.
     function inquiry_board(church_data) {
-        let _church_no = church_data[0].ChurchNo;
+        let _church_no;
+        if (church_data == null) {
+            _church_no = window.church_data[0].ChurchNo;
+        } else {
+            _church_no = church_data[0].ChurchNo;
+        }
+
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '/ajax/inquiry_board', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -41,32 +47,34 @@
                 for (let i = 0; i < result.length; i++) {
                     let tr = document.createElement('tr');
                     tr.innerHTML = `<td id="title" style="cursor: pointer;">
-                    <a onclick="move_link('/board/', ${result[i].BoardNo})">
-                        <h6>${result[i].BoardTitle}</h6>
-                    </a>
-                </td>
-                <td id="id"><h6>${result[i].BoardID}</h6></td>
-                <td id="Regdate"><h6>${result[i].BoardRegDate}</h6></td>
-                <td id="hits"><h6>${result[i].BoardHits}</h6></td>
-                `;
+                <a onclick="move_link('/board/', ${result[i].BoardNo})">
+                    <h6>${result[i].BoardTitle}</h6>
+                </a>
+            </td>
+            <td id="id"><h6>${result[i].BoardID}</h6></td>
+            <td id="Regdate"><h6>${result[i].BoardRegDate}</h6></td>
+            <td id="hits"><h6>${result[i].BoardHits}</h6></td>
+            `;
                     church_board.appendChild(tr);
                 }
-                if (document.querySelectorAll('.pagination li').length <= 0) {
-                    pagination();
-                }
+
+                // Clear the existing pagination elements
+                $('.pagination').empty();
+
+                // Call pagination function to create new pagination
+                pagination();
             }
+            // <td>
+            //     <button className="likebtn" id="like${i}" onClick="likeEvent()">
+            //                         <span id="heart${i}" className="icon like-default">
+            //                             <i className="fa fa-heart-o" aria-hidden="true"></i> ${result[i].BoardLike}
+            //                         </span>
+            //     </button>
+            // </td>
         };
         xhr.send(`church_no=${_church_no}`);
     }
 
-
-    // <td>
-    //     <button className="likebtn" id="like${i}" onClick="likeEvent()">
-    //                         <span id="heart${i}" className="icon like-default">
-    //                             <i className="fa fa-heart-o" aria-hidden="true"></i> ${result[i].BoardLike}
-    //                         </span>
-    //     </button>
-    // </td>
 
     // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
     function day_month_format(n) {
@@ -101,7 +109,7 @@
                 $(".modal-backdrop").remove();
                 initButton();
                 $(".board").empty();
-                inquiry_board();
+                inquiry_board(null);
             },
             error : function(request,status,error) {
                 console.log(request+"\n",status,"\n",error, "\n")
@@ -139,6 +147,7 @@
 
     // 페이징 함수
     function pagination() {
+        console.log("동작?")
         // 시작 페이지
         let start_page = 1;
         // 페이지 별 보여줄 게시물 수.
