@@ -13,6 +13,7 @@
             var r_writer = $(this).attr("r_writer");
             var reply_id = $(this).attr("reply_id");
             var reply;
+
             //자기 위에 기존 댓글 적고 
             if(r_type=="main"){
                 reply = 
@@ -28,8 +29,8 @@
                     '   </td>'+
                     '   <td align="center">'+
                     '       <button name="reply_reply" reply_id = "'+reply_id+'">댓글</button>'+
-                    '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>      '+
-                    '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>      '+
+                    '       <button name="reply_modify" r_type = "main" reply_id = "'+reply_id+'">수정</button>'+
+                    '       <button name="reply_del" reply_id = "'+reply_id+'">삭제</button>'+
                     '   </td>'+
                     '</tr>';
             }else{
@@ -82,7 +83,7 @@
             var replyEditor = 
                 '<tr id="reply_add" class="reply_reply">'+
                 '   <td width="820px">'+
-                '       <textarea name="reply_reply_content" rows="3" cols="50" maxlength="100" placeholder="최대 100자까지 작성가능."></textarea>'+
+                '       <textarea name="reply_reply_content" id="reply_reply_content" rows="3" cols="50" maxlength="100" placeholder="최대 100자까지 작성가능."></textarea>'+
                 '   </td>'+
                 '   <td width="100px">'+
                 '       <input type="text" name="reply_reply_writer" style="width:100%;" maxlength="10" placeholder="작성자"/>'+
@@ -325,28 +326,21 @@
         
     // 게시판 상세조회.
     function get_board() {
-        var _board_no = window.location.href.split('/')[4]; // 현재 URL에서 게시판 번호 추출
+        var _board_no = window.location.href.split('/')[4];
 
-        // fetch 함수를 사용하여 요청 전송
+        // Fetch 통신 시작
         fetch('/ajax/board_detail', {
-            method: 'POST', // POST 메서드 사용
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json' // JSON 형식의 데이터 전송을 위한 헤더 설정
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                board_no: _board_no // 게시판 번호를 JSON 형식으로 변환하여 본문에 포함
+                board_no: _board_no
             })
         })
-            .then(response => {
-                // 응답이 성공적인지 확인
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.status}`);
-                }
-                // 응답 데이터를 JSON 형식으로 파싱하여 반환
-                return response.json();
-            })
+            .then(response => response.json()) // 응답 데이터를 JSON으로 파싱
             .then(result => {
-                let board_body = document.querySelector(".modal-body"); // 모달 본문 선택
+                let board_body = $(".modal-body");
                 if (result) {
                     var str = `
             <h2 class="board_title"> ${result[0].boardTitle} </h2>
@@ -366,20 +360,16 @@
                 <br />
                 <h7 class="reg_date">${result[0].BoardRegDate}</h7>
             </div>
-            `;
+            `
                 }
-                // 모달 본문에 내용 추가
-                board_body.innerHTML = str;
-
-                get_board_comment(_board_no); // 댓글 가져오는 함수 호출
+                board_body.append(str);
+                get_board_comment(_board_no);
             })
             .catch(error => {
-                // 네트워크 요청 실패나 처리 중 오류가 발생한 경우 실행됨
-                console.error('Fetch error:', error);
+                console.error('Fetch Error:', error);
             });
     }
-
-
+    
     /**
      * fuction : 게시글의 댓글들을 조회하는 함수.
      * 사용자에게 보여지는 정보를 요청할 때는 보안 및 데이터 노출을 피하기 위해 POST 요청하였음.
@@ -484,7 +474,7 @@
             if (comment.CommentDepth == "1") {
                 commentHTML += `<tr reply_type="sub">
                                     <td width="820px"> →
-                                        <textarea type="text" class="comment-form-control" id="comment_content_${comment.Commnetperent}" readonly="true">${comment.CommentContent}</textarea>
+                                        <textarea type="text" class="comment-form-control" id="reply_reply_content_${comment.CommentId}" readonly="true">${comment.CommentContent}</textarea>
                                     </td>
 
                                     <td width="100px">
@@ -495,11 +485,17 @@
                                         <input type="password" id="sub_reply_password_${comment.CommentId}" style="width:100px;" maxlength="10" autoComplete="off" placeholder="패스워드"/>
                                     </td>
 
-                                    <td width="300px">
-                                        <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="${comment.CommentId}" id="mod_sub_reply_${comment.CommentId}">수정</button>
-                                        <button name="reply_del" type="button" class="btn btn-danger" reply_id="${comment.CommentId}" id="del_sub_${comment.CommentId}">삭제</button>
-                                    </td>
+                                   
                                 </tr>`;
+                // <td width="300px">
+                //     <button name="reply_modify" type="button" className="btn btn-warning" r_type="main"
+                //             reply_id="${comment.CommentId}" id="mod_sub_reply_${comment.CommentId}"
+                //             onClick="modify_sub_reply_form_show(${comment.CommentId})">수정
+                //     </button>
+                //     <button name="reply_del" type="button" className="btn btn-danger" reply_id="${comment.CommentId}"
+                //             id="del_sub_${comment.CommentId}">삭제
+                //     </button>
+                // </td>
             }
 
             if ($('#reply_area').contents().size() == 0) {
@@ -619,9 +615,10 @@
             }
         });
     }
-    // 설정 - 수정 메뉴 선택 시
+    // 게시글 - 수정 메뉴 선택 시
     function correct_board_button_event() {
         $('#board-content').attr('readonly', false);
+        $('#board-content').css('border', '1px solid #ccc'); // 테두리 추가
         $('#cancel_btn').show();
         $('#correct_btn').show();
         $('.input-group').show();
@@ -651,10 +648,12 @@
                     $('#confirmModal').modal('hide');
                     $('#correctModal').modal('show');
                     $('#board-content').attr('readonly', true);
+                    $('#board-content').css('border', 'none');
                     $('#cancel_btn').hide();
                     $('#correct_btn').hide();
                     $('.input-group').hide();
                     $('#settings').show();
+                    $(`#comment_content_${commentId}`).css('border', 'none');
                 } else {
                     jQuery.noConflict();
                     $('#confirmModal').modal('hide');
@@ -668,9 +667,10 @@
         }
     }
 
-    // 수정 취소 버튼 이벤트
+    // 게시글 수정 취소 버튼 이벤트
     function correct_cancel_event() {
         $('#board-content').attr('readonly', true);
+        $('#board-content').css('border', 'none');
         $('#correct_btn').hide();
         $('#cancel_btn').hide();
         $('.input-group').hide();
@@ -687,6 +687,7 @@
         $(`#mod_${commentId}`).show();
         $(`#del_${commentId}`).show();
         $(`#comment_${commentId}`).show();
+        $(`#comment_content_${commentId}`).css('border', 'none');
     }
 
     // 설정 - 삭제 메뉴 클릭 이벤트.
@@ -707,6 +708,7 @@
     // 댓글 - 수정 버튼 클릭 시.
     function modify_form_show(comment_id) {
         $(`#comment_content_${comment_id}`).attr('readonly', false);
+        $(`#comment_content_${comment_id}`).css('border', '1px solid #ccc'); // 테두리 추가
         $(`#reply_password_${comment_id}`).show();
         $(`#modify_btn_${comment_id}`).show();
         $(`#cancel_btn_${comment_id}`).show();
@@ -715,6 +717,16 @@
         $(`#del_${comment_id}`).hide();
         $(`#comment_${comment_id}`).hide();
     }
+
+    // 대댓글 - 수정 버튼 클릭 시.
+    function modify_sub_reply_form_show(comment_id) {
+        $(`#reply_reply_content_${comment_id}`).attr('readonly', false);
+        $(`#sub_reply_password_${comment_id}`).show();
+        $(`#mod_sub_reply_${comment_id}`).show();
+        $(`#cancel_sub_reply_${comment_id}`).show();
+        $(`#del_sub_${comment_id}`).hide();
+    }
+
 
     // 설정 - 삭제 시 확인 모달 창.
     function delete_confirm() {
@@ -771,5 +783,6 @@
     window.correct_comments = correct_comments;
     window.insert_comment = insert_comment;
     window.del_comment = del_comment;
+    window.modify_sub_reply_form_show = modify_sub_reply_form_show;
 
 })(window);
