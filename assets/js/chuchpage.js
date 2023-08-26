@@ -113,11 +113,13 @@
 		window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + window.location.href);
 		// window.open("https://twitter.com/intent/tweet?&url=" + makeUrl());
 	}
-	function shareFacebook(){
-		let url = encodeURIComponent(window.location.href);
-		window.open("http://www.facebook.com/sharer/sharer.php?&u=" + url);
-	}
-	function shareLink(){
+
+    function shareFacebook() {
+        let url = window.location.href; // 인코딩 없이 현재 URL 사용
+        window.open("https://www.facebook.com/sharer/sharer.php?u=" + url);
+    }
+
+    function shareLink(){
 		//var sendUrl = "www.mysoftwiz.com/en/openVacancies/"+seq;
 		var textArea = document.createElement("textarea");
 		document.body.appendChild(textArea);
