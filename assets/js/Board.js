@@ -321,9 +321,6 @@
                 }
             });
         }
-
-        check = true;//패스워드가 맞으면 체크값을 true로 변경
-
     }
         
     // 게시판 상세조회.
@@ -687,6 +684,9 @@
         $(`#delete_btn_${commentId}`).hide();
         $(`#cancel_btn_${commentId}`).hide();
         $(`#modify_btn_${commentId}`).hide();
+        $(`#mod_${commentId}`).show();
+        $(`#del_${commentId}`).show();
+        $(`#comment_${commentId}`).show();
     }
 
     // 설정 - 삭제 메뉴 클릭 이벤트.
@@ -711,6 +711,9 @@
         $(`#modify_btn_${comment_id}`).show();
         $(`#cancel_btn_${comment_id}`).show();
         $(`#delete_btn_${comment_id}`).hide();
+        $(`#mod_${comment_id}`).hide();
+        $(`#del_${comment_id}`).hide();
+        $(`#comment_${comment_id}`).hide();
     }
 
     // 설정 - 삭제 시 확인 모달 창.
