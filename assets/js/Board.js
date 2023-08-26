@@ -122,6 +122,7 @@
 
         //대댓글 등록
         $(document).on("click","button[name='reply_reply_save']",function(){
+            event.stopPropagation();
             var reply_reply_writer = $("input[name='reply_reply_writer']");
             var reply_reply_password = $("input[name='reply_reply_password']");
             var reply_reply_content = $("textarea[name='reply_reply_content']");
@@ -178,7 +179,7 @@
                     reply_reply_writer.val()+
                     '   </td>'+
                     '   <td width="100px">'+
-                    '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
+                    '       <input type="password" id="reply_reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
                     '   </td>'+
                     '   <td align="center">'+
                     '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+result.parent_idx+'" id="mod_'+result.parent_idx+'">수정</button>'+
@@ -193,44 +194,20 @@
                     }
     
                     //댓글 초기화
-                    $("#reply_writer").val("");
-                    $("#reply_password").val("");
-                    $("#reply_content").val("");
-                    $(`#reply_password_${result.parent_idx}`).hide();
+                    reply_reply_writer.val("");
+                    reply_reply_content.val("");
+                    $(`#reply_reply_password${result.parent_idx}`).hide();
                     $(`#delete_btn_${result.parent_idx}`).hide();
                     $(`#cancel_btn_${result.parent_idx}`).hide();
                     $(`#modify_btn_${result.parent_idx}`).hide();
+                    $("#reply_reply_password").hide();
+                    $("#reply_add").remove();
                 }
             },
                 error       :   function(request, status, error){
                     console.log("AJAX_ERROR");
                 }
             });
-
-            reply_id = reply_count++;//DB에 저장했다 하고 순번을 생성
-
-            var reply = 
-                '<tr reply_type="sub">'+
-                '   <td width="820px"> → '+
-                reply_reply_content_val+
-                '   </td>'+
-                '   <td width="100px">'+
-                reply_reply_writer.val()+
-                '   </td>'+
-                '   <td width="100px">'+
-                '       <input type="password" id="reply_password" style="width:100px;" maxlength="10" placeholder="패스워드"/>'+
-                '   </td>'+
-                '   <td align="center">'+
-                '       <button name="reply_modify" type="button" class="btn btn-warning" r_type="main" reply_id="'+reply_id+'" id="mod_'+reply_id+'">수정</button>'+
-                '       <button name="reply_del" type="button" class="btn btn-danger" reply_id="'+reply_id+'" id="del_'+reply_id+'">삭제</button>'+
-                '   </td>'+
-                '</tr>';
-            var prevTr = $(this).parent().parent().prev();
-
-            prevTr.after(reply);
-            $("#reply_add").remove();
-            $("#reply_password").hide();
-            status = false;
         });
 
         //대댓글 입력창 취소
@@ -477,7 +454,7 @@
         return rootComments;
     }
     
-      // 댓글 표시 함수
+      // 댓글 조회 함수
     function display_comments(comments) {
         for (var i = 0; i < comments.length; i++) {
             // 현재 순회중인 댓글 객체
@@ -541,8 +518,6 @@
 
             // 대댓글
             $(`#sub_reply_password_${comment.CommentId}`).hide();
-            // $(`#mod_sub_reply_${comment.CommentId}`).hide();
-            $(`#del_sub_${comment.CommentId}`).hide();
 
             // 댓글 삭제 처리.
             if ($(`#comment_content_${comment.CommentId}`).val() == '작성자가 삭제한 글입니다.') {

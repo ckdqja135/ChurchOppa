@@ -1,5 +1,4 @@
 (function (window) {
-    var church_data = []; // 전역 스코프에서 배열 정의 및 초기화
     function likeEvent() {
         let heartSpan = document.querySelectorAll('.icon');
         
@@ -29,11 +28,12 @@
     }
 
     // 게시판 조회하기.
-    function inquiry_board() {
-        let _church_no = window.church_data[0].ChurchNo;
+    function inquiry_board(church_data) {
+        let _church_no = church_data[0].ChurchNo;
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '/ajax/inquiry_board', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Cache-Control', 'no-cache'); // Cache-Control 헤더 추가
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 let result = JSON.parse(xhr.responseText);
@@ -41,20 +41,14 @@
                 for (let i = 0; i < result.length; i++) {
                     let tr = document.createElement('tr');
                     tr.innerHTML = `<td id="title" style="cursor: pointer;">
-                        <a onclick="move_link('/board/', ${result[i].BoardNo})">
-                            <h6>${result[i].BoardTitle}</h6>
-                        </a>
-                    </td>
-                    <td id="id"><h6>${result[i].BoardID}</h6></td>
-                    <td id="Regdate"><h6>${result[i].BoardRegDate}</h6></td>
-                    <td id="hits"><h6>${result[i].BoardHits}</h6></td>
-                    <td>
-                        <button class="likebtn" id="like${i}" onclick="likeEvent()">
-                            <span id="heart${i}" class="icon like-default">
-                                <i class="fa fa-heart-o" aria-hidden="true"></i> ${result[i].BoardLike}
-                            </span>
-                        </button>
-                    </td>`;
+                    <a onclick="move_link('/board/', ${result[i].BoardNo})">
+                        <h6>${result[i].BoardTitle}</h6>
+                    </a>
+                </td>
+                <td id="id"><h6>${result[i].BoardID}</h6></td>
+                <td id="Regdate"><h6>${result[i].BoardRegDate}</h6></td>
+                <td id="hits"><h6>${result[i].BoardHits}</h6></td>
+                `;
                     church_board.appendChild(tr);
                 }
                 if (document.querySelectorAll('.pagination li').length <= 0) {
@@ -64,6 +58,15 @@
         };
         xhr.send(`church_no=${_church_no}`);
     }
+
+
+    // <td>
+    //     <button className="likebtn" id="like${i}" onClick="likeEvent()">
+    //                         <span id="heart${i}" className="icon like-default">
+    //                             <i className="fa fa-heart-o" aria-hidden="true"></i> ${result[i].BoardLike}
+    //                         </span>
+    //     </button>
+    // </td>
 
     // 날짜나 달에 1의 자리만 있을 경우 0을 붙여주는 함수.
     function day_month_format(n) {

@@ -1,23 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+
+// 라우터 모듈로 들어오는 POST 요청에 대한 처리를 정의.
 router.post('/', function(req, res, next) {
+  // db_services 모듈 불러오기
   var db_service = require('../services/db_services');
-  // 마지막 function 이름 경로 수동 파싱. 시맨틱 사용법이 뭔가... 와닿지 않음
+
+  // 요청된 URL에서 function 이름을 수동으로 추출.
+  // req.baseUrl은 현재 라우터의 기본 URL을 나타내며, 마지막 "/" 다음에 위치하는 문자열을 가져온다.
   var func_name = req.baseUrl.substring(req.baseUrl.lastIndexOf("/") + 1);
+
+  // 수동으로 추출한 function 이름을 출력.
   console.log("func_name", func_name)
+
+  // 처리 결과를 반환하는 함수를 정의.
   var out_func = function (error, result) {
+    // 오류가 있는 경우에는 오류를 처리하고 출력.
     if (error) {
-      // do something...
+      // 오류 시 log 출력.
       console.log("error", error);
     }
 
+    // 처리 결과를 JSON 형태로 응답.
     res.json(result);
-    // console.log("result", result)
-  };
+  }
 
-
+  // 추출한 function 이름에 따라 다른 동작을 수행.
   if (func_name == 'search') {  
     db_service.search_church(out_func, req.body.church_name);
   } 
@@ -70,6 +79,7 @@ router.post('/', function(req, res, next) {
   }
   
   else {
+    // 일치하는 함수가 없는 경우 null을 응답.
     res.json(null);
   } 
 });
