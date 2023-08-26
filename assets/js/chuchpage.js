@@ -147,7 +147,6 @@
 
     // 페이징 함수
     function pagination() {
-        console.log("동작?")
         // 시작 페이지
         let start_page = 1;
         // 페이지 별 보여줄 게시물 수.
