@@ -124,28 +124,24 @@
             $.ajax({
                 url : '/ajax/search',
                 type : "POST",
-                async: false, 
+                async: false,
                 data : {
                     church_name : search
                 },
                 success : function(result) {
-                    
+
                     let church_info = $(".church_info");
-                    
                     let establishment = "";
 
-                    
-
                     if (result) {
+
                         if (result[0].ChurchEstablish == "")
                             establishment = "정보 없음.";
-                        else 
+                        else
                             establishment = result[0].ChurchEstablish + "주년";
-                        
-                        // data 전달
-                        console.log("result[0]", result[0])
 
                         church_data = result;
+                        inquiry_board(church_data);
                         let str = "";
                         str = ` <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">위치 : ${result[0].ChurchLocate}</button>
                                 <button type="button" class="btn btn-outline-info center" onfocus="this.blur();">교단 : ${result[0].ChurchReli}</button>
@@ -158,8 +154,7 @@
                                 <br />
                                 <br />
                                 <button type="button" class="btn btn-outline-dark center" onfocus="this.blur();" onclick="window.open('${result[0].ChurchHome}')">교회 홈페이지</button>`
-                                inquiry_board();
-                                church_info.append(str);
+                        church_info.append(str);
                     }
                 },
                 error : function(request,status,error) {
@@ -168,7 +163,7 @@
             });
             return church_data;
         }
-        
+
     </script>
 </head>
 
@@ -198,11 +193,11 @@
             <a class="dropdown-item" href="#">Something else here</a>
             </div>
         </li> -->
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+<!--        </ul>-->
+<!--        <form class="form-inline my-2 my-lg-0">-->
+<!--        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">-->
+<!--        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+<!--        </form>-->
     </div>
     </nav>
 
